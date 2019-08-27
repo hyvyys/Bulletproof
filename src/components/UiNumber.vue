@@ -115,10 +115,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "keen-ui/src/styles/util.scss";
 @import "keen-ui/src/styles/variables.scss";
 
-$button-width: 0.9em;
-$button-height: 0.6em;
+$button-height: 0.5 * $ui-input-height - 0.1rem;
+$button-width: $button-height + .25rem;
 
 .ui-textbox__input-wrapper {
   display: flex;
@@ -127,7 +128,7 @@ $button-height: 0.6em;
 
 .ui-textbox__input {
   box-sizing: border-box;
-  padding-right: $button-width + 0.25em;
+  padding-right: $button-width + 0.25rem;
   text-align: right;
 }
 
@@ -135,7 +136,7 @@ $button-height: 0.6em;
   opacity: 0.54;
   transition: opacity 0.3s;
   position: absolute;
-  top: 0.375em;
+  top: 0.1em;
   right: 0;
   display: flex;
   flex-direction: column;
@@ -154,8 +155,8 @@ $button-height: 0.6em;
       top: 50%;
       transform: translateY(-50%);
       svg {
-        height: $button-height;
-        transform: scale(1.8);
+        height: 0.75em;
+        transform: scale(1.5);
       }
     }
   }

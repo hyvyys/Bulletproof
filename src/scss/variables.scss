@@ -1,3 +1,5 @@
+$font-scale: 1.1;
+
 $font-stack: "Alegreya Sans", Helvetica, Arial, sans-serif;
 // font-family: "Livvic", Helvetica, Arial, sans-serif;
 // font-family: "FiraSansCondensed", Helvetica, Arial, sans-serif;
@@ -23,6 +25,8 @@ $sidebar-width: 220px;
 /* ------------------------------------------------------------ *\
    KeenUi
 \* ------------------------------------------------------------ */
+$ui-input-height: 1.5rem;
+$ui-input-margin-bottom: 0.2rem;
 
 $brand-primary-color: $accent;
 $brand-accent-color: #ff4081;
