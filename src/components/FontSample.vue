@@ -1,13 +1,15 @@
 <template>
   <!-- eslint-disable-next-line vue/no-v-html -->
-  <div
-    class="font-sample"
-    contenteditable
-    spellcheck="false"
-    :style="`font-family: ${fontFamily}, ${fallbackFontFamily}; font-size: ${fontSize}${fontSizeUnit}`"
-    @input="onInput"
-    v-html="html"
-  />
+  <div class="font-sample">
+    <div
+      class="font-sample-content"
+      contenteditable
+      spellcheck="false"
+      :style="`font-family: ${fontFamily}, ${fallbackFontFamily}; font-size: ${fontSize}${fontSizeUnit}`"
+      @input="onInput"
+      v-html="html"
+    />
+  </div>
 </template>
 
 <script>
@@ -37,6 +39,7 @@ export default {
 
 <style lang="scss">
 .font-sample {
+  font-size: 100% / $font-scale;
   flex: 1;
   overflow: auto;
   padding: 10px 15px;

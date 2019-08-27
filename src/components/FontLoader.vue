@@ -17,12 +17,19 @@
     </UiSelect>
 
     <FileDrop @files-dropped="onFilesDropped" />
+    <UiModal ref="modal" title="Error opening fonts.">
+      <div>
+        <div>{{ errorMessage }}</div>
+        <code v-for="(log, i) in errorLogs" :key="i">{{ log }}</code>
+      </div>
+    </UiModal>
 
     <Fireworks ref="fireworks" :font="selectedFont.family" />
   </div>
 </template>
 
 <script>
+import UiModal from "keen-ui/src/UiModal.vue";
 import UiSelect from "keen-ui/src/UiSelect.vue";
 
 import eventBus from "@/eventBus";
@@ -38,8 +45,9 @@ import { Promise } from "q";
 export default {
   name: "FontTester",
   components: {
-    FileDrop,
     UiSelect,
+    UiModal,
+    FileDrop,
     Fireworks,
   },
   props: {
@@ -69,6 +77,8 @@ export default {
         font-weight: normal;
         text-align: right;
         `,
+      errorMessage: "",
+      errorLogs: [],
     };
   },
   computed: {},
@@ -89,24 +99,54 @@ export default {
     onFilesDropped(files) {
       // disable Fireworks
       // this.$refs.fireworks.$emit('event');
-      this.loadFonts({files});
+      this.loadFonts({ files });
     },
 
     async loadFonts({ files = [], urls = [] } = {}) {
-      if (!urls.length) urls = files.map(file => URL.createObjectURL(file));
+      if (!urls.length) {
+        urls = files.map(file => URL.createObjectURL(file));
+      }
+
+      const fileNames = files.length
+        ? files.map(f => f.name)
+        : urls.map(u => u.replace(/.*\//, ""));
 
       Promise.all(urls.map(url => FontParser.parse(url)))
-        .then(fonts => {
+        .then(responses => {
+          const results = responses.map((r, i) => ({
+            fileName: fileNames[i],
+            ...r,
+          }));
+          const fonts = results.filter(r => r.font).map(r => r.font);
+
           fonts.forEach(font => {
             this.fonts.push(font);
             styles.add(font.fontFace);
           });
-          this.selectedFont = fonts[0];
-          // this.selectFont()
+          if (fonts.length) {
+            this.selectedFont = fonts[0];
+          }
+
+          const errors = results.filter(r => r.error);
+          if (errors.length) {
+            this.printFontLoadingError(results);
+          }
         })
         .catch(error => {
-          console.log(error);
+          this.printFontLoadingError([], error);
         });
+    },
+
+    printFontLoadingError(results, extraError) {
+      if (results.length) {
+        const errors = results.filter(r => r.error);
+        this.errorMessage = `${errors.length} out of ${results.length} files were not loaded.`;
+        this.errorLogs = errors.map(e => `${e.fileName}: ${e.error}`);
+      } else {
+        this.errorMessage = `An unexpected error occurred.`;
+        this.errorLogs = [extraError];
+      }
+      this.$refs.modal.open();
     },
 
     updateFont() {

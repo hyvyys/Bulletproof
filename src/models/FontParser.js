@@ -10,22 +10,25 @@ export default class FontParser {
     if (!callback) {
       return font.init(url);
     } else {
-      font.init(url).then(font => callback(font));
+      font.init(url).then(({ font, error }) => {
+        if (font) callback(font);
+        if (error) callback(null, error);
+      });
     }
   }
 }
 
 class Font {
   init(url) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.url = url;
       loadFont(url)
         .then(font => {
           this.processFont(font);
-          resolve(this);
+          resolve({ font: this });
         })
         .catch(error => {
-          reject(`Couldn't open font from file ${url}.\n${error}`);
+          resolve({ error });
         });
     });
   }
