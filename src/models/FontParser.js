@@ -32,7 +32,7 @@ class Font {
 
   processFont(font) {
     this.getNames(font);
-    this.getFeatures(font);
+    // this.getFeatures(font);
     this.generateFontFace();
   }
 
@@ -52,28 +52,28 @@ class Font {
     const gsub = font.tables.gsub;
 
     const loclLanguages = new Set(
-      [...gpos.scripts, ...gsub.scripts].flatMap(s => s.script.langSysRecords).map(lsr => lsr.tag)
+      [...(gpos.scripts || []), ...(gsub.scripts || [])].flatMap(s => s.script.langSysRecords).map(lsr => lsr.tag)
     );
 
     const stylisticSetNames = Object.getOwnPropertyNames(names)
       .filter(p => /\d+/.test(p))
       .map(p => names[p].en);
     let i = 0;
-    const getStylisticSetName = function() {
+    const getStylisticSetName = function () {
       return stylisticSetNames[i++];
     };
 
-    this.gposFeatures = gpos.features.map(f => ({
+    this.gposFeatures = (gpos.features || []).map(f => ({
       tag: f.tag,
-      name: fontFeatureNames[f.tag] || f.tag
+      name: fontFeatureNames[f.tag] || f.tag,
     }));
 
     this.gsubFeatures = [];
 
-    gsub.features.forEach(f => {
+    (gsub.features || []).forEach(f => {
       const feature = {
         tag: f.tag,
-        name: fontFeatureNames[f.tag] || f.tag
+        name: fontFeatureNames[f.tag] || f.tag,
       };
 
       if (f.tag == "locl") {
