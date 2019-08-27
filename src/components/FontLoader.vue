@@ -16,7 +16,9 @@
       </div>
     </UiSelect>
 
-    <FileDrop @files-dropped="files => loadFonts({files})" />
+    <FileDrop @files-dropped="onFilesDropped" />
+
+    <Fireworks ref="fireworks" :font="selectedFont.family" />
   </div>
 </template>
 
@@ -26,7 +28,10 @@ import UiSelect from "keen-ui/src/UiSelect.vue";
 import eventBus from "@/eventBus";
 
 import FileDrop from "@/components/FileDrop.vue";
+import Fireworks from "@/components/Fireworks.vue";
+
 import FontParser from "@/models/FontParser";
+
 import styles from "@/utils/styles";
 import { Promise } from "q";
 
@@ -35,6 +40,7 @@ export default {
   components: {
     FileDrop,
     UiSelect,
+    Fireworks,
   },
   props: {
     gui: {
@@ -80,6 +86,12 @@ export default {
     this.loadFonts({ urls: fonts.map(f => dir + f) });
   },
   methods: {
+    onFilesDropped(files) {
+      // disable Fireworks
+      // this.$refs.fireworks.$emit('event');
+      this.loadFonts({files});
+    },
+
     async loadFonts({ files = [], urls = [] } = {}) {
       if (!urls.length) urls = files.map(file => URL.createObjectURL(file));
 
@@ -100,6 +112,7 @@ export default {
     updateFont() {
       eventBus.$emit("font-change", this.selectedFont.family);
     },
+
     /* ^^^ methods ^^^ */
   },
 };

@@ -19,13 +19,17 @@
   background: rgba($light, 0.5);
   box-shadow: inset 0 0 20vh $light;
 
+    transition: opacity 0.5s;
   &.hidden {
-    display: none;
+  transition: opacity 2.5s;
+    opacity: 0;
+    pointer-events: none;
   }
 }
 </style>
 
 <script>
+import anime from "animejs/lib/anime.es.js";
 import scrolledParentSelector from "@/constants/scrolledParent";
 
 export default {
