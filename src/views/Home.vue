@@ -19,6 +19,7 @@
 const { detect } = require("detect-browser");
 const browser = detect();
 
+import scrolledParentSelector from "@/constants/scrolledParent";
 import shuffle from "@/models/shuffle";
 import LanguageData from "language-data";
 import Welcome from "@/components/Welcome.vue";
@@ -57,7 +58,7 @@ export default {
       }
     },
     setupParallax() {
-      this.scrolledParent = document.querySelector(".app > div");
+      this.scrolledParent = document.querySelector(scrolledParentSelector);
       this.parallaxes = [this.$refs.parallax];
       const callback = this.moveParallax;
       // const callback = throttle(this.moveParallax, 16, { leading: true });

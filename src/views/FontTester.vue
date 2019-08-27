@@ -2,7 +2,7 @@
   <div class="font-tester">
     <Fitter
       class="settings-wrapper"
-      scrolledParentSelector=".app > div"
+      :scrolledParentSelector="scrolledParentSelector"
       bottomSelector=".site-footer"
       topSelector=".site-header"
     >
@@ -19,6 +19,7 @@
 <script>
 import LanguageData from "language-data";
 
+import scrolledParentSelector from "@/constants/scrolledParent";
 import eventBus from "@/eventBus";
 
 import languageDataFields from "@/models/textKindLanguageDataField";
@@ -44,6 +45,7 @@ export default {
       },
       selectedSampleKey: "lettering",
       selectedLanguages: LanguageData.map(l => l.language),
+      scrolledParentSelector,
     };
   },
   computed: {

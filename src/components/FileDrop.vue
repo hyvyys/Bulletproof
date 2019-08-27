@@ -10,10 +10,14 @@
 
 <style lang="scss" scoped>
 .file-drop {
-  position: fixed;
-  top: 0; bottom: 0; left: 0; right: 0;
   z-index: 1;
-  background: yellow;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba($light, 0.5);
+  box-shadow: inset 0 0 20vh $light;
 
   &.hidden {
     display: none;
@@ -22,14 +26,18 @@
 </style>
 
 <script>
+import scrolledParentSelector from "@/constants/scrolledParent";
+
 export default {
-  data( ) {
-    return ({
+  data() {
+    return {
       visible: false,
-    });
+      scrolledParent: null,
+    };
   },
   mounted() {
-    document.body.addEventListener("dragenter", this.handleBodyDragEnter);
+    this.scrolledParent = document.querySelector(scrolledParentSelector);
+    this.scrolledParent.addEventListener("dragenter", this.handleBodyDragEnter);
   },
   methods: {
     showDrop() {
@@ -37,14 +45,15 @@ export default {
     },
     hideDrop() {
       this.visible = false;
+      this.toggleBodyScroll(true);
     },
     handleDragEnter(e) {
-      e.preventDefault();
       this.showDrop();
+      e.preventDefault();
     },
     handleDragLeave(e) {
-      e.preventDefault();
       this.hideDrop();
+      e.preventDefault();
     },
     handleDragOver(e) {
       e.preventDefault();
@@ -53,16 +62,33 @@ export default {
       e.preventDefault();
       this.hideDrop();
       // fetch FileList object
-      var files = e.target.files || e.dataTransfer.files;
+      var files = Array.from(e.target.files || e.dataTransfer.files);
       this.$emit("files-dropped", files);
     },
 
     handleBodyDragEnter(e) {
+      this.toggleBodyScroll(false);
       if (e.dataTransfer.types.indexOf("Files") > -1) {
         e.preventDefault();
         this.showDrop();
       }
     },
-  }
+
+    preventScroll() {
+      this.scrolledParent.scrollTop = this.scrolledParentTop;
+    },
+
+    toggleBodyScroll(on) {
+      this.scrolledParentTop = this.scrolledParent.scrollTop;
+      if (on) {
+        this.scrolledParent.removeEventListener(
+          "scroll",
+          this.preventScroll
+        );
+      } else {
+        this.scrolledParent.addEventListener("scroll", this.preventScroll);
+      }
+    },
+  },
 };
 </script>

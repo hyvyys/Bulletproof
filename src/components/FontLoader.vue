@@ -16,7 +16,7 @@
       </div>
     </UiSelect>
 
-    <FileDrop @files-dropped="loadFonts" />
+    <FileDrop @files-dropped="files => loadFonts({files})" />
   </div>
 </template>
 
