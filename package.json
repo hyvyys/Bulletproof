@@ -20,7 +20,8 @@
     "opentype.js": "^1.1.0",
     "vue": "^2.6.10",
     "vue-router": "^3.0.3",
-    "vuebar": "github:hyvyys/vuebar"
+    "vuebar": "github:hyvyys/vuebar",
+    "vuex": "^3.1.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.11.0",
@@ -40,30 +41,6 @@
     "vue-svg-inline-loader": "^1.2.16",
     "vue-template-compiler": "^2.6.10",
     "ware-loader": "^0.2.4"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
-    ],
-    "rules": {},
-    "parserOptions": {
-      "parser": "babel-eslint"
-    },
-    "overrides": [
-      {
-        "files": [
-          "**/__tests__/*.{j,t}s?(x)"
-        ],
-        "env": {
-          "jest": true
-        }
-      }
-    ]
   },
   "postcss": {
     "plugins": {

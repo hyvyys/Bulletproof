@@ -9,9 +9,7 @@
 }
 
 html {
-  // font-family: "Livvic", Helvetica, Arial, sans-serif;
-  // font-family: "FiraSansCondensed", Helvetica, Arial, sans-serif;
-  font-family: "Alegreya Sans", Helvetica, Arial, sans-serif;
+  font-family: $font-stack;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

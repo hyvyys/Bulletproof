@@ -16,6 +16,7 @@
 
 <script>
 import throttle from "lodash.throttle";
+import viewport from "@/utils/viewport";
 
 export default {
   name: "Fitter",
@@ -49,11 +50,6 @@ export default {
   },
   methods: {
     position() {
-      const viewportHeight = Math.max(
-        document.documentElement.clientHeight,
-        window.innerHeight || 0
-      );
-
       const header = window.document.querySelector(this.topSelector);
       if (header) {
         const { bottom } = header.getBoundingClientRect();
@@ -65,7 +61,7 @@ export default {
       const footer = window.document.querySelector(this.bottomSelector);
       if (footer) {
         const { top } = footer.getBoundingClientRect();
-        this.bottom = Math.max(0, viewportHeight - top);
+        this.bottom = Math.max(0, viewport.height - top);
       } else {
         console.error(`Fitter didn't find element ${this.bottomSelector}.`);
       }

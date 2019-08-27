@@ -13,17 +13,18 @@
       v-bind="settings"
       @update="v => updateText(selectedSampleKey, v)"
     />
-    <!-- <FontLoader /> -->
   </div>
 </template>
 
 <script>
 import LanguageData from "language-data";
+
+import eventBus from "@/eventBus";
+
 import languageDataFields from "@/models/textKindLanguageDataField";
 import textKinds from "@/models/textKinds";
 import settings from "@/models/settings";
 
-import FontLoader from "@/components/FontLoader.vue";
 import FontSample from "@/components/FontSample.vue";
 import Settings from "@/components/Settings.vue";
 import Fitter from "@/components/layout/Fitter.vue";
@@ -34,7 +35,6 @@ export default {
     Fitter,
     Settings,
     FontSample,
-    FontLoader,
   },
   data() {
     return {
@@ -59,6 +59,11 @@ export default {
   beforeMount() {
     this.selectSample(this.selectedTextKind);
     this.updateTexts();
+  },
+  mounted() {
+    eventBus.$on("font-change", (fontFamily) => {
+      this.settings.fontFamily = fontFamily;
+    });
   },
   methods: {
     getDefaultSettings() {

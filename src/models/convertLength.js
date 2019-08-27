@@ -1,4 +1,4 @@
-import viewport from "@/models/viewport";
+import viewport from "@/utils/viewport";
 
 // https://github.com/jwilsson/CSS-Unit-Converter
 

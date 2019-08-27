@@ -4,7 +4,7 @@
     class="font-sample"
     contenteditable
     spellcheck="false"
-    :style="`font-size: ${fontSize}${fontSizeUnit}`"
+    :style="`font-family: ${fontFamily}, ${fallbackFontFamily}; font-size: ${fontSize}${fontSizeUnit}`"
     @input="onInput"
     v-html="html"
   />
@@ -18,9 +18,9 @@ export default {
   props: {
     html: {
       type: String,
-      default: "",
+      default: ""
     },
-    ...settings,
+    ...settings
   },
   methods: {
     onInput(e) {
@@ -30,8 +30,8 @@ export default {
     notifyWindow() {
       // trigger resize event so that Fitter can be positioned
       window.dispatchEvent(new Event("resize"));
-    },
-  },
+    }
+  }
 };
 </script>
 

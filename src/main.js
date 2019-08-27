@@ -1,13 +1,12 @@
 import Vue from "vue";
+Vue.config.productionTip = false;
+
 import Vuebar from "vuebar";
+Vue.use(Vuebar);
 
 import "./scss/styles.scss";
-
 import App from "./App.vue";
 import router from "./router";
-
-Vue.config.productionTip = false;
-Vue.use(Vuebar);
 
 new Vue({
   router,

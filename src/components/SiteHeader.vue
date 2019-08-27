@@ -1,6 +1,6 @@
 <template>
   <div class="site-header">
-    <div class="flex dark">
+    <div class="dark">
       <div class="logo">
         <SiteLogo class />
       </div>
@@ -72,12 +72,6 @@ $header-background: linear-gradient(to right, $light, $accent);
   background-size: 100vw 150px;
 }
 
-.flex {
-  flex: 1;
-  display: flex;
-  align-items: stretch;
-}
-
 .site-header {
   display: flex;
   align-items: stretch;
@@ -91,9 +85,11 @@ $header-background: linear-gradient(to right, $light, $accent);
   .light {
     background: $light;
   }
+
   .dark {
     flex: 1;
     display: flex;
+    margin-top: -8px;
     align-items: center;
   }
 

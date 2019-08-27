@@ -1,3 +1,7 @@
+$font-stack: "Alegreya Sans", Helvetica, Arial, sans-serif;
+// font-family: "Livvic", Helvetica, Arial, sans-serif;
+// font-family: "FiraSansCondensed", Helvetica, Arial, sans-serif;
+
 /* ------------------------------------------------------------ *\
    color variables, groupped by background color (first value)
 \* ------------------------------------------------------------ */
@@ -9,6 +13,7 @@ $light-link-hover: #1245b3;
 
 $accent: #416bc5;
 $accent: #7c0f1d;
+$accent-faded: #461a21;
 $accent-text: #ffffff;
 $accent-link: #bcdeff;
 $accent-link-hover: #ffffff;
@@ -22,9 +27,8 @@ $sidebar-width: 220px;
 $brand-primary-color: $accent;
 $brand-accent-color: #ff4081;
 
-$brand-primary-color: #FF4081;
-$brand-accent-color: #FF4081;
-
+$brand-primary-color: #ff4081;
+$brand-accent-color: #ff4081;
 
 /* ------------------------------------------------------------ *\
    Vuebar

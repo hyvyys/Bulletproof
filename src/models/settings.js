@@ -1,4 +1,12 @@
 export default {
+  fontFamily: {
+    type: String,
+    default: "",
+  },
+  fallbackFontFamily: {
+    type: String,
+    default: "sans-serif",
+  },
   fontSize: {
     type: Number,
     default: 12,

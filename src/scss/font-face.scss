@@ -1,6 +1,7 @@
 @import "./utils/font-face.scss";
 
-$fontDir: "../assets/fonts";
+// $fontDir: "../assets/fonts";
+$fontDir: "/fonts"; // /public/
 
 @include font-face("Rywalka", $fontDir, ((Regular, 400, normal), ), (ttf));
 
