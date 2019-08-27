@@ -1,0 +1,139 @@
+@mixin gradient-piqued($back: #7e3b99) {
+  background: radial-gradient(black 3px, transparent 4px),
+    radial-gradient(black 3px, transparent 4px),
+    linear-gradient($back 4px, transparent 0),
+    linear-gradient(
+      45deg,
+      transparent 74px,
+      transparent 75px,
+      #a4a4a4 75px,
+      #a4a4a4 76px,
+      transparent 77px,
+      transparent 109px
+    ),
+    linear-gradient(
+      -45deg,
+      transparent 75px,
+      transparent 76px,
+      #a4a4a4 76px,
+      #a4a4a4 77px,
+      transparent 78px,
+      transparent 109px
+    ),
+    $back;
+  background-size: 109px 109px, 109px 109px, 100% 6px, 109px 109px, 109px 109px;
+  background-position: 54px 55px, 0px 0px, 0px 0px, 0px 0px, 0px 0px;
+}
+
+@mixin gradient-zigzag() {
+  background: linear-gradient(135deg, #eceddc 25%, transparent 25%) -50px 0,
+    linear-gradient(225deg, #eceddc 25%, transparent 25%) -50px 0,
+    linear-gradient(315deg, #eceddc 25%, transparent 25%),
+    linear-gradient(45deg, #eceddc 25%, transparent 25%);
+  background-size: 100px 100px;
+  background-color: #ec173a;
+  @include gradient-piqued;
+}
+
+@mixin gradient-scales() {
+  $color-1: #c7b773;
+  $color-1: #364ed8;
+  $color-1-t: transparentize($color-1, 1);
+
+  $color-2: #e3db9a;
+  $color-2: #6597b8;
+  $color-2-t: transparentize($color-2, 1);
+
+  $color-3: #f5fcd0;
+  $color-3: #73698f;
+  $color-3-t: transparentize($color-3, 1);
+
+  $color-4: #b1c2b3;
+  $color-4: #636dee;
+  $color-4-t: transparentize($color-4, 1);
+
+  $color-5: #778691;
+  $color-5: #6e6499;
+  $color-5-t: transparentize($color-5, 1);
+
+  $size: 2em;
+  $step: 6.5%;
+
+  $bgcolor: $color-1;
+
+  background: radial-gradient(
+        circle at center 0,
+        $color-4 $step,
+        $color-5 $step,
+        $color-5 $step * 2,
+        $color-1 $step * 2.2,
+        $color-1 $step * 3,
+        $color-2 $step * 3.2,
+        $color-2 $step * 4,
+        $color-3 $step * 4.2,
+        $color-3 $step * 5,
+        $color-4 $step * 5.2,
+        $color-4 $step * 6,
+        $color-5 $step * 6.2,
+        $color-5 $step * 7,
+        $color-5-t $step * 7.2
+      )
+      0 0,
+    radial-gradient(
+        circle at center 0,
+        $color-4 $step,
+        $color-5 $step,
+        $color-5 $step * 2,
+        $color-1 $step * 2.2,
+        $color-1 $step * 3,
+        $color-2 $step * 3.2,
+        $color-2 $step * 4,
+        $color-3 $step * 4.2,
+        $color-3 $step * 5,
+        $color-4 $step * 5.2,
+        $color-4 $step * 6,
+        $color-5 $step * 6.2,
+        $color-5 $step * 7,
+        $color-5-t $step * 7.2
+      )
+      $size/2 $size/2,
+    radial-gradient(
+        circle at center $size,
+        $color-4 $step,
+        $color-5 $step,
+        $color-5 $step * 2,
+        $color-1 $step * 2.2,
+        $color-1 $step * 3,
+        $color-2 $step * 3.2,
+        $color-2 $step * 4,
+        $color-3 $step * 4.2,
+        $color-3 $step * 5,
+        $color-4 $step * 5.2,
+        $color-4 $step * 6,
+        $color-5 $step * 6.2,
+        $color-5 $step * 7,
+        $color-5-t $step * 7.2
+      )
+      0 0,
+    radial-gradient(
+        circle at center $size,
+        $color-4 $step,
+        $color-5 $step,
+        $color-5 $step * 2,
+        $color-1 $step * 2.2,
+        $color-1 $step * 3,
+        $color-2 $step * 3.2,
+        $color-2 $step * 4,
+        $color-3 $step * 4.2,
+        $color-3 $step * 5,
+        $color-4 $step * 5.2,
+        $color-4 $step * 6,
+        $color-5 $step * 6.2,
+        $color-5 $step * 7,
+        $color-5-t $step * 7.2
+      )
+      $size/2 $size/2;
+
+  background-color: $bgcolor;
+  background-size: $size $size;
+}

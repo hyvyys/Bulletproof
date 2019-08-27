@@ -1,0 +1,27 @@
+@import './to-string.scss';
+
+/**
+ *  $styles is a list of lists containing: font-file suffix CSS weight, CSS style 
+ */
+@mixin font-face(
+  $family,
+  $dir: '.', 
+  $styles: ((Regular, 400, normal), (Bold, 700, normal)), 
+  $formats: (ttf, otf),
+  $cssFontFamily: $family,
+) {
+  @each $style in $styles {
+    $subfamily: nth($style, 1);
+    $urls: ();
+    @each $format in $formats {
+      $urls: append($urls, 'url("#{$dir}/#{$family}-#{$subfamily}.#{$format}")');
+    }
+    
+    @font-face {
+      src: to-string($urls, ', ');
+      font-family: $cssFontFamily;
+      font-weight: nth($style, 2);
+      font-style: nth($style, 3);
+    }
+  } 
+}

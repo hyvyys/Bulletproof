@@ -1,0 +1,43 @@
+@import "./variables.scss";
+@import "./font-face.scss";
+
+@import "./keenui-fixes.scss";
+@import "./vuebar.scss";
+
+.mask {
+  mask-type: alpha;
+}
+
+html {
+  // font-family: "Livvic", Helvetica, Arial, sans-serif;
+  // font-family: "FiraSansCondensed", Helvetica, Arial, sans-serif;
+  font-family: "Alegreya Sans", Helvetica, Arial, sans-serif;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+}
+
+a {
+  color: $light-link;
+
+  &:hover {
+    color: $light-link-hover;
+  }
+}
+
+.accent {
+  background: $accent;
+  color: $accent-text;
+
+  a {
+    color: unset;
+
+    &:hover {
+      color: unset;
+    }
+  }
+}

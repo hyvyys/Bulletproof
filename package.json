@@ -10,9 +10,17 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "convert-css-length": "^2.0.1",
     "core-js": "^2.6.5",
+    "detect-browser": "^4.6.0",
+    "keen-ui": "^1.2.0",
+    "language-data": "0.0.3",
+    "lodash.debounce": "^4.0.8",
+    "lodash.throttle": "^4.1.1",
+    "opentype.js": "^1.1.0",
     "vue": "^2.6.10",
-    "vue-router": "^3.0.3"
+    "vue-router": "^3.0.3",
+    "vuebar": "github:hyvyys/vuebar"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.11.0",
@@ -26,9 +34,12 @@
     "babel-jest": "^23.6.0",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
+    "markdown-it": "^9.1.0",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.1.0",
-    "vue-template-compiler": "^2.6.10"
+    "vue-svg-inline-loader": "^1.2.16",
+    "vue-template-compiler": "^2.6.10",
+    "ware-loader": "^0.2.4"
   },
   "eslintConfig": {
     "root": true,
@@ -76,7 +87,7 @@
       "^.+\\.jsx?$": "babel-jest"
     },
     "transformIgnorePatterns": [
-      "/node_modules/"
+      "node_modules/(?!(keen-ui|tippy\\.js|popper\\.js)/)"
     ],
     "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/src/$1"

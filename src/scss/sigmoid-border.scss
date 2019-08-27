@@ -1,0 +1,33 @@
+@mixin sigmoid-border($side: right, $width: 45px, $margin: -10px) {
+  $_margin: $width + $margin;
+
+  position: relative;
+  background-clip: padding-box;
+
+  @if $side == right {
+    margin-right: $_margin;
+    &::after {
+      content: "";
+      position: absolute;
+      left: 100%;
+      top: 0;
+      height: 100%;
+      width: $width;
+      background: inherit;
+      clip-path: url('#sigmoid-right');
+    }
+  }
+  @if $side == left {
+    margin-left: $_margin;
+    &::before {
+      content: "";
+      position: absolute;
+      right: 100%;
+      top: 0;
+      height: 100%;
+      width: $width;
+      background: inherit;
+      clip-path: url('#sigmoid-left');
+    }
+  }
+}

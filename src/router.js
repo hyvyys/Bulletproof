@@ -1,25 +1,33 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Home from './views/Home.vue'
+import Vue from "vue";
+import Router from "vue-router";
 
-Vue.use(Router)
+import Home from "@/views/Home.vue";
+import FontTester from "@/views/FontTester.vue";
+import SiteHeader from "@/components/SiteHeader.vue";
+
+import textKinds from "@/models/textKinds";
+
+Vue.use(Router);
 
 export default new Router({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/',
-      name: 'home',
-      component: Home
+      path: "/",
+      name: "Home",
+      components: {
+        header: SiteHeader,
+        main: Home,
+      }
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
+      path: `/:text(${textKinds.join("|")}|custom/:id?)`,
+      name: "FontTester",
+      components: {
+        header: SiteHeader,
+        main: FontTester,
+      }
     }
   ]
-})
+});

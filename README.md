@@ -1,39 +1,22 @@
-# bulletproof
+# [Bulletproof](https://hyvyys.github.io/Bulletproof/)
 
-## Project setup
-```
-npm install
-```
+A visual font testing tool, largely inspired by Pablo Impallari's font testing site.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+# Features
 
-### Compiles and minifies for production
-```
-npm run build
-```
+  * Loading local font files
+  * Setting texts in various languages including pangrams, sentences, ABC's (and AĄBCĆ's), etc. (drawn from my other project [language-data](https://github.com/hyvyys/language-data)). Those text strings can be filtered by language script (Latin, Cyrillic, Greek... more to come, maybe), region, number of speakers, or specific languages can be chosen.
+  * Setting font size and line height, text alignment, text and background colors
+  * Toggling OpenType features on and off
+  * Manipulating OpenType Variation axes
+  * Animating OpenType Variation axes via CSS keyframes
+  * Feature and variation axes detection based on font file (thanks to [OpenType.js](https://github.com/opentypejs/opentype.js))
 
-### Run your tests
-```
-npm run test
-```
+# Roadmap
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Run your end-to-end tests
-```
-npm run test:e2e
-```
-
-### Run your unit tests
-```
-npm run test:unit
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+  * Kerning string generator
+  * “Waterfall” of samples of degrading point sizes
+  * Grouped and named feature toggles
+  * A more user-friendly GUI for animations, automating some bits
+  * Animation of colors, text, etc. — would be useful for recording gifs or videos
+  * Enable storing a list of font files to open. This would require downloading the built app and running it with a user-defined list of local font files (via text file). Opening local files automatically from live site is impossible for security reasons. They would need to be uploaded (you wouldn't like that!) and I would need to run a server.

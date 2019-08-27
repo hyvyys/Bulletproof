@@ -1,0 +1,38 @@
+@import "./utils/font-face.scss";
+
+$fontDir: "../assets/fonts";
+
+@include font-face("Rywalka", $fontDir, ((Regular, 400, normal), ), (ttf));
+
+// @include font-face("Livvic",
+//   "../assets/Livvic",
+//   ((ExtraLight, 200, normal),
+//     (Regular, 400, normal),
+    // (RegularItalic, 400, italic),
+    // (SemiBold, bold, normal),
+    // (Black, 900, normal),
+  // ),
+  // (ttf));
+
+// @include font-face("FiraSansCondensed",
+//   "../assets/Fira_Sans_Condensed",
+//   ((ExtraLight, 200, normal),
+//     (Regular, 400, normal),
+//     (RegularItalic, 400, italic),
+//     (SemiBold, bold, normal),
+//     (Black, 900, normal),
+//   ),
+//   (ttf));
+
+@include font-face("alegreya-sans-v10-latin-ext_cyrillic_cyrillic-ext_latin_vietnamese_greek-ext_greek",
+  $fontDir + "/alegreya-sans",
+  (
+    // (100, 100, normal),
+    (regular, 400, normal),
+    (italic, 400, italic),
+    (500, 500, normal),
+    (700, bold, normal),
+    (800, 800, normal),
+  ),
+  (eot, woff2, woff, ttf, svg),
+  'Alegreya Sans');

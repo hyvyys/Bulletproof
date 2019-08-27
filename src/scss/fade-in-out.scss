@@ -1,0 +1,23 @@
+@mixin fade-in($name: fade-in-1, $duration: 0.5s, $to: 1) {
+  @keyframes #{$name} {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: $to;
+    }
+  }
+  animation: #{$name} $duration forwards;
+}
+
+@mixin fade-out($name: fade-out-1, $duration: 0.5s, $from: 1) {
+  @keyframes #{$name} {
+    from {
+      opacity: $from;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+  animation: #{$name} $duration forwards;
+}

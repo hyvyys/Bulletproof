@@ -1,0 +1,20 @@
+@import './variables.scss';
+
+// Red Cross-hatch gradients
+@mixin gradient-red {
+  background-image: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 1px,
+      rgba(0, 0, 0, 0.2) 1px,
+      rgba(255, 255, 255, 0.1) 10px
+    ),
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 1px,
+      rgba(0, 0, 0, 0.2) 1px,
+      rgba(255, 255, 255, 0.1) 10px
+    ),
+    radial-gradient(ellipse at center, $accent 0%, rgba(0, 0, 0, 1) 100%);
+}

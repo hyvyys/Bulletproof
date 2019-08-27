@@ -1,0 +1,48 @@
+@import "./variables.scss";
+
+.vb {
+  > .vb-content {
+    box-sizing: border-box;
+    padding-right: $vuebar-width;
+    width: unquote("max(100% + 17px, 100% + 0vw)") !important;
+  }
+
+  > .vb-dragger {
+    z-index: 5;
+    right: 0;
+
+    > .vb-dragger-styler {
+      background-clip: padding-box;
+      background: mix($accent, $light, 20%);
+      background: $accent;
+      opacity: 0.7;
+      margin: $dragger-margin-top $dragger-margin-right $dragger-margin-bottom
+        $dragger-margin-left;
+      border-radius: 4px;
+      height: calc(100% - 10px);
+      min-height: 2em;
+      display: block;
+    }
+  }
+
+  &.vb-visible {
+    &::after {
+      content: "";
+      display: block;
+      position: absolute;
+      top: 0;
+      height: 100%;
+      right: 0;
+      width: $vuebar-width;
+    }
+
+    > .vb-dragger > .vb-dragger-styler {
+      width: $dragger-width;
+      box-sizing: border-box;
+      border: $dragger-border solid;
+      $darker: darken($accent, 10%);
+      $lighter: lighten($accent, 10%);
+      border-color: $lighter $lighter $darker $darker;
+    }
+  }
+}

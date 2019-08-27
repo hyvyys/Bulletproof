@@ -1,0 +1,40 @@
+/* ------------------------------------------------------------ *\
+   color variables, groupped by background color (first value)
+\* ------------------------------------------------------------ */
+
+$light: #eeeeee;
+$light-text: #241f1e;
+$light-link: #416bc5;
+$light-link-hover: #1245b3;
+
+$accent: #416bc5;
+$accent: #7c0f1d;
+$accent-text: #ffffff;
+$accent-link: #bcdeff;
+$accent-link-hover: #ffffff;
+
+$sidebar-width: 220px;
+
+/* ------------------------------------------------------------ *\
+   KeenUi
+\* ------------------------------------------------------------ */
+
+$brand-primary-color: $accent;
+$brand-accent-color: #ff4081;
+
+$brand-primary-color: #FF4081;
+$brand-accent-color: #FF4081;
+
+
+/* ------------------------------------------------------------ *\
+   Vuebar
+\* ------------------------------------------------------------ */
+
+$dragger-width: 12px;
+$dragger-border: 3px;
+$dragger-margin-left: 3px;
+$dragger-margin-right: 2px;
+$dragger-margin-top: 2px;
+$dragger-margin-bottom: 2px;
+
+$vuebar-width: $dragger-width + $dragger-margin-left + $dragger-margin-right;
