@@ -16,6 +16,13 @@ export default {
     type: String,
     default: "pt",
     kind: "select",
-    options: ["pt", "px", "em", "vw", "vh"],
+  },
+  fontSizeUnitOptions: {
+    type: Array,
+    default: () => ["pt", "px", "em", "vw", "vh"],
+  },
+  fontFeatureSettings: {
+    type: Object,
+    default: () => ({}),
   },
 };

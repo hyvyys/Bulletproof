@@ -29,10 +29,12 @@
 </style>
 
 <script>
-import anime from "animejs/lib/anime.es.js";
-import scrolledParentSelector from "@/constants/scrolledParent";
+import { mapGetters } from "vuex";
 
 export default {
+  computed: {
+    ...mapGetters(["scrolledParentSelector"]),
+  },
   data() {
     return {
       visible: false,
@@ -40,7 +42,7 @@ export default {
     };
   },
   mounted() {
-    this.scrolledParent = document.querySelector(scrolledParentSelector);
+    this.scrolledParent = document.querySelector(this.scrolledParentSelector);
     this.scrolledParent.addEventListener("dragenter", this.handleBodyDragEnter);
   },
   methods: {

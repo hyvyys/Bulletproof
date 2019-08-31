@@ -1,77 +1,66 @@
 <template>
   <div class="settings">
     <div class="setting-row">
-    </div>
-    <div class="setting-row">
       <label>Font size</label>
       <UiNumber
         ref="settingFontSize"
         class="const7ch"
-        :value="fontSize"
-        :min="minFontSize"
-        :max="maxFontSize"
-        :step="fontSizeStep"
-        :clickStep="fontSizeClickStep"
-        @input="updateNumber"
+        :value="settings.fontSize"
+        :min="settings.minFontSize"
+        :max="settings.maxFontSize"
+        :step="settings.fontSizeStep"
+        :clickStep="settings.fontSizeClickStep"
+        @input="v => $store.commit('updateSettings', { fontSize: v })"
       />
       <UiSelect
         ref="settingFontSizeUnit"
         class="const4ch"
-        :value="fontSizeUnit"
-        :options="settings.fontSizeUnit.options"
+        :value="settings.fontSizeUnit"
+        :options="settings.fontSizeUnitOptions"
         @input="updateFontSizeUnit"
       />
       <!-- <label>{{ fontSizeUnit }}</label> -->
     </div>
+    <!-- <div class="setting-row" v-for="(feature, key) in fontFeatureSettings" :key="key">
+      <UiCheckbox :value="feature" @input="v => updateFontFeatureSetting(key, v)">{{ key }}</UiCheckbox>
+    </div>-->
   </div>
 </template>
 
 <script>
 // import UiTextbox from "keen-ui/src/UiTextbox.vue";
+import { mapGetters } from "vuex";
 
 import UiSelect from "keen-ui/src/UiSelect.vue";
+import UiCheckbox from "keen-ui/src/UiCheckbox.vue";
 import UiNumber from "@/components/UiNumber.vue";
-import convertLength from "@/models/convertLength";
-
-import settings from "@/models/settings";
-import computedSettings from "@/models/computedSettings";
 
 export default {
   name: "Settings",
-  components: {  UiSelect, UiNumber },
+  components: { UiSelect, UiCheckbox, UiNumber },
   props: {
-    ...settings,
+    font: {
+      type: Object,
+      default: () => null,
+    },
   },
   data() {
-    return {
-      settings,
-    };
+    return {};
   },
   computed: {
-    ...computedSettings,
+    ...mapGetters(["settings"]),
   },
-  watch: {
-    fontSizeUnit(newUnit, unit) {
-      let decimals = String(this.fontSizeStep).replace(/\d+\.?/, "").length;
-      let newSize = convertLength({ value: this.fontSize, from: unit, to: newUnit, decimals });
-      this.$emit("update:fontSize", parseFloat(newSize));
-    },
+  mounted() {
+    console.log(this.settings)
   },
   methods: {
-    getAllSettings() {
-      let all = this.$props;
-      Object.keys(this.$options.computed).forEach(k => {
-        all[k] = this[k];
-      });
-      return all;
+    updateFontSizeUnit(v) {
+      this.$store.commit("updateSettings", { fontSizeUnit: v });
     },
-    updateNumber(v) {
-      if (settings.fontSize.validate(v, this.getAllSettings())) {
-        this.$emit("update:fontSize", v);
-      }
-    },
-    updateFontSizeUnit(newUnit) {
-      this.$emit("update:fontSizeUnit", newUnit);
+    updateFontFeatureSetting(key, v) {
+      // this.fontFeatureSettings[key] = v;
+      // console.log(this.fontFeatureSettings);
+      // this.$emit("update:fontFeatureSettings", this.fontFeatureSettings);
     },
   },
 };

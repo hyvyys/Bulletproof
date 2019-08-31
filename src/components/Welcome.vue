@@ -5,7 +5,6 @@
       <h1>Bulletproof</h1>
       <div class="subtitle">I Wish I Was...</div>
     </figure>
-
     <Readme />
   </div>
 </template>

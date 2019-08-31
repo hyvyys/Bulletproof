@@ -3,9 +3,10 @@
     <UiSelect
       v-if="gui"
       class="font-select dark"
-      v-model="selectedFont"
-      :keys="fontOptionKeys"
+      :value="selectedFont"
+      @input="selectFont"
       :options="fonts"
+      :keys="fontOptionKeys"
     >
       <div slot="option" slot-scope="props" :style="optionStyle">
         <div class="font-family">{{ props.option && props.option.family }}</div>
@@ -29,10 +30,11 @@
 </template>
 
 <script>
-import UiModal from "keen-ui/src/UiModal.vue";
-import UiSelect from "keen-ui/src/UiSelect.vue";
+import { mapGetters } from "vuex";
 
-import eventBus from "@/eventBus";
+import UiModal from "keen-ui/src/UiModal.vue";
+// import UiSelect from "keen-ui/src/UiSelect.vue";
+import UiSelect from "@/components/UiSelect.vue";
 
 import FileDrop from "@/components/FileDrop.vue";
 import Fireworks from "@/components/Fireworks.vue";
@@ -56,6 +58,9 @@ export default {
       default: true,
     },
   },
+  computed: {
+    ...mapGetters(["selectedFont"]),
+  },
   data() {
     return {
       fontOptionKeys: {
@@ -63,7 +68,6 @@ export default {
         label: "family",
         image: "image",
       },
-      selectedFont: { family: "" },
       fonts: [],
       sampleText: "Abg123",
       optionStyle: `
@@ -80,12 +84,6 @@ export default {
       errorMessage: "",
       errorLogs: [],
     };
-  },
-  computed: {},
-  watch: {
-    selectedFont() {
-      this.updateFont();
-    },
   },
   beforeMount() {
     const dir = "/fonts/";
@@ -124,7 +122,7 @@ export default {
             styles.add(font.fontFace);
           });
           if (fonts.length) {
-            this.selectedFont = fonts[0];
+            this.selectFont(fonts[0]);
           }
 
           const errors = results.filter(r => r.error);
@@ -149,8 +147,8 @@ export default {
       this.$refs.modal.open();
     },
 
-    updateFont() {
-      eventBus.$emit("font-change", this.selectedFont.family);
+    selectFont(v) {
+      this.$store.commit("selectFont", { font: v });
     },
 
     /* ^^^ methods ^^^ */

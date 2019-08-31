@@ -35,7 +35,7 @@ class Font {
 
   processFont(font) {
     this.getNames(font);
-    // this.getFeatures(font);
+    this.getFeatures(font);
     this.generateFontFace();
   }
 

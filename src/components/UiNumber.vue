@@ -1,4 +1,6 @@
 <script>
+const Decimal  = require("decimal.js")
+
 import UiTextbox from "keen-ui/src/UiTextbox.vue";
 import UiIconButton from "keen-ui/src/UiIconButton.vue";
 
@@ -7,6 +9,10 @@ export default {
   components: { UiIconButton },
   extends: UiTextbox,
   props: {
+    value: {
+      type: Number,
+      default: 1,
+    },
     step: {
       type: Number,
       default: 1,
@@ -26,7 +32,7 @@ export default {
   },
   data() {
     return {
-      tempValue: this.value, // non-conforming to this.step
+      displayedText: null, // only set when text is different from value and input is focused
       incrementTimeout: null,
     };
   },
@@ -35,52 +41,64 @@ export default {
       return this.tempValue.toLocaleString();
     },
     _clickStep() {
-      return this.clickStepFunction ? this.clickStepFunction(this.value) : this.clickStep;
+      return this.clickStepFunction
+        ? this.clickStepFunction(this.value)
+        : this.clickStep;
     },
   },
   watch: {
-    value(val) {
-      this.tempValue = val;
-    },
     min(val) {
-      this.tempValue = this.value;
       if (this.value < val) this.updateValue(val);
     },
     max(val) {
-      this.tempValue = this.value;
       if (this.value > val) this.updateValue(val);
     },
     step() {
-      this.tempValue = this.value;
-      if (this.roundedToStep() !== this.value) this.updateValue(this.roundedToStep());
+      if (this.roundedToStep() !== this.value)
+        this.updateValue(this.roundedToStep());
     },
   },
   methods: {
-    updateValue(value) {
-      value = String(value).replace(",", ".");
-      let valid = parseFloat(value);
-      // entered text is a number and not gibberish
-      if (String(valid) === value) {
-        valid = Math.min(Math.max(this.min, valid), this.max);
-        valid = this.roundedToStep(valid);
-        if (valid === this.roundedToStep(valid)) {
-          this.tempValue = valid;
+    updateValue(stringOrNumber) {
+      let stringValue = String(stringOrNumber);
+      let value = Number(stringValue.replace(",", "."));
+      if (!isNaN(value)
+          // prevent erasing decimal point when user wants to change the fraction part
+          && !/[.,]$/.test(stringValue)
+      ) {
+        const corrected = this.correctValue(value);
+        if (Math.abs(value - corrected) < Number.EPSILON) {
+          this.displayedText = stringValue;
+        } else {
+          this.displayedText = null;
         }
-        this.$emit("input", valid);
+        this.$emit("input", corrected);
       }
+    },
+    correctValue(value) {
+      if (typeof this.min == "number") {
+        value = Math.max(this.min, value);
+      }
+      if (typeof this.max == "number") {
+        value = Math.min(value, this.max);
+      }
+      value = this.roundedToStep(value);
+      return value;
     },
     onBlur2(e) {
       this.onBlur(e);
-      this.tempValue = this.value; // remove extra decimals / round to step
+      this.displayedText = null;
     },
     roundedToStep(value = this.value) {
-      return Math.round(value / this.step) * this.step;
+      return new Decimal(value).toNearest(this.step).toNumber();
     },
     roundedToClickStep(value = this.value) {
-      return Math.round(value / this._clickStep) * this._clickStep;
+      return new Decimal(value).toNearest(this._clickStep).toNumber();
     },
     getSteps(iteration) {
-      return iteration < 2 ? 1 : Math.ceil((0.1 * this.value) / this._clickStep);
+      return iteration < 2
+        ? 1
+        : Math.ceil((0.1 * this.value) / this._clickStep);
     },
     getDelay(iteration) {
       return iteration < 2 ? 200 : 100;
@@ -119,7 +137,7 @@ export default {
 @import "keen-ui/src/styles/variables.scss";
 
 $button-height: 0.5 * $ui-input-height - 0.1rem;
-$button-width: $button-height + .25rem;
+$button-width: $button-height + 0.25rem;
 
 .ui-textbox__input-wrapper {
   display: flex;
@@ -199,10 +217,10 @@ $button-width: $button-height + .25rem;
             :step="stepValue"
             :tabindex="tabindex"
             :type="type"
-            :value="stringValue"
+            :value="displayedText != undefined ? displayedText : value"
             @blur="onBlur2"
-            @change="onChange"
             @focus="onFocus"
+            @change="updateValue($event.target.value)"
             @input="updateValue($event.target.value)"
             @keydown.enter="onKeydownEnter"
             @keydown="onKeydown"
@@ -249,9 +267,7 @@ $button-width: $button-height + .25rem;
           <slot name="help">{{ help }}</slot>
         </div>
 
-        <div v-if="maxlength" class="ui-textbox__counter">
-          {{ valueLength + "/" + maxlength }}
-        </div>
+        <div v-if="maxlength" class="ui-textbox__counter">{{ valueLength + "/" + maxlength }}</div>
       </div>
     </div>
   </div>

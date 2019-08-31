@@ -6,11 +6,10 @@
       bottomSelector=".site-footer"
       topSelector=".site-header"
     >
-      <Settings v-bind.sync="settings" />
+      <Settings />
     </Fitter>
     <FontSample
       :html="texts[selectedSampleKey]"
-      v-bind="settings"
       @update="v => updateText(selectedSampleKey, v)"
     />
   </div>
@@ -19,12 +18,10 @@
 <script>
 import LanguageData from "language-data";
 
-import scrolledParentSelector from "@/constants/scrolledParent";
-import eventBus from "@/eventBus";
+import { mapGetters } from "vuex";
 
 import languageDataFields from "@/models/textKindLanguageDataField";
 import textKinds from "@/models/textKinds";
-import settings from "@/models/settings";
 
 import FontSample from "@/components/FontSample.vue";
 import Settings from "@/components/Settings.vue";
@@ -39,19 +36,18 @@ export default {
   },
   data() {
     return {
-      settings: this.getDefaultSettings(),
       texts: {
         custom: "lorem ipsum dolor ".repeat(1000),
       },
       selectedSampleKey: "lettering",
       selectedLanguages: LanguageData.map(l => l.language),
-      scrolledParentSelector,
     };
   },
   computed: {
     selectedTextKind() {
       return this.$route.params.text;
     },
+    ...mapGetters(["scrolledParentSelector"]),
   },
   watch: {
     selectedTextKind(kind) {
@@ -59,22 +55,24 @@ export default {
     },
   },
   beforeMount() {
+    this.$store.commit("resetSettings");
     this.selectSample(this.selectedTextKind);
     this.updateTexts();
   },
   mounted() {
-    eventBus.$on("font-change", (fontFamily) => {
-      this.settings.fontFamily = fontFamily;
-    });
   },
   methods: {
-    getDefaultSettings() {
-      const data = {};
-      Object.keys(settings).forEach(key => {
-        data[key] = settings[key].default;
-      });
-      return data;
-    },
+    // mergeFontFeatureSettings() {
+    //   const obj = Object.assign(this.settings.fontFeatureSettings, {});
+    //   const features = [...this.font.gposFeatures, ...this.font.gsubFeatures];
+    //   features.forEach(f => {
+    //     if (!(f.tag in obj)) {
+    //       obj[f.tag] = false;
+    //     }
+    //   });
+    //   this.settings.fontFeatureSettings = obj;
+
+    // },
     selectSample(kind, id) {
       if (kind in languageDataFields) {
         this.selectedSampleKey = kind;

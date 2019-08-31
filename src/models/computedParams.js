@@ -1,5 +1,7 @@
 import convertLength from "@/models/convertLength";
 
+//expects this to be the settings object
+
 export default {
   minFontSize: function() {
     switch (this.fontSizeUnit) {
@@ -30,7 +32,7 @@ export default {
       case "vw":
       case "vh":
       case "em":
-        return 0.1;
+        return 0.01;
       default:
         return 0.01;
     }

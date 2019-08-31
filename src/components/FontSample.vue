@@ -5,7 +5,12 @@
       class="font-sample-content"
       contenteditable
       spellcheck="false"
-      :style="`font-family: ${fontFamily}, ${fallbackFontFamily}; font-size: ${fontSize}${fontSizeUnit}`"
+      :style="`
+        font-family: ${selectedFont.family}, ${settings.fallbackFontFamily};
+        font-weight: ${selectedFont.cssWeight};
+        font-style: ${selectedFont.cssStyle};
+        font-size: ${settings.fontSize}${settings.fontSizeUnit}
+      `"
       @input="onInput"
       v-html="html"
     />
@@ -14,6 +19,7 @@
 
 <script>
 import settings from "@/models/settings";
+import { mapGetters } from "vuex";
 
 export default {
   name: "FontSample",
@@ -23,6 +29,10 @@ export default {
       default: "",
     },
     ...settings,
+  },
+  computed: {
+    ...mapGetters(["settings"]),
+    ...mapGetters(["selectedFont"]),
   },
   methods: {
     onInput(e) {

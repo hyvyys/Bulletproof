@@ -19,7 +19,8 @@
 const { detect } = require("detect-browser");
 const browser = detect();
 
-import scrolledParentSelector from "@/constants/scrolledParent";
+import { mapGetters } from "vuex";
+
 import shuffle from "@/models/shuffle";
 import LanguageData from "language-data";
 import Welcome from "@/components/Welcome.vue";
@@ -28,6 +29,9 @@ export default {
   name: "Home",
   components: {
     Welcome,
+  },
+  computed: {
+    ...mapGetters(["scrolledParentSelector"]),
   },
   data() {
     return {
@@ -58,7 +62,7 @@ export default {
       }
     },
     setupParallax() {
-      this.scrolledParent = document.querySelector(scrolledParentSelector);
+      this.scrolledParent = document.querySelector(this.scrolledParentSelector);
       this.parallaxes = [this.$refs.parallax];
       const callback = this.moveParallax;
       // const callback = throttle(this.moveParallax, 16, { leading: true });
