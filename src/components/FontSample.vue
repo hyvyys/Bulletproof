@@ -18,7 +18,6 @@
 </template>
 
 <script>
-import settings from "@/models/settings";
 import { mapGetters } from "vuex";
 
 export default {
@@ -28,7 +27,6 @@ export default {
       type: String,
       default: "",
     },
-    ...settings,
   },
   computed: {
     ...mapGetters(["settings"]),
