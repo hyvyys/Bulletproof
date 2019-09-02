@@ -168,8 +168,8 @@ export default {
       @include pseudo();
       &::before {
         z-index: -1;
-        mix-blend-mode: hard-light;
-        background: rgba(#333, 0.8);
+        // mix-blend-mode: hard-light;
+        background: rgba(#211, 0.8);
         border-radius: 3px;
         box-shadow: inset 0 0 5px #000;
         pointer-events: none;
