@@ -1,10 +1,9 @@
-
 import Vue from "vue";
 import Vuex from 'vuex';
 Vue.use(Vuex);
 
 import LanguageData from "language-data";
-import settingDefinitions from "@/models/settings";
+import Settings from "@/models/Settings";
 import computedParams from "@/models/computedParams";
 import convertLength from "@/models/convertLength";
 
@@ -14,7 +13,7 @@ export default new Vuex.Store({
     settings: {},
     selectedSampleKey: "lettering",
     selectedLanguages: LanguageData.map(l => l.language),
-    scrolledParentSelector: ".app > div",
+    scrolledParentSelector: ".app-content",
   },
 
   getters: {
@@ -35,18 +34,8 @@ export default new Vuex.Store({
     },
 
     resetSettings(state) {
-      const data = {};
-      Object.keys(settingDefinitions).forEach(key => {
-        const definition = settingDefinitions[key];
-        const dflt = definition.default;
-        if (typeof dflt === "function" && definition.type !== Function) {
-          data[key] = dflt();
-        } else {
-          data[key] = dflt;
-        }
-      });
       //todo add font-specific settings
-      state.settings = data;
+      state.settings = Settings.getDefaults();
       this.commit("computeParams");
     },
 

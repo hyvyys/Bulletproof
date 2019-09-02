@@ -50,9 +50,6 @@ export default {
   computed: {
     ...mapGetters(["settings"]),
   },
-  mounted() {
-    console.log(this.settings)
-  },
   methods: {
     updateFontSizeUnit(v) {
       this.$store.commit("updateSettings", { fontSizeUnit: v });
