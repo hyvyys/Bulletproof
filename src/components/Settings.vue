@@ -17,9 +17,19 @@
         class="const4ch"
         :value="settings.fontSizeUnit"
         :options="settings.fontSizeUnitOptions"
-        @input="updateFontSizeUnit"
+        @input="v => $store.commit('updateSettings', { fontSizeUnit: v })"
       />
       <!-- <label>{{ fontSizeUnit }}</label> -->
+    </div>
+    <div class="setting-row">
+      <label>Text align</label>
+      <UiSelect
+        ref="settingTextAlign"
+        class="const8ch"
+        :value="settings.textAlign"
+        :options="settings.textAlignOptions"
+        @input="v => $store.commit('updateSettings', { textAlign: v })"
+      />
     </div>
     <!-- <div class="setting-row" v-for="(feature, key) in fontFeatureSettings" :key="key">
       <UiCheckbox :value="feature" @input="v => updateFontFeatureSetting(key, v)">{{ key }}</UiCheckbox>
@@ -51,14 +61,6 @@ export default {
     ...mapGetters(["settings"]),
   },
   methods: {
-    updateFontSizeUnit(v) {
-      this.$store.commit("updateSettings", { fontSizeUnit: v });
-    },
-    updateFontFeatureSetting(key, v) {
-      // this.fontFeatureSettings[key] = v;
-      // console.log(this.fontFeatureSettings);
-      // this.$emit("update:fontFeatureSettings", this.fontFeatureSettings);
-    },
   },
 };
 </script>

@@ -9,7 +9,8 @@
         font-family: ${selectedFont.family}, ${settings.fallbackFontFamily};
         font-weight: ${selectedFont.cssWeight};
         font-style: ${selectedFont.cssStyle};
-        font-size: ${settings.fontSize}${settings.fontSizeUnit}
+        font-size: ${settings.fontSize}${settings.fontSizeUnit};
+        text-align: ${settings.textAlign};
       `"
       @input="onInput"
       v-html="html"

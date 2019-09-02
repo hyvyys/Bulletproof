@@ -23,6 +23,15 @@ export default class Settings {
         type: Array,
         default: () => ["pt", "px", "em", "vw", "vh"],
       },
+      textAlign: {
+        type: String,
+        default: "left",
+        kind: "select",
+      },
+      textAlignOptions: {
+        type: Array,
+        default: () => ["left", "center", "right", "justify"],
+      },
       fontFeatureSettings: {
         type: Object,
         default: () => ({}),
