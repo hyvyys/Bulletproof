@@ -369,6 +369,11 @@ export default {
             this.setValue(null);
         }
     },
+    mounted() {
+      // allow for initialization of anything within the dropdown, e.g. replacement scrollbar
+      this.openDropdown();
+      this.closeDropdown();
+    },
     methods: {
         setValue(value) {
             value = value ? value : this.multiple ? [] : '';
