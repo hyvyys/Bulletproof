@@ -58,8 +58,7 @@ export default new Vuex.Store({
 
     updateSetting(state, { key, value }) {
       const settings = state.settings;
-      const definition = settingDefinitions[key];
-      const oldValue = settings[key];
+      const definition = Settings.definitions[key];
 
       if (!definition.validate || definition.validate(value, settings)) {
         if (key == "fontSizeUnit") {
@@ -68,6 +67,7 @@ export default new Vuex.Store({
         settings[key] = value;
       }
       else {
+        // eslint-disable-next-line no-console
         console.log(`${value} is invalid for ${key}`)
       }
     },

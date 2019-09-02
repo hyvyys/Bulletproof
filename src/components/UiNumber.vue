@@ -47,6 +47,9 @@ export default {
     },
   },
   watch: {
+    value(val) {
+      this.coerceValue(val);
+    },
     min(val) {
       if (this.value < val) this.updateValue(val);
     },
@@ -72,6 +75,13 @@ export default {
         } else {
           this.displayedText = null;
         }
+        this.$emit("input", corrected);
+      }
+    },
+    coerceValue(value) {
+      const corrected = this.correctValue(value);
+      if (Math.abs(value - corrected) < Number.EPSILON) {
+        this.displayedText = null;
         this.$emit("input", corrected);
       }
     },
@@ -218,7 +228,7 @@ $button-width: $button-height + 0.25rem;
             :step="stepValue"
             :tabindex="tabindex"
             :type="type"
-            :value="displayedText != undefined ? displayedText : value"
+            :value="displayedText != null ? displayedText : value"
             @blur="onBlur2"
             @focus="onFocus"
             @change="updateValue($event.target.value)"
