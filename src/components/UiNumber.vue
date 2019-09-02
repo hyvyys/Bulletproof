@@ -205,6 +205,7 @@ $button-width: $button-height + 0.25rem;
             class="ui-textbox__input"
             :autocomplete="autocomplete ? autocomplete : null"
             :disabled="disabled"
+            inputmode="numeric"
             :max="maxValue"
             :maxlength="enforceMaxlength ? maxlength : null"
             :minlength="minlength"
