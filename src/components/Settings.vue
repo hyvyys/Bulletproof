@@ -1,6 +1,5 @@
 <template>
   <div class="settings">
-
     <div class="setting-row">
       <label class="row-label">Font size</label>
       <UiNumber
@@ -38,9 +37,7 @@
         class="checkbox-small"
         :value="settings.defaultLineHeight"
         @input="v => $store.commit('updateSettings', { defaultLineHeight: v })"
-      >
-      default
-      </UiCheckbox>
+      >default</UiCheckbox>
     </div>
 
     <div class="setting-row">
@@ -102,14 +99,10 @@
           :invalid="isLocalizationInvalid"
           @input="v => $store.commit('updateLoclFeature', { selectedLanguage: v })"
         >
-        <div slot="option" slot-scope="props" class="locl-select__option">
-          <div class="name">
-            {{ props.option.name }}
+          <div slot="option" slot-scope="props" class="locl-select__option">
+            <div class="name">{{ props.option.name }}</div>
+            <div v-if="props.option.name !== props.option.tag" class="tag">({{ props.option.tag }})</div>
           </div>
-          <div v-if="props.option.name !== props.option.tag" class="tag">
-            ({{ props.option.tag }})
-          </div>
-        </div>
         </UiSelect>
 
         <UiCheckbox
@@ -122,6 +115,20 @@
 
     <h3 v-if="numberFeatures.length > 0">Numbers</h3>
     <div class="setting-group">
+      <div class="setting-row">
+        <UiRadioGroup v-if="!!(pnum && tnum)"
+          name="figureWidth"
+          v-model="figureWidth"
+          :options="figureWidths"
+          :vertical="true"
+        />
+        <UiRadioGroup v-if="!!(lnum && onum)"
+          name="figureHeight"
+          v-model="figureHeight"
+          :options="figureHeights"
+          :vertical="true"
+        />
+      </div>
       <div class="setting-row" v-for="(feature, key) in numberFeatures" :key="key">
         <UiCheckbox
           :value="feature.value"
@@ -159,7 +166,6 @@
         >{{ feature.name }}</UiCheckbox>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -168,13 +174,20 @@
 import { mapGetters } from "vuex";
 
 import UiCheckbox from "keen-ui/src/UiCheckbox.vue";
+import UiRadioGroup from "@/components/UiRadioGroup.vue";
 import UiSelect from "@/components/UiSelect.vue";
 import UiNumber from "@/components/UiNumber.vue";
 import UiColorPicker from "@/components/UiColorPicker.vue";
 
 export default {
   name: "Settings",
-  components: { UiSelect, UiCheckbox, UiNumber, UiColorPicker },
+  components: {
+    UiSelect,
+    UiCheckbox,
+    UiRadioGroup,
+    UiNumber,
+    UiColorPicker,
+  },
   props: {
     font: {
       type: Object,
@@ -183,24 +196,25 @@ export default {
   },
   data() {
     return {
-      capTags: [
-        'smcp',
-        'c2sc',
-        'pcap',
-        'c2pc',
+      capTags: ["smcp", "c2sc", "pcap", "c2pc"],
+      figureTags: ["pnum", "tnum", "lnum", "onum"],
+      figureHeights: [
+        { value: "", label: "default" },
+        { value: "lnum", label: "lining" },
+        { value: "onum", label: "oldstyle" },
       ],
-      numberTags: [
-        'sups',
-        'subs',
-        'numr',
-        'dnom',
-        'frac',
-        'zero',
+      figureHeight: "",
+      figureWidths: [
+        { value: "", label: "default" },
+        { value: "pnum", label: "proportional" },
+        { value: "tnum", label: "tabular" },
       ],
-      stylisticSetTags: Array(20).fill(0).map((_, i) => `ss${i.toString().padStart(2, '0')}`),
-      loclTags: [
-        'locl',
-      ],
+      figureWidth: "",
+      numberTags: ["sups", "subs", "numr", "dnom", "frac", "zero"],
+      stylisticSetTags: Array(20)
+        .fill(0)
+        .map((_, i) => `ss${i.toString().padStart(2, "0")}`),
+      loclTags: ["locl"],
       loclSelectKeys: {
         class: "class",
         label: "name",
@@ -210,30 +224,73 @@ export default {
   },
   computed: {
     ...mapGetters(["settings"]),
-    activeGpos() { return this.settings.gposFeatures.filter(f => f.active); },
-    activeGsub() { return this.settings.gsubFeatures.filter(f => f.active); },
-    capFeatures() { return this.getGsubSubset(this.capTags); },
-    numberFeatures() { return this.getGsubSubset(this.numberTags); },
-    stylisticSets() { return this.getGsubSubset(this.stylisticSetTags); },
-    localization() { return this.getGsubSubset(this.loclTags)[0] || null; },
+    activeGpos() {
+      return this.settings.gposFeatures.filter(f => f.active);
+    },
+    activeGsub() {
+      return this.settings.gsubFeatures.filter(f => f.active);
+    },
+    capFeatures() {
+      return this.getGsubSubset(this.capTags);
+    },
+    lnum() {
+      return this.getGsubFeature("lnum");
+    },
+    tnum() {
+      return this.getGsubFeature("tnum");
+    },
+    pnum() {
+      return this.getGsubFeature("pnum");
+    },
+    onum() {
+      return this.getGsubFeature("onum");
+    },
+    numberFeatures() {
+      return this.getGsubSubset(this.numberTags);
+    },
+    stylisticSets() {
+      return this.getGsubSubset(this.stylisticSetTags);
+    },
+    localization() {
+      return this.getGsubFeature("locl");
+    },
     isLocalizationInvalid() {
       const selected = this.localization.selectedLanguage;
       return selected
         ? !this.localization.languages.find(l => l.tag === selected.tag)
         : false;
     },
-    otherGsub() { return this.activeGsub.filter(f => ![
-      ...this.capTags,
-      ...this.numberTags,
-      ...this.stylisticSetTags,
-      ...this.loclTags,
-    ].includes(f.tag)); },
+    otherGsub() {
+      return this.activeGsub.filter(
+        f =>
+          ![
+            ...this.capTags,
+            ...this.figureTags,
+            ...this.numberTags,
+            ...this.stylisticSetTags,
+            ...this.loclTags,
+          ].includes(f.tag)
+      );
+    },
+  },
+  watch: {
+    figureHeight(val, oldVal) {
+      this.$store.commit("updateGsubFeature", { tag: oldVal, value: false });
+      this.$store.commit("updateGsubFeature", { tag: val, value: true });
+    },
+    figureWidth(val, oldVal) {
+      this.$store.commit("updateGsubFeature", { tag: oldVal, value: false });
+      this.$store.commit("updateGsubFeature", { tag: val, value: true });
+    },
   },
   methods: {
     getGsubSubset(tags) {
       return this.activeGsub
         .filter(f => tags.includes(f.tag))
         .sort((a, b) => tags.indexOf(a.tag) - tags.indexOf(b.tag));
+    },
+    getGsubFeature(tag) {
+      return this.activeGsub.find(f => tag === f.tag);
     },
   },
 };
@@ -267,9 +324,10 @@ export default {
     flex: 1;
   }
   > .row-label,
-  /deep/ .ui-checkbox__label-text {
+  /deep/ .ui-checkbox__label-text,
+  /deep/ .ui-radio__label-text {
     opacity: 0.7;
-    font-size: 0.85em !important;
+    font-size: 0.85rem !important;
   }
 
   @for $i from 1 to 30 {

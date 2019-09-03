@@ -64,3 +64,17 @@
 [x-placement="top-start"] {
   transform: translateY(8px);
 }
+.ui-checkbox__label-text,
+.ui-radio__label-text {
+  margin-left: 0.25rem !important;
+}
+
+$radio-size: 16px;
+.ui-radio__outer-circle,
+.ui-radio__inner-circle {
+  height: $radio-size !important;
+  width: $radio-size !important;
+}
+.ui-radio-group.is-vertical .ui-radio-group__radio {
+  margin-bottom: 6px !important;
+}
