@@ -9,6 +9,7 @@ export default class Settings {
         type: String,
         default: "sans-serif",
       },
+
       fontSize: {
         type: Number,
         default: 24,
@@ -23,6 +24,33 @@ export default class Settings {
         type: Array,
         default: () => ["pt", "px", "em", "vw", "vh"],
       },
+
+      defaultLineHeight: {
+        type: Boolean,
+        default: true,
+      },
+      lineHeight: {
+        type: Number,
+        default: 1,
+        validate: (value, settings) => value >= settings.minLineHeight && value <= settings.maxLineHeight,
+      },
+      minLineHeight: {
+        type: Number,
+        default: 0.5,
+      },
+      maxLineHeight: {
+        type: Number,
+        default: 3,
+      },
+      lineHeightStep: {
+        type: Number,
+        default: 0.01,
+      },
+      lineHeightClickStep: {
+        type: Number,
+        default: 0.01,
+      },
+
       textAlign: {
         type: String,
         default: "left",
@@ -32,6 +60,7 @@ export default class Settings {
         type: Array,
         default: () => ["left", "center", "right", "justify"],
       },
+
       gposFeatures: {
         type: Object,
         default: () => ([]),

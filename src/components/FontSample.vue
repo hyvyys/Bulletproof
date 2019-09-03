@@ -10,6 +10,7 @@
         font-weight: ${selectedFont.cssWeight};
         font-style: ${selectedFont.cssStyle};
         font-size: ${settings.fontSize}${settings.fontSizeUnit};
+        line-height: ${settings.defaultLineHeight ? '' : settings.lineHeight};
         text-align: ${settings.textAlign};
         font-feature-settings: ${ fontFeatureSettings };
       `"

@@ -1,10 +1,10 @@
 <template>
   <div class="settings">
+
     <div class="setting-row">
       <label class="row-label">Font size</label>
       <UiNumber
         ref="settingFontSize"
-        class=""
         :value="settings.fontSize"
         :min="settings.minFontSize"
         :max="settings.maxFontSize"
@@ -19,8 +19,30 @@
         :options="settings.fontSizeUnitOptions"
         @input="v => $store.commit('updateSettings', { fontSizeUnit: v })"
       />
-      <!-- <label>{{ fontSizeUnit }}</label> -->
     </div>
+
+    <div class="setting-row">
+      <label class="row-label">Line height</label>
+      <UiNumber
+        ref="settingLineHeight"
+        :value="settings.lineHeight"
+        :min="settings.minLineHeight"
+        :max="settings.maxLineHeight"
+        :step="settings.lineHeightStep"
+        :clickStep="settings.lineHeightClickStep"
+        @input="v => $store.commit('updateSettings', { lineHeight: v })"
+        :disabled="settings.defaultLineHeight"
+      />
+      <UiCheckbox
+        ref="settingDefaultLineHeight"
+        class="checkbox-small"
+        :value="settings.defaultLineHeight"
+        @input="v => $store.commit('updateSettings', { defaultLineHeight: v })"
+      >
+      default
+      </UiCheckbox>
+    </div>
+
     <div class="setting-row">
       <label class="row-label">Text align</label>
       <UiSelect
@@ -31,6 +53,7 @@
         @input="v => $store.commit('updateSettings', { textAlign: v })"
       />
     </div>
+
     <h3 v-if="activeGpos.length > 0">GPOS</h3>
     <div class="setting-group">
       <div class="setting-row" v-for="(feature, key) in activeGpos" :key="key">
@@ -40,6 +63,7 @@
         >{{ feature.name }}</UiCheckbox>
       </div>
     </div>
+
     <h3 v-if="capFeatures.length > 0">Caps</h3>
     <div class="setting-group">
       <div class="setting-row" v-for="(feature, key) in capFeatures" :key="key">
@@ -49,6 +73,7 @@
         >{{ feature.name }}</UiCheckbox>
       </div>
     </div>
+
     <h3 v-if="numberFeatures.length > 0">Numbers</h3>
     <div class="setting-group">
       <div class="setting-row" v-for="(feature, key) in numberFeatures" :key="key">
@@ -58,6 +83,7 @@
         >{{ feature.name }}</UiCheckbox>
       </div>
     </div>
+
     <h3 v-if="stylisticSets.length > 0">Stylistic Sets</h3>
     <div class="setting-group">
       <div class="setting-row" v-for="(feature, key) in stylisticSets" :key="key">
@@ -67,6 +93,7 @@
         >{{ feature.friendlyName ? (feature.tag.slice(2) + ' ' + feature.friendlyName) : feature.name }}</UiCheckbox>
       </div>
     </div>
+
     <h3 v-if="otherGsub.length > 0">Other GSUB</h3>
     <div class="setting-group">
       <div class="setting-row" v-for="(feature, key) in otherGsub" :key="key">
@@ -76,6 +103,7 @@
         >{{ feature.name }}</UiCheckbox>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -154,9 +182,12 @@ export default {
   width: 100%;
   align-items: baseline;
 
-  margin: 0 -0.3em;
+  margin: 0 -0.2em;
   > * {
-    margin: 0 0.3em 0.15em;
+    margin: 0 0.2em 0.15em;
+  }
+  > .row-label {
+    margin-right: 0.3em;
   }
   > :not(label) {
     flex: 1;
@@ -173,6 +204,22 @@ export default {
       flex: 0.1 1 #{$i}ch;
       min-width: #{$i}ch;
     }
+  }
+}
+
+.checkbox-small.ui-checkbox {
+  margin: 0;
+  font-size: 1em;
+  align-self: center;
+
+  /deep/ .ui-checkbox__checkmark {
+    height: 1rem;
+    width: 1rem;
+    margin-top: 0.2rem;
+  }
+  /deep/ .ui-checkbox__label-text {
+    font-size: 1em;
+    margin-left: 0.15em;
   }
 }
 </style>
