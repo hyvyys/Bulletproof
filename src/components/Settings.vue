@@ -219,7 +219,7 @@ export default {
     isLocalizationInvalid() {
       const selected = this.localization.selectedLanguage;
       return selected
-        ? !this.localization.languages.includes(selected)
+        ? !this.localization.languages.find(l => l.tag === selected.tag)
         : false;
     },
     otherGsub() { return this.activeGsub.filter(f => ![
