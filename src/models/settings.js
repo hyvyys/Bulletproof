@@ -34,11 +34,11 @@ export default class Settings {
       },
       gposFeatures: {
         type: Object,
-        default: () => ({}),
+        default: () => ([]),
       },
       gsubFeatures: {
         type: Object,
-        default: () => ({}),
+        default: () => ([]),
       },
     }
   }

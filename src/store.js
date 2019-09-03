@@ -31,8 +31,29 @@ export default new Vuex.Store({
   mutations: {
     selectFont(state, { font }) {
       state.selectedFont = font;
-      state.settings.gsubFeatures = font.gsubFeatures.map(f => ({ ...f, value: false }));
-      state.settings.gposFeatures = font.gposFeatures.map(f => ({ ...f, value: false }));
+      this.commit("mapFontFeatureSettings");
+    },
+
+    mapFontFeatureSettings(state) {
+      const font = state.selectedFont;
+      function mergeFeatures(key) {
+        const from = font[key], to = state.settings[key];
+
+        to.forEach(f => {
+          f.active = false;
+        });
+        from.forEach(f => {
+          const matching = to.find(ff => ff.tag === f.tag);
+          if (!matching) {
+            to.push({ ...f, value: false, active: true });
+          }
+          else {
+            matching.active = true;
+          }
+        });
+      }
+      mergeFeatures("gsubFeatures");
+      mergeFeatures("gposFeatures");
     },
 
     updateGposFeature(state, { tag, value }) {

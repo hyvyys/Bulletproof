@@ -2,7 +2,12 @@ var opentype = require("opentype.js");
 import util from "util";
 const loadFont = util.promisify(opentype.load);
 
-import fontFeatureNames from "./fontFeatureNames";
+import opentypeFeatureNames from "./opentypeFeatureNames";
+
+function findFeatureName(tag) {
+  const match = opentypeFeatureNames.find(f => f.tag.test(tag));
+  return match && match.name || tag;
+}
 
 export default class FontParser {
   static async parse(url, callback) {
@@ -70,7 +75,7 @@ class Font {
     (gpos.features || []).forEach(f => {
       const feature = {
         tag: f.tag,
-        name: fontFeatureNames[f.tag] || f.tag,
+        name: findFeatureName(f.tag),
       };
       const duplicate = this.gposFeatures.find(ff => ff.tag == f.tag);
       if (!duplicate) {
@@ -82,7 +87,7 @@ class Font {
     (gsub.features || []).forEach(f => {
       const feature = {
         tag: f.tag,
-        name: fontFeatureNames[f.tag] || f.tag,
+        name: findFeatureName(f.tag),
       };
 
       if (f.tag == "locl") {
