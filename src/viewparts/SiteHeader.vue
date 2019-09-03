@@ -30,6 +30,7 @@
 <script>
 import { mapGetters } from "vuex";
 import fireEvent from "@/utils/fireEvent";
+import Hamster from "hamsterjs";
 
 import UiPopover from "keen-ui/src/UiPopover.vue";
 import UiButton from "keen-ui/src/UiButton.vue";
@@ -56,16 +57,17 @@ export default {
     },
   },
   mounted() {
+    const deltaUp = 3;
+    const deltaDown = 7;
     const scrolled = document.querySelector(this.scrolledParentSelector);
-
-    scrolled.addEventListener("wheel", e => {
-      const delta = e.deltaY;
-      if (Math.sign(delta) !== Math.sign(this.scrollDelta)) this.scrollDelta = 0;
-      this.scrollDelta += delta;
-      if (this.scrollDelta < -15) {
+    const hamster = Hamster(scrolled);
+    hamster.wheel((event, delta, deltaX, deltaY) => {
+      if (Math.sign(deltaY) !== Math.sign(this.scrollDelta)) this.scrollDelta = 0;
+      this.scrollDelta += deltaY;
+      if (this.scrollDelta > deltaUp) {
         this.sticky = true;
         setTimeout(() => fireEvent(scrolled, "scroll"), 700);
-      } else if (this.scrollDelta > 18) {
+      } else if (this.scrollDelta < -deltaDown) {
         this.sticky = false;
       }
     });
