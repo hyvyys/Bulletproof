@@ -56,8 +56,8 @@ class Font {
 
   getFeatures(font) {
     const names = font.names;
-    const gpos = font.tables.gpos;
-    const gsub = font.tables.gsub;
+    const gpos = font.tables.gpos || {};
+    const gsub = font.tables.gsub || {};
 
     const loclLanguages = new Set(
       [...(gpos.scripts || []), ...(gsub.scripts || [])].flatMap(s => s.script.langSysRecords).map(lsr => lsr.tag)

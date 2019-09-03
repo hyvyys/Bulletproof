@@ -31,7 +31,7 @@
         @input="v => $store.commit('updateSettings', { textAlign: v })"
       />
     </div>
-    <h3>GPOS</h3>
+    <h3 v-if="activeGpos.length > 0">GPOS</h3>
     <div class="setting-group">
       <div class="setting-row" v-for="(feature, key) in activeGpos" :key="key">
         <UiCheckbox
@@ -67,7 +67,7 @@
         >{{ feature.friendlyName ? (feature.tag.slice(2) + ' ' + feature.friendlyName) : feature.name }}</UiCheckbox>
       </div>
     </div>
-    <h3>Other GSUB</h3>
+    <h3 v-if="otherGsub.length > 0">Other GSUB</h3>
     <div class="setting-group">
       <div class="setting-row" v-for="(feature, key) in otherGsub" :key="key">
         <UiCheckbox
