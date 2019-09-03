@@ -190,7 +190,7 @@ $button-width: $button-height + 0.25rem;
   }
 }
 
-.ui-number:hover {
+.ui-number:not(.is-disabled):hover {
   .ui-number-buttons {
     opacity: 1;
     transition: opacity 0.3s;
@@ -239,6 +239,7 @@ $button-width: $button-height + 0.25rem;
 
           <div class="ui-number-buttons">
             <UiIconButton
+              :disabled="disabled"
               class="ui-number__button ui-select__dropdown-button"
               @mousedown.native="startIncrement"
               @mouseleave.native="endIncrementDecrement"
@@ -252,6 +253,7 @@ $button-width: $button-height + 0.25rem;
               </svg>
             </UiIconButton>
             <UiIconButton
+              :disabled="disabled"
               class="ui-number__button ui-select__dropdown-button"
               @mousedown.native="startDecrement"
               @mouseleave.native="endIncrementDecrement"
