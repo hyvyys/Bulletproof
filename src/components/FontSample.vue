@@ -17,6 +17,7 @@
         font-size: ${settings.fontSize}${settings.fontSizeUnit};
         line-height: ${settings.defaultLineHeight ? '' : settings.lineHeight};
         text-align: ${settings.textAlign};
+        text-transform: ${settings.textTransform};
         font-feature-settings: ${ fontFeatureSettings };
       `"
       @input="onInput"

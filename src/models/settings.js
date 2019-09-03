@@ -70,6 +70,16 @@ export default class Settings {
         default: "#ddd",
       },
 
+      textTransform: {
+        type: String,
+        default: "none",
+        kind: "select",
+      },
+      textTransformOptions: {
+        type: Array,
+        default: () => ["none", "uppercase", "capitalize", "lowercase"],
+      },
+
       gposFeatures: {
         type: Object,
         default: () => ([]),

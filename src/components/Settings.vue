@@ -71,14 +71,14 @@
       />
     </div>
 
-    <h3 v-if="activeGpos.length > 0">GPOS</h3>
-    <div class="setting-group">
-      <div class="setting-row" v-for="(feature, key) in activeGpos" :key="key">
-        <UiCheckbox
-          :value="feature.value"
-          @input="v => $store.commit('updateGposFeature', { tag: feature.tag, value: v })"
-        >{{ feature.name }}</UiCheckbox>
-      </div>
+    <div class="setting-row">
+      <label class="row-label">Case transform</label>
+      <UiSelect
+        ref="settingTextTransform"
+        :value="settings.textTransform"
+        :options="settings.textTransformOptions"
+        @input="v => $store.commit('updateSettings', { textTransform: v })"
+      />
     </div>
 
     <h3 v-if="capFeatures.length > 0">Caps</h3>
@@ -117,6 +117,16 @@
         <UiCheckbox
           :value="feature.value"
           @input="v => $store.commit('updateGsubFeature', { tag: feature.tag, value: v })"
+        >{{ feature.name }}</UiCheckbox>
+      </div>
+    </div>
+
+    <h3 v-if="activeGpos.length > 0">GPOS</h3>
+    <div class="setting-group">
+      <div class="setting-row" v-for="(feature, key) in activeGpos" :key="key">
+        <UiCheckbox
+          :value="feature.value"
+          @input="v => $store.commit('updateGposFeature', { tag: feature.tag, value: v })"
         >{{ feature.name }}</UiCheckbox>
       </div>
     </div>
