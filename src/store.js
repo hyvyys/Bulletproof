@@ -6,6 +6,7 @@ import LanguageData from "language-data";
 import Settings from "@/models/Settings";
 import computedParams from "@/models/computedParams";
 import convertLength from "@/models/convertLength";
+import opentypeFeatureDefaults from "@/models/opentypeFeatureDefaults";
 
 export default new Vuex.Store({
   state: {
@@ -45,7 +46,7 @@ export default new Vuex.Store({
         from.forEach(f => {
           const matching = to.find(ff => ff.tag === f.tag);
           if (!matching) {
-            to.push({ ...f, value: false, active: true });
+            to.push({ ...f, value: opentypeFeatureDefaults.indexOf(f.tag) > -1, active: true });
           }
           else {
             matching.active = true;
