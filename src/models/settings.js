@@ -61,6 +61,15 @@ export default class Settings {
         default: () => ["left", "center", "right", "justify"],
       },
 
+      textColor: {
+        type: String,
+        default: "#222",
+      },
+      backgroundColor: {
+        type: String,
+        default: "#ddd",
+      },
+
       gposFeatures: {
         type: Object,
         default: () => ([]),

@@ -47,10 +47,27 @@
       <label class="row-label">Text align</label>
       <UiSelect
         ref="settingTextAlign"
-        class=""
         :value="settings.textAlign"
         :options="settings.textAlignOptions"
         @input="v => $store.commit('updateSettings', { textAlign: v })"
+      />
+    </div>
+
+    <div class="setting-row">
+      <label class="row-label">Text color</label>
+      <UiColorPicker
+        ref="settingTextColor"
+        :value="settings.textColor"
+        @input="v => $store.commit('updateSettings', { textColor: v })"
+      />
+    </div>
+
+    <div class="setting-row">
+      <label class="row-label">Back color</label>
+      <UiColorPicker
+        ref="settingBackgroundColor"
+        :value="settings.backgroundColor"
+        @input="v => $store.commit('updateSettings', { backgroundColor: v })"
       />
     </div>
 
@@ -114,10 +131,11 @@ import { mapGetters } from "vuex";
 import UiSelect from "keen-ui/src/UiSelect.vue";
 import UiCheckbox from "keen-ui/src/UiCheckbox.vue";
 import UiNumber from "@/components/UiNumber.vue";
+import UiColorPicker from "@/components/UiColorPicker.vue";
 
 export default {
   name: "Settings",
-  components: { UiSelect, UiCheckbox, UiNumber },
+  components: { UiSelect, UiCheckbox, UiNumber, UiColorPicker },
   props: {
     font: {
       type: Object,
@@ -188,6 +206,7 @@ export default {
   }
   > .row-label {
     margin-right: 0.3em;
+    min-width: 4em;
   }
   > :not(label) {
     flex: 1;

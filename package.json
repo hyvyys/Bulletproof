@@ -21,6 +21,7 @@
     "lodash.throttle": "^4.1.1",
     "opentype.js": "^1.1.0",
     "vue": "^2.6.10",
+    "vue-color": "^2.7.0",
     "vue-router": "^3.0.3",
     "vuebar": "github:hyvyys/vuebar",
     "vuex": "^3.1.1"

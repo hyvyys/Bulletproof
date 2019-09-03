@@ -1,6 +1,11 @@
 <template>
   <!-- eslint-disable-next-line vue/no-v-html -->
-  <div class="font-sample">
+  <div class="font-sample"
+    :style="`
+        color: ${settings.textColor};
+        background: ${settings.backgroundColor};
+    `"
+  >
     <div
       class="font-sample-content"
       contenteditable
