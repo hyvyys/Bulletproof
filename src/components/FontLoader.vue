@@ -7,6 +7,7 @@
       @input="selectFont"
       :options="fonts"
       :keys="fontOptionKeys"
+      dropdownClass="font-loader__dropdown"
     >
       <div slot="option" slot-scope="props" :style="optionStyle">
         <div class="font-family">{{ props.option && props.option.family }}</div>

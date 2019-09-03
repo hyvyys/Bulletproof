@@ -53,7 +53,7 @@
                 </div>
 
                 <ui-popover
-                    class="ui-select__dropdown"
+                    :class="`ui-select__dropdown ${dropdownClass}`"
                     ref="dropdown"
 
                     :close-on-scroll="false"
@@ -249,7 +249,8 @@ export default {
         disabled: {
             type: Boolean,
             default: false
-        }
+        },
+        dropdownClass: String
     },
     data() {
         return {
@@ -371,10 +372,18 @@ export default {
     },
     mounted() {
       // allow for initialization of anything within the dropdown, e.g. replacement scrollbar
-      this.openDropdown();
-      this.closeDropdown();
+      this.refreshScrollbar();
+    },
+    watch: {
+      options(val, oldVal) {
+        this.refreshScrollbar();
+      },
     },
     methods: {
+        refreshScrollbar() {
+          this.openDropdown();
+          this.closeDropdown();
+        },
         setValue(value) {
             value = value ? value : this.multiple ? [] : '';
             this.$emit('input', value);
