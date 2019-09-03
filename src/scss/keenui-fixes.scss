@@ -52,14 +52,15 @@
           }
         }
       }
-      &.is-active, &.is-active:hover {
+      &.ui-select__label.has-dropdown-open {
         .ui-select__display {
           border-color: $color-accent;
-        }
-        .ui-select__dropdown-button {
-          color: $color-accent;
         }
       }
     }
   }
+}
+
+[x-placement="top-start"] {
+  transform: translateY(8px);
 }

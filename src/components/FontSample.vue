@@ -1,6 +1,7 @@
 <template>
   <!-- eslint-disable-next-line vue/no-v-html -->
   <div class="font-sample"
+    :lang="selectedLoclLanguage"
     :style="`
         color: ${settings.textColor};
         background: ${settings.backgroundColor};
@@ -39,6 +40,7 @@ export default {
   },
   computed: {
     ...mapGetters(["settings"]),
+    ...mapGetters(["selectedLoclLanguage"]),
     ...mapGetters(["selectedFont"]),
     fontFeatureSettings() {
       return this.settings.gsubFeatures.concat(this.settings.gposFeatures)

@@ -2,7 +2,9 @@ var opentype = require("opentype.js");
 import util from "util";
 const loadFont = util.promisify(opentype.load);
 
+import opentypeLanguageTags from "./opentypeLanguageTags";
 import opentypeFeatureNames from "./opentypeFeatureNames";
+import findHtmlTag from "language-data/src/LanguageDataParser/findHtmlTag";
 
 function findFeatureName(tag) {
   const match = opentypeFeatureNames.find(f => f.tag.test(tag));
@@ -59,9 +61,25 @@ class Font {
     const gpos = font.tables.gpos || {};
     const gsub = font.tables.gsub || {};
 
-    const loclLanguages = new Set(
-      [...(gpos.scripts || []), ...(gsub.scripts || [])].flatMap(s => s.script.langSysRecords).map(lsr => lsr.tag)
+    const languageSet = new Set(
+      [...(gpos.scripts || []), ...(gsub.scripts || [])]
+        .flatMap(s => s.script.langSysRecords).map(lsr => lsr.tag)
     );
+    const loclLanguages = Array.from(languageSet)
+      .map(tag => {
+        function compareTags(a, b) {
+          if (a && b) {
+            return a.padEnd(4, " ") === b.padEnd(4, " ");
+          }
+          else return false;
+        }
+        const language = opentypeLanguageTags.find(l => compareTags(l.tag, tag));
+        const name = language ? language.name : tag;
+        const htmlTag = findHtmlTag({ language: name });
+
+        return ({ tag, name, htmlTag });
+      })
+      .sort((a, b) => a.name > b.name);
 
     const stylisticSetNames = Object.getOwnPropertyNames(names)
       .filter(p => /\d+/.test(p))
@@ -94,6 +112,7 @@ class Font {
 
         if (f.tag == "locl") {
           feature.languages = loclLanguages;
+          feature.selectedLanguage = "";
         } else if (/ss\d\d/.test(f.tag)) {
           feature.friendlyName = getStylisticSetName();
         }

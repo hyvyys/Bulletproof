@@ -27,6 +27,14 @@ export default new Vuex.Store({
     scrolledParentSelector: state => {
       return state.scrolledParentSelector;
     },
+    selectedLoclLanguage: state => {
+      const features = state.settings.gsubFeatures;
+      const matching = features.find(f => f.tag === "locl");
+      if (matching && matching.value) {
+        return matching.selectedLanguage.htmlTag;
+      }
+      return "";
+    },
   },
 
   mutations: {
@@ -46,11 +54,20 @@ export default new Vuex.Store({
         from.forEach(f => {
           const matching = to.find(ff => ff.tag === f.tag);
           if (!matching) {
-            to.push({ ...f, value: opentypeFeatureDefaults.indexOf(f.tag) > -1, active: true });
+            to.push({
+              ...f,
+              value: opentypeFeatureDefaults.indexOf(f.tag) > -1,
+              active: true,
+            });
           }
           else {
             matching.active = true;
-            matching.friendlyName = f.friendlyName;
+            if (f.tag === "locl") {
+              matching.languages = f.languages;
+            }
+            else if (/ss\d\d/.test(f.tag)) {
+              matching.friendlyName = f.friendlyName;
+            }
           }
         });
       }
@@ -71,6 +88,14 @@ export default new Vuex.Store({
       const matching = features.find(f => f.tag === tag);
       if (matching) {
         matching.value = value;
+      }
+    },
+
+    updateLoclFeature(state, { selectedLanguage }) {
+      const features = state.settings.gsubFeatures;
+      const matching = features.find(f => f.tag === "locl");
+      if (matching) {
+        matching.selectedLanguage = selectedLanguage;
       }
     },
 

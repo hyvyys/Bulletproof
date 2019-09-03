@@ -91,6 +91,35 @@
       </div>
     </div>
 
+    <h3 v-if="localization">Localization</h3>
+    <div v-if="localization" class="setting-group">
+      <div class="setting-row">
+        <UiSelect
+          :value="localization.selectedLanguage"
+          :options="localization.languages"
+          :keys="loclSelectKeys"
+          placeholder="select language"
+          :invalid="isLocalizationInvalid"
+          @input="v => $store.commit('updateLoclFeature', { selectedLanguage: v })"
+        >
+        <div slot="option" slot-scope="props" class="locl-select__option">
+          <div class="name">
+            {{ props.option.name }}
+          </div>
+          <div v-if="props.option.name !== props.option.tag" class="tag">
+            ({{ props.option.tag }})
+          </div>
+        </div>
+        </UiSelect>
+
+        <UiCheckbox
+          class="checkbox-small"
+          :value="localization.value"
+          @input="v => $store.commit('updateGsubFeature', { tag: 'locl', value: v })"
+        >enable</UiCheckbox>
+      </div>
+    </div>
+
     <h3 v-if="numberFeatures.length > 0">Numbers</h3>
     <div class="setting-group">
       <div class="setting-row" v-for="(feature, key) in numberFeatures" :key="key">
@@ -138,8 +167,8 @@
 // import UiTextbox from "keen-ui/src/UiTextbox.vue";
 import { mapGetters } from "vuex";
 
-import UiSelect from "keen-ui/src/UiSelect.vue";
 import UiCheckbox from "keen-ui/src/UiCheckbox.vue";
+import UiSelect from "@/components/UiSelect.vue";
 import UiNumber from "@/components/UiNumber.vue";
 import UiColorPicker from "@/components/UiColorPicker.vue";
 
@@ -168,7 +197,15 @@ export default {
         'frac',
         'zero',
       ],
-      stylisticSetTags: Array(20).fill(0).map((_, i) => `ss${i.toString().padStart(2, '0')}`)
+      stylisticSetTags: Array(20).fill(0).map((_, i) => `ss${i.toString().padStart(2, '0')}`),
+      loclTags: [
+        'locl',
+      ],
+      loclSelectKeys: {
+        class: "class",
+        label: "name",
+        image: "image",
+      },
     };
   },
   computed: {
@@ -178,10 +215,18 @@ export default {
     capFeatures() { return this.getGsubSubset(this.capTags); },
     numberFeatures() { return this.getGsubSubset(this.numberTags); },
     stylisticSets() { return this.getGsubSubset(this.stylisticSetTags); },
+    localization() { return this.getGsubSubset(this.loclTags)[0] || null; },
+    isLocalizationInvalid() {
+      const selected = this.localization.selectedLanguage;
+      return selected
+        ? !this.localization.languages.includes(selected)
+        : false;
+    },
     otherGsub() { return this.activeGsub.filter(f => ![
       ...this.capTags,
       ...this.numberTags,
       ...this.stylisticSetTags,
+      ...this.loclTags,
     ].includes(f.tag)); },
   },
   methods: {
@@ -249,6 +294,19 @@ export default {
   /deep/ .ui-checkbox__label-text {
     font-size: 1em;
     margin-left: 0.15em;
+  }
+}
+
+.locl-select__option {
+  display: flex;
+  width: 100%;
+
+  .name {
+    flex: 1;
+  }
+  .tag {
+    margin-left: 0.25em;
+    opacity: 0.6;
   }
 }
 </style>
