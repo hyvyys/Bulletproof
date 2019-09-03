@@ -1,7 +1,7 @@
 <template>
   <div class="settings">
     <div class="setting-row">
-      <label>Font size</label>
+      <label class="row-label">Font size</label>
       <UiNumber
         ref="settingFontSize"
         class=""
@@ -22,7 +22,7 @@
       <!-- <label>{{ fontSizeUnit }}</label> -->
     </div>
     <div class="setting-row">
-      <label>Text align</label>
+      <label class="row-label">Text align</label>
       <UiSelect
         ref="settingTextAlign"
         class=""
@@ -33,16 +33,43 @@
     </div>
     <h3>GPOS</h3>
     <div class="setting-group">
-      <div class="setting-row" v-for="(feature, key) in settings.gposFeatures" :key="key">
+      <div class="setting-row" v-for="(feature, key) in activeGpos" :key="key">
         <UiCheckbox
           :value="feature.value"
           @input="v => $store.commit('updateGposFeature', { tag: feature.tag, value: v })"
         >{{ feature.name }}</UiCheckbox>
       </div>
     </div>
-    <h3>GSUB</h3>
+    <h3 v-if="capFeatures.length > 0">Caps</h3>
     <div class="setting-group">
-      <div class="setting-row" v-for="(feature, key) in settings.gsubFeatures" :key="key">
+      <div class="setting-row" v-for="(feature, key) in capFeatures" :key="key">
+        <UiCheckbox
+          :value="feature.value"
+          @input="v => $store.commit('updateGsubFeature', { tag: feature.tag, value: v })"
+        >{{ feature.name }}</UiCheckbox>
+      </div>
+    </div>
+    <h3 v-if="numberFeatures.length > 0">Numbers</h3>
+    <div class="setting-group">
+      <div class="setting-row" v-for="(feature, key) in numberFeatures" :key="key">
+        <UiCheckbox
+          :value="feature.value"
+          @input="v => $store.commit('updateGsubFeature', { tag: feature.tag, value: v })"
+        >{{ feature.name }}</UiCheckbox>
+      </div>
+    </div>
+    <h3 v-if="stylisticSets.length > 0">Stylistic Sets</h3>
+    <div class="setting-group">
+      <div class="setting-row" v-for="(feature, key) in stylisticSets" :key="key">
+        <UiCheckbox
+          :value="feature.value"
+          @input="v => $store.commit('updateGsubFeature', { tag: feature.tag, value: v })"
+        >{{ feature.friendlyName ? (feature.tag.slice(2) + ' ' + feature.friendlyName) : feature.name }}</UiCheckbox>
+      </div>
+    </div>
+    <h3>Other GSUB</h3>
+    <div class="setting-group">
+      <div class="setting-row" v-for="(feature, key) in otherGsub" :key="key">
         <UiCheckbox
           :value="feature.value"
           @input="v => $store.commit('updateGsubFeature', { tag: feature.tag, value: v })"
@@ -70,12 +97,44 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      capTags: [
+        'smcp',
+        'c2sc',
+        'pcap',
+        'c2pc',
+      ],
+      numberTags: [
+        'sups',
+        'subs',
+        'numr',
+        'dnom',
+        'frac',
+        'zero',
+      ],
+      stylisticSetTags: Array(20).fill(0).map((_, i) => `ss${i.toString().padStart(2, '0')}`)
+    };
   },
   computed: {
     ...mapGetters(["settings"]),
+    activeGpos() { return this.settings.gposFeatures.filter(f => f.active); },
+    activeGsub() { return this.settings.gsubFeatures.filter(f => f.active); },
+    capFeatures() { return this.getGsubSubset(this.capTags); },
+    numberFeatures() { return this.getGsubSubset(this.numberTags); },
+    stylisticSets() { return this.getGsubSubset(this.stylisticSetTags); },
+    otherGsub() { return this.activeGsub.filter(f => ![
+      ...this.capTags,
+      ...this.numberTags,
+      ...this.stylisticSetTags,
+    ].includes(f.tag)); },
   },
-  methods: {},
+  methods: {
+    getGsubSubset(tags) {
+      return this.activeGsub
+        .filter(f => tags.includes(f.tag))
+        .sort((a, b) => tags.indexOf(a.tag) - tags.indexOf(b.tag));
+    },
+  },
 };
 </script>
 
@@ -102,9 +161,10 @@ export default {
   > :not(label) {
     flex: 1;
   }
-  label {
+  > .row-label,
+  /deep/ .ui-checkbox__label-text {
     opacity: 0.7;
-    font-size: 0.85em;
+    font-size: 0.85em !important;
   }
 
   @for $i from 1 to 30 {
