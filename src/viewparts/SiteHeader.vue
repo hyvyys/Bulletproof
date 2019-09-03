@@ -1,5 +1,5 @@
 <template>
-  <div class="site-header">
+  <div :class="`site-header ${sticky ? 'sticky' : ''}`">
     <div class="dark">
       <div class="logo">
         <SiteLogo class />
@@ -28,9 +28,11 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import fireEvent from "@/utils/fireEvent";
+
 import UiPopover from "keen-ui/src/UiPopover.vue";
 import UiButton from "keen-ui/src/UiButton.vue";
-
 import FontLoader from "@/components/FontLoader.vue";
 import SigmoidContainer from "@/components/layout/SigmoidContainer.vue";
 import SiteLogo from "@/components/SiteLogo.vue";
@@ -43,12 +45,30 @@ export default {
   data() {
     return {
       textKinds,
+      scrollDelta: 0,
+      sticky: false,
     };
   },
   computed: {
+    ...mapGetters(["scrolledParentSelector"]),
     showFontLoader() {
       return !!this.$route.params.text;
     },
+  },
+  mounted() {
+    const scrolled = document.querySelector(this.scrolledParentSelector);
+
+    scrolled.addEventListener("wheel", e => {
+      const delta = e.deltaY;
+      if (delta >= 0) this.scrollDelta = 0;
+      else this.scrollDelta += delta;
+      if (this.scrollDelta < -9) {
+        this.sticky = true;
+        setTimeout(() => fireEvent(scrolled, "scroll"), 700);
+      } else {
+        this.sticky = false;
+      }
+    });
   },
   methods: {
     navlinkText(kind) {
@@ -82,6 +102,13 @@ $header-background: linear-gradient(to right, $light, $accent);
 
   /* cover up aside's sigmoid container --adjust-y */
   border-bottom: 1px solid $light;
+
+  position: sticky;
+  top: -100%;
+  transition: top 0.7s;
+  &.sticky {
+    top: 0;
+  }
 
   .light {
     background: $light;

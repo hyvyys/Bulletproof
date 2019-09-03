@@ -38,7 +38,7 @@ export default {
     return {
       top: 0,
       maxHeight: null,
-      position: 'static',
+      position: 'fixed',
       width: null,
     };
   },
@@ -65,9 +65,10 @@ export default {
 
   methods: {
     updatePosition() {
+      console.log('pos')
       this.top = Math.max(0, this.header.getBoundingClientRect().bottom);
       this.maxHeight = Math.min(this.height, this.footer.getBoundingClientRect().top) - this.top;
-      this.position = this.top > 0 ? "static" : "fixed";
+      // this.position = this.top > 0 ? "static" : "fixed";
     },
     resize() {
       this.height = viewport.height;

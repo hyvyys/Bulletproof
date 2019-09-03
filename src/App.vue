@@ -1,8 +1,9 @@
 <template>
   <div v-bar class="app">
     <div class="app-content">
+      <router-view name="header"/>
+
       <div class="fold-wrapper">
-        <router-view name="header"/>
         <keep-alive>
           <router-view name="main" />
         </keep-alive>
