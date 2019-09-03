@@ -164,7 +164,7 @@ $button-width: $button-height + 0.25rem;
   opacity: 0.54;
   transition: opacity 0.3s;
   position: absolute;
-  top: 0.1em;
+  bottom: 2px;
   right: 0;
   display: flex;
   flex-direction: column;
@@ -183,7 +183,7 @@ $button-width: $button-height + 0.25rem;
       top: 50%;
       transform: translateY(-50%);
       svg {
-        height: 0.75em;
+        height: 0.7em;
         transform: scale(1.5);
       }
     }

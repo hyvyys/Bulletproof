@@ -11,6 +11,7 @@
         font-style: ${selectedFont.cssStyle};
         font-size: ${settings.fontSize}${settings.fontSizeUnit};
         text-align: ${settings.textAlign};
+        font-feature-settings: ${ fontFeatureSettings };
       `"
       @input="onInput"
       v-html="html"
@@ -32,6 +33,11 @@ export default {
   computed: {
     ...mapGetters(["settings"]),
     ...mapGetters(["selectedFont"]),
+    fontFeatureSettings() {
+      return this.settings.gsubFeatures.concat(this.settings.gposFeatures)
+        .map(f => `'${f.tag}' ${f.value ? '1' : '0'} `)
+        .join(', ');
+    },
   },
   methods: {
     onInput(e) {

@@ -32,7 +32,11 @@ export default class Settings {
         type: Array,
         default: () => ["left", "center", "right", "justify"],
       },
-      fontFeatureSettings: {
+      gposFeatures: {
+        type: Object,
+        default: () => ({}),
+      },
+      gsubFeatures: {
         type: Object,
         default: () => ({}),
       },

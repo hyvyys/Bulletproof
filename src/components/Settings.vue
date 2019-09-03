@@ -4,7 +4,7 @@
       <label>Font size</label>
       <UiNumber
         ref="settingFontSize"
-        class="const7ch"
+        class=""
         :value="settings.fontSize"
         :min="settings.minFontSize"
         :max="settings.maxFontSize"
@@ -14,7 +14,7 @@
       />
       <UiSelect
         ref="settingFontSizeUnit"
-        class="const4ch"
+        class="const3ch"
         :value="settings.fontSizeUnit"
         :options="settings.fontSizeUnitOptions"
         @input="v => $store.commit('updateSettings', { fontSizeUnit: v })"
@@ -25,15 +25,30 @@
       <label>Text align</label>
       <UiSelect
         ref="settingTextAlign"
-        class="const8ch"
+        class=""
         :value="settings.textAlign"
         :options="settings.textAlignOptions"
         @input="v => $store.commit('updateSettings', { textAlign: v })"
       />
     </div>
-    <!-- <div class="setting-row" v-for="(feature, key) in fontFeatureSettings" :key="key">
-      <UiCheckbox :value="feature" @input="v => updateFontFeatureSetting(key, v)">{{ key }}</UiCheckbox>
-    </div>-->
+    <h3>GPOS</h3>
+    <div class="setting-group">
+      <div class="setting-row" v-for="(feature, key) in settings.gposFeatures" :key="key">
+        <UiCheckbox
+          :value="feature.value"
+          @input="v => $store.commit('updateGposFeature', { tag: feature.tag, value: v })"
+        >{{ feature.name }}</UiCheckbox>
+      </div>
+    </div>
+    <h3>GSUB</h3>
+    <div class="setting-group">
+      <div class="setting-row" v-for="(feature, key) in settings.gsubFeatures" :key="key">
+        <UiCheckbox
+          :value="feature.value"
+          @input="v => $store.commit('updateGsubFeature', { tag: feature.tag, value: v })"
+        >{{ feature.name }}</UiCheckbox>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -60,8 +75,7 @@ export default {
   computed: {
     ...mapGetters(["settings"]),
   },
-  methods: {
-  },
+  methods: {},
 };
 </script>
 
@@ -70,20 +84,34 @@ export default {
 
 .settings {
   padding: 5px;
+
+  h3 {
+    margin: 4px 0 0 0;
+    font-size: 1em;
+  }
 }
 .setting-row {
   display: flex;
   width: 100%;
   align-items: baseline;
+
+  margin: 0 -0.3em;
   > * {
-    margin: 0 5px;
+    margin: 0 0.3em 0.15em;
+  }
+  > :not(label) {
+    flex: 1;
+  }
+  label {
+    opacity: 0.7;
+    font-size: 0.85em;
   }
 
   @for $i from 1 to 30 {
     .const#{$i}ch {
       display: block;
-      flex: #{$i}ch 0 0;
-      width: #{$i}ch;
+      flex: 0.1 1 #{$i}ch;
+      min-width: #{$i}ch;
     }
   }
 }

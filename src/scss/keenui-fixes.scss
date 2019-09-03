@@ -4,6 +4,18 @@
   box-sizing: border-box;
 }
 
+.ui-textbox__input {
+  height: unset !important;
+}
+.ui-textbox__label {
+  height: $ui-input-height !important;
+}
+
+.ui-textbox__label,
+.ui-select__display {
+  align-items: flex-end !important;
+}
+
 .ui-select {
   .ui-icon {
     svg {

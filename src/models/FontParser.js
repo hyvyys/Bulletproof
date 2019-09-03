@@ -66,13 +66,19 @@ class Font {
       return stylisticSetNames[i++];
     };
 
-    this.gposFeatures = (gpos.features || []).map(f => ({
-      tag: f.tag,
-      name: fontFeatureNames[f.tag] || f.tag,
-    }));
+    this.gposFeatures = [];
+    (gpos.features || []).forEach(f => {
+      const feature = {
+        tag: f.tag,
+        name: fontFeatureNames[f.tag] || f.tag,
+      };
+      const duplicate = this.gposFeatures.find(ff => ff.tag == f.tag);
+      if (!duplicate) {
+        this.gposFeatures.push(feature);
+      }
+    });
 
     this.gsubFeatures = [];
-
     (gsub.features || []).forEach(f => {
       const feature = {
         tag: f.tag,

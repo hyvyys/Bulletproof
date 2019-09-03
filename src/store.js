@@ -10,7 +10,7 @@ import convertLength from "@/models/convertLength";
 export default new Vuex.Store({
   state: {
     selectedFont: { family: "" },
-    settings: {},
+    settings: Settings.getDefaults(),
     selectedSampleKey: "lettering",
     selectedLanguages: LanguageData.map(l => l.language),
     scrolledParentSelector: ".app-content",
@@ -31,11 +31,30 @@ export default new Vuex.Store({
   mutations: {
     selectFont(state, { font }) {
       state.selectedFont = font;
+      state.settings.gsubFeatures = font.gsubFeatures.map(f => ({ ...f, value: false }));
+      state.settings.gposFeatures = font.gposFeatures.map(f => ({ ...f, value: false }));
+    },
+
+    updateGposFeature(state, { tag, value }) {
+      const features = state.settings.gposFeatures;
+      const matching = features.find(f => f.tag === tag);
+      if (matching) {
+        matching.value = value;
+      }
+    },
+
+    updateGsubFeature(state, { tag, value }) {
+      const features = state.settings.gsubFeatures;
+      const matching = features.find(f => f.tag === tag);
+      if (matching) {
+        matching.value = value;
+      }
     },
 
     resetSettings(state) {
       //todo add font-specific settings
-      state.settings = Settings.getDefaults();
+      const settings = Settings.getDefaults();
+      Object.keys(settings).forEach(key => state.settings[key] = settings[key]);
       this.commit("computeParams");
     },
 
