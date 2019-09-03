@@ -16,5 +16,5 @@ export default {
     newStyle.id = id;
 
     document.head.appendChild(newStyle);
-  }
+  },
 };

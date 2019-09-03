@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import throttle from "lodash.throttle";
+// import throttle from "lodash.throttle";
 import viewport from "@/utils/viewport";
 
 export default {

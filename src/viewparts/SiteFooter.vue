@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import SigmoidContainer from "./layout/SigmoidContainer.vue";
+import SigmoidContainer from "@/components/layout/SigmoidContainer.vue";
 
 export default {
   components: { SigmoidContainer },

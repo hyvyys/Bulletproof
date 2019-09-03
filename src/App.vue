@@ -15,15 +15,10 @@
 </template>
 
 <script>
-import SiteHeader from "./components/SiteHeader.vue";
-import SiteFooter from "./components/SiteFooter.vue";
+import SiteFooter from "./viewparts/SiteFooter.vue";
 
 export default {
-  components: { SiteHeader, SiteFooter },
-  mounted() {
-  },
-  methods: {
-  }
+  components: { SiteFooter },
 };
 </script>
 

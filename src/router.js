@@ -3,7 +3,7 @@ import Router from "vue-router";
 
 import Home from "@/views/Home.vue";
 import FontTester from "@/views/FontTester.vue";
-import SiteHeader from "@/components/SiteHeader.vue";
+import SiteHeader from "@/viewparts/SiteHeader.vue";
 
 import textKinds from "@/models/textKinds";
 
@@ -19,7 +19,7 @@ export default new Router({
       components: {
         header: SiteHeader,
         main: Home,
-      }
+      },
     },
     {
       path: `/:text(${textKinds.join("|")}|custom/:id?)`,
@@ -27,7 +27,7 @@ export default new Router({
       components: {
         header: SiteHeader,
         main: FontTester,
-      }
-    }
-  ]
+      },
+    },
+  ],
 });

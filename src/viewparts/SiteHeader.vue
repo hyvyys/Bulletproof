@@ -42,19 +42,19 @@ export default {
   components: { UiPopover, UiButton, SiteLogo, SigmoidContainer, FontLoader },
   data() {
     return {
-      textKinds
+      textKinds,
     };
   },
   computed: {
     showFontLoader() {
       return !!this.$route.params.text;
-    }
+    },
   },
   methods: {
     navlinkText(kind) {
       return textKindTitle(kind);
-    }
-  }
+    },
+  },
 };
 </script>
 

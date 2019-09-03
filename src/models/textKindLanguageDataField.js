@@ -3,5 +3,5 @@ export default {
   pangrams: "pangrams",
   sentences: "paragraphs",
   gotchas: "gotchas",
-  kerning: null
+  kerning: null,
 };
