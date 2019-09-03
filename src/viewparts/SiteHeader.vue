@@ -46,7 +46,7 @@ export default {
     return {
       textKinds,
       scrollDelta: 0,
-      sticky: false,
+      sticky: true,
     };
   },
   computed: {
@@ -60,12 +60,12 @@ export default {
 
     scrolled.addEventListener("wheel", e => {
       const delta = e.deltaY;
-      if (delta >= 0) this.scrollDelta = 0;
-      else this.scrollDelta += delta;
-      if (this.scrollDelta < -9) {
+      if (Math.sign(delta) !== Math.sign(this.scrollDelta)) this.scrollDelta = 0;
+      this.scrollDelta += delta;
+      if (this.scrollDelta < -15) {
         this.sticky = true;
         setTimeout(() => fireEvent(scrolled, "scroll"), 700);
-      } else {
+      } else if (this.scrollDelta > 18) {
         this.sticky = false;
       }
     });
