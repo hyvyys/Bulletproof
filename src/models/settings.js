@@ -11,7 +11,7 @@ export default class Settings {
       },
       fontSize: {
         type: Number,
-        default: 12,
+        default: 24,
         validate: (value, settings) => value >= settings.minFontSize && value <= settings.maxFontSize,
       },
       fontSizeUnit: {
