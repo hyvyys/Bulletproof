@@ -76,11 +76,12 @@ $header-background: linear-gradient(to right, $light, $accent);
   display: flex;
   align-items: stretch;
   justify-items: space-between;
-  // position: sticky;
-  // top: 0;
   z-index: 1;
   padding-top: 8px;
   @include header-background(-8px);
+
+  /* cover up aside's sigmoid container --adjust-y */
+  border-bottom: 1px solid $light;
 
   .light {
     background: $light;
