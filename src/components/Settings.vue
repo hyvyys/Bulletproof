@@ -184,7 +184,7 @@ export default {
 
   margin: 0 -0.2em;
   > * {
-    margin: 0 0.2em 0.15em;
+    margin: 0 0.2em 2px;
   }
   > .row-label {
     margin-right: 0.3em;
