@@ -50,6 +50,7 @@ export default new Vuex.Store({
           }
           else {
             matching.active = true;
+            matching.friendlyName = f.friendlyName;
           }
         });
       }

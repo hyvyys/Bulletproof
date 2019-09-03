@@ -73,30 +73,30 @@ class Font {
 
     this.gposFeatures = [];
     (gpos.features || []).forEach(f => {
-      const feature = {
-        tag: f.tag,
-        name: findFeatureName(f.tag),
-      };
       const duplicate = this.gposFeatures.find(ff => ff.tag == f.tag);
       if (!duplicate) {
+        const feature = {
+          tag: f.tag,
+          name: findFeatureName(f.tag),
+        };
         this.gposFeatures.push(feature);
       }
     });
 
     this.gsubFeatures = [];
     (gsub.features || []).forEach(f => {
-      const feature = {
-        tag: f.tag,
-        name: findFeatureName(f.tag),
-      };
-
-      if (f.tag == "locl") {
-        feature.languages = loclLanguages;
-      } else if (/ss\d\d/.test(f.tag)) {
-        feature.friendlyName = getStylisticSetName();
-      }
       const duplicate = this.gsubFeatures.find(ff => ff.tag == f.tag);
       if (!duplicate) {
+        const feature = {
+          tag: f.tag,
+          name: findFeatureName(f.tag),
+        };
+
+        if (f.tag == "locl") {
+          feature.languages = loclLanguages;
+        } else if (/ss\d\d/.test(f.tag)) {
+          feature.friendlyName = getStylisticSetName();
+        }
         this.gsubFeatures.push(feature);
       }
     });
