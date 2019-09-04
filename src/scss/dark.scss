@@ -1,0 +1,44 @@
+@import "./mixins.scss";
+
+.dark {
+  $color: $accent-text;
+  $color-tinted-active: mix($accent, $color, 40%);
+  $color-tinted: mix($accent, $color, 60%);
+  $color-accent: $brand-primary-color;
+
+  &.ui-select {
+    .ui-select__display {
+      
+      @include pseudo();
+      &::before {
+        z-index: -1;
+        background: rgba(#211, 0.8);
+        border-radius: 3px;
+        box-shadow: inset 0 0 5px #000;
+        pointer-events: none;
+      }
+
+      color: $color;
+
+      border-color: $color-tinted;
+      .ui-select__dropdown-button {
+        color: $color-tinted;
+      }
+    }
+    &:not(.is-disabled) {
+      &:hover {
+        .ui-select__display {
+          border-color: $color-tinted-active;
+          .ui-select__dropdown-button {
+            color: $color-tinted-active;
+          }
+        }
+      }
+      &.ui-select__label.has-dropdown-open {
+        .ui-select__display {
+          border-color: $color-accent;
+        }
+      }
+    }
+  }
+}

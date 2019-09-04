@@ -1,0 +1,136 @@
+<template>
+  <UiSelect
+    class="font-select"
+    :value="value"
+    @input="v => $emit('input', v)"
+    :options="fonts"
+    :keys="fontOptionKeys"
+    dropdownClass="font-loader__dropdown"
+    @dropdown-open="onSelectOpen"
+  >
+    <div slot="option" slot-scope="props">
+      <div class="col col-sample">
+        <div
+          class="font-family-sample fit"
+          :style="optionSampleStyle(props.option)"
+        >{{ props.option && sampleText }}</div>
+      </div>
+      <div class="col">
+        <div class="font-family">{{ props.option && props.option.originalFamily }}</div>
+        <div class="font-style">{{ props.option && props.option.style }}</div>
+        <div class="font-version">
+          {{
+          props.option && props.option.version
+          ? `(${props.option.version})` : ""
+          }}
+        </div>
+      </div>
+    </div>
+  </UiSelect>
+</template>
+
+<script>
+import textFit from "textfit";
+import UiSelect from "@/components/UiSelect.vue";
+
+export default {
+  components: {
+    UiSelect,
+  },
+  props: {
+    value: Object,
+    fonts: Array,
+  },
+  data() {
+    return {
+      fontOptionKeys: {
+        class: "class",
+        label: "family",
+        image: "image",
+      },
+      optionSampleStyle: option => `
+        font-family: ${option.family};
+        font-style: ${option.cssStyle};
+        font-weight: ${option.cssWeight};
+        `,
+      sampleText: "Abg",
+    };
+  },
+  methods: {
+    onSelectOpen() {
+      setTimeout(() => {
+        let els = document.querySelectorAll('.fit');
+        // console.log('fit', els.length)
+        textFit(els);
+      }, 100);
+    },
+  },
+}
+</script>
+
+<style lang="scss">
+@import "@/scss/variables";
+@import "@/scss/mixins";
+
+.font-loader {
+  @include flex();
+
+  .ui-select.font-select {
+    .ui-select__display {
+      padding: 2px 8px;
+      width: 10em;
+      border-radius: 3px;
+    }
+    margin-bottom: 0.1em;
+  }
+}
+
+.font-loader__dropdown {
+  width: 250px !important;
+
+  .ui-select-option {
+    > div {
+      // option
+      display: flex;
+      align-items: center;
+      width: 100%;
+
+      > :not(:last-child) {
+        margin-right: 0.3ch;
+      }
+
+      .col {
+        display: flex;
+        align-items: baseline;
+        flex-wrap: wrap;
+        &:nth-child(2) {
+          flex: 1;
+        }
+        > :not(:last-child) {
+          margin-right: 0.3ch;
+        }
+
+        &.col-sample {
+          margin-left: -0.5em;
+          margin-right: 0.45em;
+          .font-family-sample {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.75rem;
+            height: 1.5rem;
+            line-height: 0.5;
+          }
+        }
+        .font-style {
+          opacity: 0.6;
+        }
+        .font-version {
+          flex-grow: 1;
+          text-align: right;
+        }
+      }
+    }
+  }
+}
+</style>
