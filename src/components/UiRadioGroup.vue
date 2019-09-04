@@ -58,7 +58,9 @@ export default {
             required: true
         },
         value: {
-            type: [Number, String],
+          // type: [Number, String],
+          // temporary fix
+            type: [Number, String, Object],
             required: true
         },
         keys: {

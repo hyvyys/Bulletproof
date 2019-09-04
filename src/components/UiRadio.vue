@@ -40,11 +40,15 @@ export default {
         label: String,
         tabindex: [String, Number],
         value: {
-            type: [Number, String],
+          // type: [Number, String],
+          // temporary fix
+            type: [Number, String, Object],
             required: true
         },
         trueValue: {
-            type: [Number, String],
+          // type: [Number, String],
+          // temporary fix
+            type: [Number, String, Object],
             required: true
         },
         checked: {
