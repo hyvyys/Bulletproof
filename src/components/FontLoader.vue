@@ -133,13 +133,14 @@ export default {
           }));
           const fonts = results
             .filter(r => r.font)
-            .map(r => r.font)
-            .sort((b, a) =>
+            .map(r => r.font);
+          fonts.sort((a, b) =>
               a.family.localeCompare(b.family)
-              || a.cssWeight > b.cssWeight
-              || a.cssStyle < b.cssStyle
+              || a.cssWeight - b.cssWeight
+              || b.cssStyle.localeCompare(a.cssStyle)
             );
 
+          fonts.reverse();
           fonts.forEach(font => {
             const duplicates = this.fonts.filter(
               f =>
