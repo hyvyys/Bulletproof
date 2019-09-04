@@ -62,7 +62,6 @@ export default {
     const scrolled = document.querySelector(this.scrolledParentSelector);
     const hamster = Hamster(scrolled);
     hamster.wheel((event, delta, deltaX, deltaY) => {
-      console.log('header')
       if (Math.sign(deltaY) !== Math.sign(this.scrollDelta)) this.scrollDelta = 0;
       this.scrollDelta += deltaY;
       if (this.scrollDelta > deltaUp) {
