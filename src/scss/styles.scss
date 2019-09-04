@@ -11,6 +11,7 @@
 html {
   font-family: $font-stack;
   font-size: 100% * $font-scale;
+  overflow: hidden;
 }
 
 body {

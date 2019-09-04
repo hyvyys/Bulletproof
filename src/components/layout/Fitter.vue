@@ -5,8 +5,11 @@
       class="positioned"
       :style="`position: ${position}; width: ${width}px; top: ${top}px; max-height: ${maxHeight}px; `"
     >
-      <div v-bar class="scrolled">
-        <div>
+      <div v-bar>
+        <div
+          :class="`scrolled ${disableOverscroll ? 'disable-overscroll' : ''}`"
+          @wheel="onWheel"
+        >
           <slot></slot>
         </div>
       </div>
@@ -32,6 +35,10 @@ export default {
     scrolledParentSelector: {
       type: String,
       default: "body",
+    },
+    disableOverscroll: {
+      type: Boolean,
+      default: true,
     },
   },
   data() {
@@ -78,6 +85,11 @@ export default {
       // will be 0 if element has currently display: none
       if (width) this.width = width;
     },
+    onWheel(e) {
+      if (this.disableOverscroll) {
+        e.stopPropagation();
+      }
+    },
   },
 };
 </script>
@@ -87,10 +99,7 @@ export default {
   display: flex;
   flex-direction: column;
 }
-.scrolled {
-  margin: 0px;
-  overflow-y: scroll;
-  display: flex;
-  flex-direction: column;
+.scrolled.disable-overscroll {
+  overscroll-behavior: none;
 }
 </style>
