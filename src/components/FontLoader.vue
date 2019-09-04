@@ -11,7 +11,7 @@
 
     <div v-if="gui">
       <UiButton class="dark bi-button" ref="button1">
-        B
+        <b>B</b>
         <i>I</i>
       </UiButton>
       <UiPopover :trigger="$refs.button1" class="font-select-popover" :zIndex="58">
@@ -19,7 +19,7 @@
           :fonts="fontOptions"
           :value="selectedBoldFont"
           @input="selectBoldFont"
-          label="Strong emphasis font"
+          label="Headings & strong emphasis"
           :loading="loadingFonts"
         />
 
@@ -27,7 +27,7 @@
           :fonts="fontOptions"
           :value="selectedItalicFont"
           @input="selectItalicFont"
-          label="Emphasis font"
+          label="Emphasis"
           :loading="loadingFonts"
         />
       </UiPopover>
@@ -258,7 +258,7 @@ export default {
   .ui-select.font-select {
     .ui-select__display {
       padding: 2px 8px;
-      width: 12em;
+      width: $font-select-width;
       border-radius: 3px;
     }
     margin-bottom: 0.1em;
@@ -273,11 +273,15 @@ export default {
 
 .font-select-popover {
   padding: 8px;
-  width: 150px;
+  width: calc(#{$font-select-width} + 16px);
 }
 
 .bi-button {
   min-width: unset;
+  text-transform: none;
   font-family: Consolas, "Courier New", Courier, monospace;
+  b {
+    margin-right: 0.2em;
+  }
 }
 </style>
