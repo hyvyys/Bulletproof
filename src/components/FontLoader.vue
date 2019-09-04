@@ -119,7 +119,14 @@ export default {
             fileName: fileNames[i],
             ...r,
           }));
-          const fonts = results.filter(r => r.font).map(r => r.font);
+          const fonts = results
+            .filter(r => r.font)
+            .map(r => r.font)
+            .sort((b, a) =>
+              a.family.localeCompare(b.family)
+              || a.cssWeight > b.cssWeight
+              || a.cssStyle < b.cssStyle
+            );
 
           fonts.forEach(font => {
             const duplicates = this.fonts.filter(
@@ -137,6 +144,7 @@ export default {
             styles.add(font.fontFace);
           });
           if (fonts.length) {
+            fonts.reverse();
             this.selectFont(fonts[0]);
           }
 
