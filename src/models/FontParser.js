@@ -28,10 +28,12 @@ export default class FontParser {
 class Font {
   init(url) {
     return new Promise((resolve) => {
+      this.version = 0;
       this.url = url;
       loadFont(url)
         .then(font => {
-          this.processFont(font);
+          this.font = font;
+          this.processFont();
           resolve({ font: this });
         })
         .catch(error => {
@@ -40,15 +42,26 @@ class Font {
     });
   }
 
-  processFont(font) {
-    this.getNames(font);
-    this.getFeatures(font);
+  serialize() {
+    // eslint-disable-next-line no-unused-vars
+    const { font, ...obj } = this;
+    return obj;
+  }
+
+  processFont() {
+    this.getNames();
+    this.getFeatures();
     this.generateFontFace();
   }
 
-  getNames(font) {
+  getNames() {
+    const font = this.font;
     const names = font.names;
     this.family = (names.preferredFamily && names.preferredFamily.en) || names.fontFamily.en;
+    this.originalFamily = this.family;
+    if (this.version) {
+      this.family += `-${this.version}`;
+    }
     this.style =
       (names.preferredSubfamily && names.preferredSubfamily.en) || names.fontSubfamily.en;
 
@@ -56,7 +69,8 @@ class Font {
     this.cssWeight = font.tables.os2.usWeightClass;
   }
 
-  getFeatures(font) {
+  getFeatures() {
+    const font = this.font;
     const names = font.names;
     const gpos = font.tables.gpos || {};
     const gsub = font.tables.gsub || {};
@@ -126,11 +140,21 @@ class Font {
   generateFontFace() {
     this.fontFace = `
       @font-face {
-        font-family: ${this.family};
+        font-family: "${this.family}";
         font-style: ${this.cssStyle};
         font-weight: ${this.cssWeight};
         src: url('${this.url}');
       }
     `;
+  }
+
+  bumpVersion(value) {
+    if (value) {
+      this.version = value;
+    }
+    else {
+      this.version++;
+    }
+    this.processFont();
   }
 }

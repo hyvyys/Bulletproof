@@ -117,13 +117,23 @@ export default {
             ...r,
           }));
           const fonts = results.filter(r => r.font).map(r => r.font);
+          const addedFonts = [];
 
           fonts.forEach(font => {
-            this.fonts.push(font);
+            const duplicates = this.fonts.filter(f =>
+              f.originalFamily === font.originalFamily
+              && f.style === font.style
+            );
+            if (duplicates.length > 0) {
+              const highest = duplicates.sort((a, b) => a.version < b.version)[0];
+              font.bumpVersion(highest.version + 1);
+            }
+            addedFonts.push(font.serialize());
             styles.add(font.fontFace);
           });
+          this.fonts.push.apply(this.fonts, addedFonts);
           if (fonts.length) {
-            this.selectFont(fonts[0]);
+            this.selectFont(addedFonts[0]);
           }
 
           const errors = results.filter(r => r.error);
