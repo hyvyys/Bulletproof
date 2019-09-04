@@ -1,7 +1,7 @@
 @import "./variables.scss";
 
 .vb {
-  > .vb-content {
+  &.vb-visible > .vb-content {
     box-sizing: border-box;
     padding-right: $vuebar-width;
     width: unquote("max(100% + 17px, 100% + 0vw)") !important;
