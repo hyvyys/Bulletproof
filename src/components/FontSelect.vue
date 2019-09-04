@@ -37,7 +37,7 @@
 
 <script>
 import UiSelect from "@/components/UiSelect.vue";
-import FitMe from "@/components/FitMe.vue";
+import FitMe from "@/components/layout/FitMe.vue";
 
 export default {
   components: {
