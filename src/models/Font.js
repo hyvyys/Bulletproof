@@ -54,7 +54,7 @@ export default class Font {
     this.cssStyle = /(italic|oblique)/gi.test(this.style) ? "italic" : "normal";
     this.cssWeight = font.tables.os2.usWeightClass;
 
-    this.displayName = `${this.family} ${this.style} ${this.version ? `(${this.version})` : ''}`;
+    this.displayName = `${this.originalFamily} ${this.style} ${this.version ? `(${this.version})` : ''}`;
   }
 
   getFeatures() {
