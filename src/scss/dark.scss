@@ -1,24 +1,32 @@
 @import "./mixins.scss";
 
+$color: $accent-text;
+$color-tinted-active: mix($accent, $color, 40%);
+$color-tinted: mix($accent, $color, 60%);
+$color-accent: $brand-primary-color;
+
+@mixin dark() {
+  background: transparent !important;
+  color: $color !important;
+
+  @include pseudo();
+  &::before {
+    z-index: -1;
+    background: rgba(#211, 0.8);
+    border-radius: 3px;
+    box-shadow: inset 0 0 5px #000;
+    pointer-events: none;
+  }
+}
+
 .dark {
-  $color: $accent-text;
-  $color-tinted-active: mix($accent, $color, 40%);
-  $color-tinted: mix($accent, $color, 60%);
-  $color-accent: $brand-primary-color;
+  &.ui-button {
+    @include dark();
+  }
 
   &.ui-select {
     .ui-select__display {
-      
-      @include pseudo();
-      &::before {
-        z-index: -1;
-        background: rgba(#211, 0.8);
-        border-radius: 3px;
-        box-shadow: inset 0 0 5px #000;
-        pointer-events: none;
-      }
-
-      color: $color;
+      @include dark();
 
       border-color: $color-tinted;
       .ui-select__dropdown-button {

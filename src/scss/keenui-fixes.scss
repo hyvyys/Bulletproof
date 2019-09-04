@@ -45,3 +45,20 @@ $radio-size: 16px;
 .ui-radio-group.is-vertical .ui-radio-group__radio {
   margin-bottom: 6px !important;
 }
+
+.ui-button {
+  height: $ui-input-height !important;
+}
+
+
+.font-select-popover .font-select:not(:last-child) {
+  margin-bottom: 0.5rem;
+}
+
+.font-select .ui-select__label-text {
+  font-size: 0.85rem !important;
+}
+
+.ui-select:not(.is-multiple) .ui-select__display {
+  height: unset !important;
+}

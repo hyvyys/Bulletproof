@@ -1,12 +1,28 @@
 <template>
   <div class="font-loader">
-    <FontSelect
-      class="dark"
-      v-if="gui"
-      :fonts="fonts"
-      :value="selectedFont"
-      @input="selectFont"
-    />
+    <FontSelect class="dark" v-if="gui" :fonts="fontOptions" :value="selectedFont" @input="selectFont" />
+
+    <div v-if="gui">
+      <UiButton class="dark bi-button" ref="button1">
+        B
+        <i>I</i>
+      </UiButton>
+      <UiPopover :trigger="$refs.button1" class="font-select-popover" :zIndex="58">
+        <FontSelect
+          :fonts="fontOptions"
+          :value="selectedBoldFont"
+          @input="selectBoldFont"
+          label="Strong emphasis font"
+        />
+
+        <FontSelect
+          :fonts="fontOptions"
+          :value="selectedItalicFont"
+          @input="selectItalicFont"
+          label="Emphasis font"
+        />
+      </UiPopover>
+    </div>
 
     <FileDrop @files-dropped="onFilesDropped" />
     <UiModal ref="modal" title="Error opening fonts.">
@@ -24,6 +40,8 @@
 import { mapGetters } from "vuex";
 
 import UiModal from "keen-ui/src/UiModal.vue";
+import UiButton from "keen-ui/src/UiButton.vue";
+import UiPopover from "keen-ui/src/UiPopover.vue";
 
 import FontSelect from "@/components/FontSelect.vue";
 import FileDrop from "@/components/FileDrop.vue";
@@ -39,6 +57,8 @@ export default {
   components: {
     FontSelect,
     UiModal,
+    UiButton,
+    UiPopover,
     FileDrop,
     Fireworks,
   },
@@ -49,7 +69,15 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["selectedFont"]),
+    ...mapGetters([
+      "settings",
+      "selectedFont",
+      "selectedBoldFont",
+      "selectedItalicFont",
+    ]),
+    fontOptions() {
+      return this.fonts.map(f => f.serialize());
+    },
   },
   data() {
     return {
@@ -62,8 +90,11 @@ export default {
     const dir = "/fonts/";
     const fonts = [
       "alegreya-sans/alegreya-sans-v10-latin-ext_cyrillic_cyrillic-ext_latin_vietnamese_greek-ext_greek-regular.ttf",
+      "alegreya-sans/alegreya-sans-v10-latin-ext_cyrillic_cyrillic-ext_latin_vietnamese_greek-ext_greek-italic.ttf",
+      "alegreya-sans/alegreya-sans-v10-latin-ext_cyrillic_cyrillic-ext_latin_vietnamese_greek-ext_greek-700.ttf",
       "Rywalka-Regular.ttf",
     ];
+    styles.setProperty("--fallbackFontFamily", this.settings.fallbackFontFamily);
     this.loadFonts({ urls: fonts.map(f => dir + f) });
   },
   methods: {
@@ -89,7 +120,6 @@ export default {
             ...r,
           }));
           const fonts = results.filter(r => r.font).map(r => r.font);
-          const addedFonts = [];
 
           fonts.forEach(font => {
             const duplicates = this.fonts.filter(
@@ -103,12 +133,11 @@ export default {
               )[0];
               font.bumpVersion(highest.version + 1);
             }
-            addedFonts.push(font.serialize());
+            this.fonts.unshift(font);
             styles.add(font.fontFace);
           });
-          this.fonts.unshift.apply(this.fonts, addedFonts);
           if (fonts.length) {
-            this.selectFont(addedFonts[0]);
+            this.selectFont(fonts[0]);
           }
 
           const errors = results.filter(r => r.error);
@@ -133,8 +162,49 @@ export default {
       this.$refs.modal.open();
     },
 
+    getFont(fontOption) {
+      const font = this.fonts.find(f => f.displayName === fontOption.displayName);
+      const serialized = font.serialize();
+      return serialized;
+    },
+
     selectFont(v) {
-      this.$store.commit("selectFont", { font: v });
+      const font = this.getFont(v);
+      styles.setProperty("--selectedFontFamily", font.family);
+      styles.setProperty("--selectedFontCssWeight", font.cssWeight);
+      styles.setProperty("--selectedFontCssStyle", font.cssStyle);
+      this.$store.commit("selectFont", { font });
+
+      const matchingBold = this.fonts.filter(
+        f => f.family === v.family && f.cssWeight >= v.cssWeight
+      )[0];
+      const matchingItalic = this.fonts.filter(
+        f =>
+        f.family === v.family && f.cssWeight === v.cssWeight && f.style === "italic"
+        ||
+        f.family === v.family && f.style === "italic"
+        ||
+        f.family === v.family && f.cssWeight <= v.cssWeight
+      )[0];
+
+      this.selectBoldFont(matchingBold);
+      this.selectItalicFont(matchingItalic);
+    },
+
+    selectBoldFont(v) {
+      const boldFont = this.getFont(v);
+      styles.setProperty("--selectedBoldFontFamily", boldFont.family);
+      styles.setProperty("--selectedBoldFontCssWeight", boldFont.cssWeight);
+      styles.setProperty("--selectedBoldFontCssStyle", boldFont.cssStyle);
+      this.$store.commit("selectFont", { boldFont });
+    },
+
+    selectItalicFont(v) {
+      const italicFont = this.getFont(v);
+      styles.setProperty("--selectedItalicFontFamily", italicFont.family);
+      styles.setProperty("--selectedItalicFontCssWeight", italicFont.cssWeight);
+      styles.setProperty("--selectedItalicFontCssStyle", italicFont.cssStyle);
+      this.$store.commit("selectFont", { italicFont });
     },
 
     /* ^^^ methods ^^^ */
@@ -146,4 +216,32 @@ export default {
 @import "@/scss/variables";
 @import "@/scss/mixins";
 
+.font-loader {
+  @include flex();
+
+  .ui-select.font-select {
+    .ui-select__display {
+      padding: 2px 8px;
+      width: 12em;
+      border-radius: 3px;
+    }
+    margin-bottom: 0.1em;
+  }
+}
+
+.font-loader {
+  > :not(:last-child) {
+    margin-right: 0.5em;
+  }
+}
+
+.font-select-popover {
+  padding: 8px;
+  width: 150px;
+}
+
+.bi-button {
+  min-width: unset;
+  font-family: Consolas, "Courier New", Courier, monospace;
+}
 </style>

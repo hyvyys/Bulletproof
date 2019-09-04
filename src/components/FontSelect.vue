@@ -5,9 +5,14 @@
     @input="v => $emit('input', v)"
     :options="fonts"
     :keys="fontOptionKeys"
-    dropdownClass="font-loader__dropdown"
+    dropdownClass="font-select__dropdown"
     @dropdown-open="onSelectOpen"
+    :label="label"
   >
+
+    <!-- Pass on all named slots -->
+    <slot v-for="slot in Object.keys($slots)" :name="slot" :slot="slot"/>
+
     <div slot="option" slot-scope="props">
       <div class="col col-sample">
         <div
@@ -40,12 +45,13 @@ export default {
   props: {
     value: Object,
     fonts: Array,
+    label: String,
   },
   data() {
     return {
       fontOptionKeys: {
         class: "class",
-        label: "family",
+        label: "displayName",
         image: "image",
       },
       optionSampleStyle: option => `
@@ -72,20 +78,7 @@ export default {
 @import "@/scss/variables";
 @import "@/scss/mixins";
 
-.font-loader {
-  @include flex();
-
-  .ui-select.font-select {
-    .ui-select__display {
-      padding: 2px 8px;
-      width: 10em;
-      border-radius: 3px;
-    }
-    margin-bottom: 0.1em;
-  }
-}
-
-.font-loader__dropdown {
+.font-select__dropdown {
   width: 250px !important;
 
   .ui-select-option {

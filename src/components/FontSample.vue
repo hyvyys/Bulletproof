@@ -12,9 +12,6 @@
       contenteditable
       spellcheck="false"
       :style="`
-        font-family: ${selectedFont.family}, ${settings.fallbackFontFamily};
-        font-weight: ${selectedFont.cssWeight};
-        font-style: ${selectedFont.cssStyle};
         font-size: ${settings.fontSize}${settings.fontSizeUnit};
         line-height: ${settings.defaultLineHeight ? '' : settings.lineHeight};
         text-align: ${settings.textAlign};
@@ -39,9 +36,13 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["settings"]),
-    ...mapGetters(["selectedLoclLanguage"]),
-    ...mapGetters(["selectedFont"]),
+    ...mapGetters([
+      "settings",
+      "selectedLoclLanguage",
+      "selectedFont",
+      "selectedBoldFont",
+      "selectedItalicFont",
+    ]),
     fontFeatureSettings() {
       return this.settings.gsubFeatures.concat(this.settings.gposFeatures)
         .map(f => `'${f.tag}' ${f.value ? '1' : '0'} `)
@@ -80,5 +81,25 @@ export default {
   &:focus {
     outline: none;
   }
+
+  .font-sample-content {
+    font-family: var(--selectedFontFamily), var(--fallbackFontFamily);
+    font-weight: var(--selectedFontCssWeight);
+    font-style: var(--selectedFontCssStyle);
+
+    h1, h2, h3, h4, h5, h6, b, strong {
+      font-family: var(--selectedBoldFontFamily), var(--fallbackFontFamily);
+      font-weight: var(--selectedBoldFontCssWeight);
+      font-style: var(--selectedBoldFontCssStyle);
+    }
+
+    i, em {
+      font-family: var(--selectedItalicFontFamily), var(--fallbackFontFamily);
+      font-weight: var(--selectedItalicFontCssWeight);
+      font-style: var(--selectedItalicFontCssStyle);
+    }
+
+  }
 }
+
 </style>

@@ -11,6 +11,8 @@ import opentypeFeatureDefaults from "@/models/opentypeFeatureDefaults";
 export default new Vuex.Store({
   state: {
     selectedFont: { family: "" },
+    selectedBoldFont: { family: "" },
+    selectedItalicFont: { family: "" },
     settings: Settings.getDefaults(),
     selectedSampleKey: "lettering",
     selectedLanguages: LanguageData.map(l => l.language),
@@ -20,6 +22,12 @@ export default new Vuex.Store({
   getters: {
     selectedFont: state => {
       return state.selectedFont;
+    },
+    selectedBoldFont: state => {
+      return state.selectedBoldFont;
+    },
+    selectedItalicFont: state => {
+      return state.selectedItalicFont;
     },
     settings: state => {
       return state.settings;
@@ -38,9 +46,17 @@ export default new Vuex.Store({
   },
 
   mutations: {
-    selectFont(state, { font }) {
-      state.selectedFont = font;
-      this.commit("mapFontFeatureSettings");
+    selectFont(state, { font, boldFont, italicFont }) {
+      if (font) {
+        state.selectedFont = font;
+        this.commit("mapFontFeatureSettings");
+      }
+      if (boldFont) {
+        state.selectedBoldFont = boldFont;
+      }
+      if (italicFont) {
+        state.selectedItalicFont = italicFont;
+      }
     },
 
     mapFontFeatureSettings(state) {
