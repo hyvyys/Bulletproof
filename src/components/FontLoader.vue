@@ -8,13 +8,25 @@
       :options="fonts"
       :keys="fontOptionKeys"
       dropdownClass="font-loader__dropdown"
+      @dropdown-open="onSelectOpen"
     >
-      <div slot="option" slot-scope="props" :style="optionStyle">
-        <div class="font-family">{{ props.option && props.option.family }}</div>
-        <div
-          class="font-family-sample"
-          :style="optionSampleStyle(props.option)"
-        >{{ props.option && sampleText }}</div>
+      <div slot="option" slot-scope="props">
+        <div class="col col-sample">
+          <div
+            class="font-family-sample fit"
+            :style="optionSampleStyle(props.option)"
+          >{{ props.option && sampleText }}</div>
+        </div>
+        <div class="col">
+          <div class="font-family">{{ props.option && props.option.originalFamily }}</div>
+          <div class="font-style">{{ props.option && props.option.style }}</div>
+          <div class="font-version">
+            {{
+            props.option && props.option.version
+            ? `(${props.option.version})` : ""
+            }}
+          </div>
+        </div>
       </div>
     </UiSelect>
 
@@ -32,6 +44,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import textFit from "textfit";
 
 import UiModal from "keen-ui/src/UiModal.vue";
 // import UiSelect from "keen-ui/src/UiSelect.vue";
@@ -70,17 +83,11 @@ export default {
         image: "image",
       },
       fonts: [],
-      sampleText: "Abg123",
-      optionStyle: `
-        display: flex;
-        align-items: baseline;
-        width: 100%;
-        `,
+      sampleText: "Abg",
       optionSampleStyle: option => `
-        flex: 1;
         font-family: ${option.family};
-        font-weight: normal;
-        text-align: right;
+        font-style: ${option.cssStyle};
+        font-weight: ${option.cssWeight};
         `,
       errorMessage: "",
       errorLogs: [],
@@ -95,6 +102,13 @@ export default {
     this.loadFonts({ urls: fonts.map(f => dir + f) });
   },
   methods: {
+    onSelectOpen() {
+      setTimeout(() => {
+        let els = document.querySelectorAll('.fit');
+        // console.log('fit', els.length)
+        textFit(els);
+      }, 100);
+    },
     onFilesDropped(files) {
       // disable Fireworks
       // this.$refs.fireworks.$emit('event');
@@ -120,18 +134,21 @@ export default {
           const addedFonts = [];
 
           fonts.forEach(font => {
-            const duplicates = this.fonts.filter(f =>
-              f.originalFamily === font.originalFamily
-              && f.style === font.style
+            const duplicates = this.fonts.filter(
+              f =>
+                f.originalFamily === font.originalFamily &&
+                f.style === font.style
             );
             if (duplicates.length > 0) {
-              const highest = duplicates.sort((a, b) => a.version < b.version)[0];
+              const highest = duplicates.sort(
+                (a, b) => a.version < b.version
+              )[0];
               font.bumpVersion(highest.version + 1);
             }
             addedFonts.push(font.serialize());
             styles.add(font.fontFace);
           });
-          this.fonts.push.apply(this.fonts, addedFonts);
+          this.fonts.unshift.apply(this.fonts, addedFonts);
           if (fonts.length) {
             this.selectFont(addedFonts[0]);
           }
@@ -191,11 +208,53 @@ export default {
     }
     margin-bottom: 0.1em;
   }
+}
 
-  .option {
-    display: flex;
-    .font-family-sample {
-      flex: 1;
+.font-loader__dropdown {
+  width: 250px !important;
+
+  .ui-select-option {
+    > div {
+      // option
+      display: flex;
+      align-items: center;
+      width: 100%;
+
+      > :not(:last-child) {
+        margin-right: 0.3ch;
+      }
+
+      .col {
+        display: flex;
+        align-items: baseline;
+        flex-wrap: wrap;
+        &:nth-child(2) {
+          flex: 1;
+        }
+        > :not(:last-child) {
+          margin-right: 0.3ch;
+        }
+
+        &.col-sample {
+          margin-left: -0.5em;
+          margin-right: 0.45em;
+          .font-family-sample {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.75rem;
+            height: 1.5rem;
+            line-height: 0.5;
+          }
+        }
+        .font-style {
+          opacity: 0.6;
+        }
+        .font-version {
+          flex-grow: 1;
+          text-align: right;
+        }
+      }
     }
   }
 }
