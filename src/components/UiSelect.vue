@@ -117,7 +117,7 @@
 
                                 :highlighted="highlightedIndex === index"
                                 :keys="keys"
-                                :key="index"
+                                :key="keys.key ? option[keys.key] : index"
                                 :multiple="multiple"
                                 :option="option"
                                 :selected="isOptionSelected(option)"
@@ -236,7 +236,8 @@ export default {
                     class: 'class',
                     label: 'label',
                     value: 'value',
-                    image: 'image'
+                    image: 'image',
+                    key:   null,
                 };
             }
         },

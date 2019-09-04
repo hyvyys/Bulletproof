@@ -4,6 +4,9 @@ Vue.config.productionTip = false;
 import Vuebar from "vuebar";
 Vue.use(Vuebar);
 
+import VueObserveVisibility from 'vue-observe-visibility'
+Vue.use(VueObserveVisibility)
+
 import "@/scss/styles.scss";
 import App from "@/App.vue";
 

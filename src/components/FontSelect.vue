@@ -6,19 +6,20 @@
     :options="fonts"
     :keys="fontOptionKeys"
     dropdownClass="font-select__dropdown"
-    @dropdown-open="onSelectOpen"
     :label="label"
+    :loading="loading"
+    :disabled="loading"
   >
 
     <!-- Pass on all named slots -->
     <slot v-for="slot in Object.keys($slots)" :name="slot" :slot="slot"/>
 
     <div slot="option" slot-scope="props">
-      <div class="col col-sample">
-        <div
-          class="font-family-sample fit"
-          :style="optionSampleStyle(props.option)"
-        >{{ props.option && sampleText }}</div>
+      <div class="col col-sample" :style="optionSampleStyle(props.option)">
+        <FitMe
+          :text="props.option && sampleText"
+          :cutText="2"
+        />
       </div>
       <div class="col">
         <div class="font-family">{{ props.option && props.option.originalFamily }}</div>
@@ -35,17 +36,19 @@
 </template>
 
 <script>
-import textFit from "textfit";
 import UiSelect from "@/components/UiSelect.vue";
+import FitMe from "@/components/FitMe.vue";
 
 export default {
   components: {
     UiSelect,
+    FitMe,
   },
   props: {
     value: Object,
     fonts: Array,
     label: String,
+    loading: Boolean,
   },
   data() {
     return {
@@ -53,6 +56,7 @@ export default {
         class: "class",
         label: "displayName",
         image: "image",
+        key: "displayName",
       },
       optionSampleStyle: option => `
         font-family: ${option.family};
@@ -61,15 +65,6 @@ export default {
         `,
       sampleText: "Abg",
     };
-  },
-  methods: {
-    onSelectOpen() {
-      setTimeout(() => {
-        let els = document.querySelectorAll('.fit');
-        // console.log('fit', els.length)
-        textFit(els);
-      }, 100);
-    },
   },
 }
 </script>
@@ -106,14 +101,9 @@ export default {
         &.col-sample {
           margin-left: -0.5em;
           margin-right: 0.45em;
-          .font-family-sample {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 1.75rem;
-            height: 1.5rem;
-            line-height: 0.5;
-          }
+          width: 1.75rem;
+          height: 1.5rem;
+          line-height: 0.85;
         }
         .font-style {
           opacity: 0.6;
