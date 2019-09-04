@@ -1,6 +1,13 @@
 <template>
   <div class="font-loader">
-    <FontSelect class="dark" v-if="gui" :fonts="fontOptions" :value="selectedFont" @input="selectFont" />
+    <FontSelect
+      class="dark"
+      v-if="gui"
+      :fonts="fontOptions"
+      :value="selectedFont"
+      @input="selectFont"
+      :loading="loadingFonts"
+    />
 
     <div v-if="gui">
       <UiButton class="dark bi-button" ref="button1">
@@ -13,6 +20,7 @@
           :value="selectedBoldFont"
           @input="selectBoldFont"
           label="Strong emphasis font"
+          :loading="loadingFonts"
         />
 
         <FontSelect
@@ -20,6 +28,7 @@
           :value="selectedItalicFont"
           @input="selectItalicFont"
           label="Emphasis font"
+          :loading="loadingFonts"
         />
       </UiPopover>
     </div>
@@ -84,6 +93,7 @@ export default {
       fonts: [],
       errorMessage: "",
       errorLogs: [],
+      loadingFonts: false,
     };
   },
   beforeMount() {
@@ -105,6 +115,8 @@ export default {
     },
 
     async loadFonts({ files = [], urls = [] } = {}) {
+      this.loadingFonts = true;
+
       if (!urls.length) {
         urls = files.map(file => URL.createObjectURL(file));
       }
@@ -155,6 +167,9 @@ export default {
         })
         .catch(error => {
           this.printFontLoadingError([], error);
+        })
+        .finally(() => {
+          this.loadingFonts = false;
         });
     },
 
@@ -183,16 +198,28 @@ export default {
       styles.setProperty("--selectedFontCssStyle", font.cssStyle);
       this.$store.commit("selectFont", { font });
 
-      const matchingBold = this.fonts.filter(
-        f => f.family === v.family && f.cssWeight >= v.cssWeight
+      function waterfallFilter(array, ...predicates) {
+        for (let predicate of predicates) {
+          const results = array.filter(predicate);
+          if (results.length) {
+            return results;
+          }
+        }
+        return array;
+      }
+
+      const fontsByWeight = this.fonts.slice().sort((a, b) => a.cssWeight > b.cssWeight);
+      const matchingBold = waterfallFilter(fontsByWeight,
+        f => f.family === v.family && f.cssWeight - v.cssWeight === 300,
+        f => f.family === v.family && f.cssWeight - v.cssWeight >= 200,
+        f => f.family === v.family && f.cssWeight - v.cssWeight > 0,
+        f => f.family === v.family && f.cssWeight - v.cssWeight === 0,
       )[0];
-      const matchingItalic = this.fonts.filter(
-        f =>
-        f.family === v.family && f.cssWeight === v.cssWeight && f.style === "italic"
-        ||
-        f.family === v.family && f.style === "italic"
-        ||
-        f.family === v.family && f.cssWeight <= v.cssWeight
+      const matchingItalic = waterfallFilter(this.fonts,
+        f => f.family === v.family && f.cssWeight === v.cssWeight && f.style === "italic",
+        f => f.family === v.family && f.cssWeight < v.cssWeight && f.style === "italic",
+        f => f.family === v.family && f.style === "italic",
+        f => f.family === v.family && f.cssWeight <= v.cssWeight,
       )[0];
 
       this.selectBoldFont(matchingBold);
