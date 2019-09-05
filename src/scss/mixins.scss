@@ -27,7 +27,7 @@
 }
 
 @mixin pseudo() {
-  // position: relative;
+  position: relative;
   &::before,
   &::after {
     content: "";

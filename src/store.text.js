@@ -79,15 +79,20 @@ export default {
           texts: l[fieldKey],
         }));
       const html = data
-        .map(
-          ({ language, id, texts }) =>
-            `
-              <h3 id="${ id }">${ language }</h3>
-              ${ texts.map(t =>
-                `<p>${t}</p>`
-              ).join("") }
-            `
-        )
+        .map(({ language, id, texts }) => {
+          let header, fragments;
+          switch (getters.selectedSampleKey) {
+            case "gotchas":
+              header = `<h3 class="gotcha-heading" id="${ id }">${ language }</h3>`;
+              fragments = texts.map(({ topic, tags, tests }) =>
+                `<h4>${topic}</h4>${tests.map(t => `<p>${t}</p>`).join("")}`);
+              break;
+            default:
+              header = `<h3 id="${ id }">${ language }</h3>`;
+              fragments = texts.map(t =>`<p>${t}</p>`);
+          }
+          return header + fragments.join("");
+        })
         .join("");
       commit("setText", { sampleKey: state.selectedSampleKey, html });
     },

@@ -108,6 +108,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import "@/scss/mixins";
+
 .font-sample {
   font-size: 100% / $font-scale;
   flex: 1;
@@ -146,6 +148,16 @@ export default {
       font-style: var(--selectedItalicFontCssStyle);
     }
 
+    .gotcha-heading {
+      @include pseudo();
+      margin-bottom: 0.8rem;
+      &::after {
+        top: 100%;
+        width: 4rem;
+        height: 4px;
+        background: linear-gradient(to right, lighten($accent, 10%), $brand-primary-color);
+      }
+    }
   }
 }
 
