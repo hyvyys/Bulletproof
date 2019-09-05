@@ -8,6 +8,7 @@
     `"
   >
     <div
+      ref="content"
       class="font-sample-content"
       contenteditable
       spellcheck="false"
@@ -25,6 +26,8 @@
 </template>
 
 <script>
+import getId from "@/utils/id";
+import DomSelection from "@/utils/DomSelection";
 import { mapGetters } from "vuex";
 
 export default {
@@ -35,6 +38,11 @@ export default {
       default: "",
     },
   },
+  data() {
+    return {
+      selection: null,
+    };
+  },
   computed: {
     ...mapGetters([
       "settings",
@@ -42,6 +50,7 @@ export default {
       "selectedFont",
       "selectedBoldFont",
       "selectedItalicFont",
+      "formatRequested",
     ]),
     fontFeatureSettings() {
       return this.settings.gsubFeatures.concat(this.settings.gposFeatures)
@@ -49,10 +58,46 @@ export default {
         .join(', ');
     },
   },
+  watch: {
+    async html() {
+      // wait for html to get rendered
+      await this.$nextTick();
+      // this is only called when custom text is being created
+      // html is still being synced for custom texts,
+      // but this watcher isn't triggered
+      // ...idk why, but that's convenient
+      // TODO: debug the reason
+      this.selection.restore();
+    },
+    formatRequested(tag) {
+      if (tag) {
+        this.selection.wrap(tag);
+        this.$store.commit("format", { tag: "" });
+        this.$refs.content.focus();
+      }
+    },
+  },
+  mounted() {
+    this.selection = new DomSelection(this.$refs.content);
+  },
   methods: {
     onInput(e) {
       this.notifyWindow();
-      this.$emit("update", e.target.innerHTML);
+      this.selection.save();
+      const headingNodes = this.$refs.content.querySelectorAll('h1, h2, h3, h4, h5, h6');
+      headingNodes.forEach(h => {
+        if (!h.id) {
+          const isCurrent = window.location.hash === `#${h.id}`;
+          h.id = getId(h.innerText);
+          if (isCurrent) {
+            window.location.hash = `#${h.id}`;
+          }
+        }
+      });
+      const headings = Array.from(headingNodes)
+        .map(({ id, innerText }) => ({ id, text: innerText }));
+      const html = e.target.innerHTML;
+      this.$emit("update", { html, headings });
     },
     notifyWindow() {
       // trigger resize event so that Fitter can be positioned
@@ -78,11 +123,13 @@ export default {
     margin: 0.4rem 0;
   }
 
-  &:focus {
-    outline: none;
-  }
+  overflow: hidden;
 
   .font-sample-content {
+    height: 100%;
+    &:focus {
+      outline: none;
+    }
     font-family: var(--selectedFontFamily), var(--fallbackFontFamily);
     font-weight: var(--selectedFontCssWeight);
     font-style: var(--selectedFontCssStyle);

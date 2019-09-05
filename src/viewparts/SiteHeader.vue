@@ -2,11 +2,7 @@
   <div :class="`site-header ${sticky ? 'sticky' : ''}`">
     <div class="dark">
       <div class="logo">
-        <router-link
-          to="/"
-          class="home"
-          @click.native="scrollToTop"
-        >
+        <router-link to="/" class="home" @click.native="scrollToTop">
           <SiteLogo />
         </router-link>
       </div>
@@ -15,6 +11,8 @@
         <FontLoader :gui="showFontLoader" />
 
         <nav class="nav nav-text-kinds">
+          <router-link v-for="id in customTextIds" :key="id" :to="`/custom/${id}`">Custom {{ id }}</router-link>
+
           <router-link
             v-for="kind in textKinds"
             :key="kind"
@@ -26,7 +24,22 @@
 
     <SigmoidContainer class="light aside" sides="left" direction="bottom">
       <nav class="nav nav-aside">
-        <UiButton id="language-nav-trigger">Languages</UiButton>
+        <UiIconButton id="nav-trigger">
+          <div class="transition-wrapper">
+            <transition name="swap">
+              <img v-if="isCustomTextActive"
+                svg-inline
+                src="@/assets/icons/view_headline.svg"
+                key="1"
+              >
+              <img v-else
+                svg-inline
+                src="@/assets/icons/playlist_add_check.svg"
+                key="2"
+              >
+            </transition>
+          </div>
+        </UiIconButton>
       </nav>
     </SigmoidContainer>
   </div>
@@ -37,7 +50,7 @@ import { mapGetters } from "vuex";
 import fireEvent from "@/utils/fireEvent";
 import Hamster from "hamsterjs";
 
-import UiButton from "keen-ui/src/UiButton.vue";
+import UiIconButton from "keen-ui/src/UiIconButton.vue";
 import SigmoidContainer from "@/components/layout/SigmoidContainer.vue";
 import FontLoader from "@/components/FontLoader.vue";
 import SiteLogo from "@/components/SiteLogo.vue";
@@ -47,7 +60,7 @@ import textKindTitle from "@/models/textKindTitle";
 
 export default {
   components: {
-    UiButton,
+    UiIconButton,
     SigmoidContainer,
     SiteLogo,
     FontLoader,
@@ -62,9 +75,15 @@ export default {
   computed: {
     ...mapGetters([
       "scrolledParentSelector",
+      "customTextIds",
+      "selectedSampleKey",
     ]),
     showFontLoader() {
       return !!this.$route.params.text;
+    },
+    isCustomTextActive() {
+      const key = this.selectedSampleKey;
+      return typeof key === "number";
     },
   },
   mounted() {
@@ -166,6 +185,7 @@ $header-background: linear-gradient(to right, $light, $accent);
 
   .aside {
     --adjust-y: 1px;
+    --sigmoid-adjust: -15px;
 
     .nav-aside {
       padding-left: 0;
@@ -182,8 +202,15 @@ $header-background: linear-gradient(to right, $light, $accent);
     margin: 0 5px;
     font-size: 1.1em;
     font-weight: 500;
+    // transition: transform 0.2s;
+
+    transform: scale(0.95);
+    // will-change: transform;
+    -webkit-font-smoothing: antialiased;
+
     &.router-link-active {
       text-decoration: underline;
+      transform: scale(1);
     }
   }
 }

@@ -4,6 +4,7 @@
 @import "./keenui-fixes.scss";
 @import "./vuebar.scss";
 @import "./dark.scss";
+@import "./transitions.scss";
 
 .mask {
   mask-type: alpha;
@@ -13,6 +14,17 @@ html {
   font-family: $font-stack;
   font-size: 100% * $font-scale;
   overflow: hidden;
+}
+
+// :target::before {
+//   content: '';
+//   display: block;
+//   height:      64px;
+//   margin-top: -64px;
+// }
+
+.app-content {
+  scroll-padding-top: 64px; /* height of sticky header */
 }
 
 body {

@@ -2,20 +2,22 @@ import Vue from "vue";
 import Vuex from 'vuex';
 Vue.use(Vuex);
 
-import LanguageData from "language-data";
+import textModule from "./store.text";
+
 import Settings from "@/models/Settings";
 import computedParams from "@/models/computedParams";
 import convertLength from "@/models/convertLength";
 import opentypeFeatureDefaults from "@/models/opentypeFeatureDefaults";
 
 export default new Vuex.Store({
+  modules: {
+    text: textModule,
+  },
   state: {
     selectedFont: { family: "" },
     selectedBoldFont: { family: "" },
     selectedItalicFont: { family: "" },
     settings: Settings.getDefaults(),
-    selectedSampleKey: "lettering",
-    selectedLanguages: LanguageData.map(l => l.language),
     scrolledParentSelector: ".app-content",
   },
 

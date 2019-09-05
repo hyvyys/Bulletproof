@@ -22,7 +22,8 @@ export default new Router({
       },
     },
     {
-      path: `/:text(${textKinds.join("|")}|custom/:id?)`,
+      // parentheses enclose text kind RegExp
+      path: `/:text(${textKinds.join("|")}|custom)/:id?`,
       name: "FontTester",
       components: {
         header: SiteHeader,

@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <div class="fitter" v-show="visible">
+    <div class="fitter" v-show="!forceInvisible && visible">
       <div
         ref="positioned"
         class="positioned ui-popover is-raised"
@@ -43,6 +43,10 @@ export default {
       default: true,
     },
     trigger: String,
+    forceInvisible: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -53,9 +57,17 @@ export default {
       visible: !this.trigger,
     };
   },
+  watch: {
+    $route (){
+      this.updatePosition();
+    },
+  },
   mounted() {
     this.init();
     this.initShowHide();
+  },
+  destroyed() {
+    this.cleanup();
   },
 
   methods: {
@@ -64,27 +76,29 @@ export default {
       this.header = window.document.querySelector(this.topSelector);
       this.footer = window.document.querySelector(this.bottomSelector);
 
-      this.resize();
-      const throttledResize = this.resize; //throttle(this.resize, 1000 / 120, { leading: true });
-      window.addEventListener("resize", throttledResize);
+      this.size();
+      window.addEventListener("resize", this.resize);
 
       if (this.header && this.footer) {
         this.updatePosition();
-        const throttled = this.updatePosition;
-        // const throttled = throttle(this.updatePosition, 1, { leading: true });
-        this.parent.addEventListener("scroll", throttled);
-        window.addEventListener("resize", throttled);
+        this.parent.addEventListener("scroll", this.updatePosition);
+        window.addEventListener("resize", this.updatePosition);
       } else {
         // eslint-disable-next-line no-console
         console.error(`Fitter didn't find element ${this.topSelector} or element ${this.bottomSelector}.`);
       }
+    },
+    cleanup() {
+      window.removeEventListener("resize", this.resize);
+      this.parent.removeEventListener("scroll", this.updatePosition);
+      window.removeEventListener("resize", this.updatePosition);
     },
     updatePosition() {
       this.top = Math.max(0, this.header.getBoundingClientRect().bottom);
       this.maxHeight = Math.min(this.height, this.footer.getBoundingClientRect().top) - this.top;
       // this.position = this.top > 0 ? "static" : "fixed";
     },
-    resize() {
+    size() {
       this.height = viewport.height;
       let width = parseInt(getComputedStyle(this.$el).width);
       if (!width) {
@@ -92,6 +106,9 @@ export default {
       }
       // will be 0 if element has currently display: none
       if (width) this.width = width;
+    },
+    resize() {
+      this.height = viewport.height;
     },
     onWheel(e) {
       if (this.disableOverscroll) {
@@ -127,16 +144,11 @@ export default {
   .vb {
     display: flex;
     flex-direction: column;
+    height: 100%;
   }
 }
 .scrolled.disable-overscroll {
   overscroll-behavior: none;
-}
-
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .3s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
+  height: 100%;
 }
 </style>

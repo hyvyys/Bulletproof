@@ -275,7 +275,8 @@ export default {
 @import "@/scss/mixins";
 
 .font-loader {
-  @include flex();
+  display: flex;
+  align-items: center;
 
   .ui-select.font-select {
     .ui-select__display {
@@ -283,7 +284,7 @@ export default {
       width: $font-select-width;
       border-radius: 3px;
     }
-    margin-bottom: 0.1em;
+    margin-bottom: 0;
   }
 }
 

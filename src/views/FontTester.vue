@@ -10,22 +10,34 @@
     </Fitter>
     <FontSample
       :html="texts[selectedSampleKey]"
-      @update="v => updateText(selectedSampleKey, v)"
+      @update="e => modifyText(e)"
     />
+
+    <Fitter
+      class="language-nav-wrapper"
+      :scrolledParentSelector="scrolledParentSelector"
+      bottomSelector=".site-footer"
+      topSelector=".site-header"
+      trigger="#nav-trigger"
+    >
+      <div class="transition-wrapper">
+        <transition name="swap">
+          <FontSampleNav v-if="visibleLanguages.length === 0" />
+          <LanguageNav v-else />
+        </transition>
+      </div>
+    </Fitter>
   </div>
 </template>
 
 <script>
-import LanguageData from "language-data";
-
 import { mapGetters } from "vuex";
 
-import languageDataFields from "@/models/textKindLanguageDataField";
-import textKinds from "@/models/textKinds";
-
-import FontSample from "@/components/FontSample.vue";
-import Settings from "@/components/Settings.vue";
 import Fitter from "@/components/layout/Fitter.vue";
+import Settings from "@/components/Settings.vue";
+import FontSample from "@/components/FontSample.vue";
+import LanguageNav from "@/components/LanguageNav.vue";
+import FontSampleNav from "@/components/FontSampleNav.vue";
 
 export default {
   name: "FontTester",
@@ -33,77 +45,50 @@ export default {
     Fitter,
     Settings,
     FontSample,
+    LanguageNav,
+    FontSampleNav,
   },
   data() {
-    return {
-      texts: {
-        custom: "lorem ipsum dolor ".repeat(1000),
-      },
-      selectedSampleKey: "lettering",
-      selectedLanguages: LanguageData.map(l => l.language),
-    };
+    return {};
   },
   computed: {
     selectedTextKind() {
       return this.$route.params.text;
     },
-    ...mapGetters(["scrolledParentSelector"]),
+    selectedCustomTextId() {
+      return Number(this.$route.params.id);
+    },
+    ...mapGetters([
+      "scrolledParentSelector",
+      "texts",
+      "selectedSampleKey",
+      "visibleLanguages",
+    ]),
+    fontSampleHtml() {
+      return this.texts[this.selectedSampleKey];
+    },
   },
   watch: {
-    selectedTextKind(kind) {
-      this.selectSample(kind);
+    selectedTextKind() {
+      this.selectSample();
+    },
+    selectedCustomTextId() {
+      this.selectSample();
     },
   },
   beforeMount() {
     this.$store.commit("resetSettings");
-    this.selectSample(this.selectedTextKind);
-    this.updateTexts();
+    this.selectSample();
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {
-    // mergeFontFeatureSettings() {
-    //   const obj = Object.assign(this.settings.fontFeatureSettings, {});
-    //   const features = [...this.font.gposFeatures, ...this.font.gsubFeatures];
-    //   features.forEach(f => {
-    //     if (!(f.tag in obj)) {
-    //       obj[f.tag] = false;
-    //     }
-    //   });
-    //   this.settings.fontFeatureSettings = obj;
-
-    // },
-    selectSample(kind, id) {
-      if (kind in languageDataFields) {
-        this.selectedSampleKey = kind;
-      } else if (kind === "custom") {
-        this.selectedSampleKey = id;
-      }
+    selectSample() {
+      const kind = this.selectedTextKind;
+      const id = this.selectedCustomTextId;
+      this.$store.dispatch("selectSample", { kind, id });
     },
-    updateTexts() {
-      textKinds.forEach(kind => {
-        this.updateText(kind);
-      });
-    },
-    updateText(sampleKey, value) {
-      const fieldKey = languageDataFields[sampleKey];
-      if (fieldKey) {
-        if (typeof value !== "undefined") {
-          this.texts[sampleKey] = value;
-        } else {
-          const data = LanguageData.map(entry => ({
-            language: entry.language,
-            texts: entry[fieldKey],
-          })).filter(entry => entry.texts.length);
-          const html = data
-            .map(
-              ({ language, texts }) =>
-                `<h3>${language}</h3>${texts.map(t => `<p>${t}</p>`).join("")}`
-            )
-            .join("");
-          this.texts[sampleKey] = html;
-        }
-      }
+    modifyText(e) {
+      this.$store.commit("modifyText", e);
     },
   },
 };
@@ -113,13 +98,24 @@ export default {
 @import "@/scss/variables";
 
 .font-tester {
-  // background: $light;
   flex: 1;
   display: flex;
   height: 100vh;
+  // position: relative;
 }
 .settings-wrapper {
   min-width: $sidebar-width;
   width: $sidebar-width;
+}
+.language-nav-wrapper {
+  width: 0;
+
+  /deep/ .positioned {
+    background: $light;
+    right: $vuebar-width;
+    margin-right: -$vuebar-width;
+    padding-right: $vuebar-width;
+    width: 200px;
+  }
 }
 </style>

@@ -1,0 +1,24 @@
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .3s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+
+.swap-enter-active, .swap-leave-active {
+  transition: transform .3s, opacity .3s;
+}
+.swap-enter, .swap-leave-to {
+  opacity: 0;
+  transform: translateX(100%);
+}
+
+.transition-wrapper {
+  position: relative;
+  height: 100%;
+  .swap-leave-active {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+}
