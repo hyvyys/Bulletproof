@@ -42,6 +42,9 @@ export default {
     // this.setupParallax();
     this.maybeSetupParallax();
   },
+  destroyed() {
+    this.cleanupParallax();
+  },
   methods: {
     maybeSetupParallax() {
       switch (browser && browser.name) {
@@ -64,9 +67,10 @@ export default {
     setupParallax() {
       this.scrolledParent = document.querySelector(this.scrolledParentSelector);
       this.parallaxes = [this.$refs.parallax];
-      const callback = this.moveParallax;
-      // const callback = throttle(this.moveParallax, 16, { leading: true });
-      this.scrolledParent.addEventListener("scroll", callback);
+      this.scrolledParent.addEventListener("scroll", this.moveParallax);
+    },
+    cleanupParallax() {
+      this.scrolledParent.removeEventListener("scroll", this.moveParallax);
     },
     getParallaxText() {
       return shuffle(this.parallaxTexts)

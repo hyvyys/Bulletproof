@@ -1,20 +1,22 @@
 <template>
-  <div class="fitter" :style="`min-width: ${width}px`">
-    <div
-      ref="positioned"
-      class="positioned"
-      :style="`position: ${position}; width: ${width}px; top: ${top}px; max-height: ${maxHeight}px; `"
-    >
-      <div v-bar>
-        <div
-          :class="`scrolled ${disableOverscroll ? 'disable-overscroll' : ''}`"
-          @wheel="onWheel"
-        >
-          <slot></slot>
+  <transition name="fade">
+    <div class="fitter" v-show="visible">
+      <div
+        ref="positioned"
+        class="positioned ui-popover is-raised"
+        :style="`position: ${position}; width: ${width}px; top: ${top}px; max-height: ${maxHeight}px; `"
+      >
+        <div v-bar>
+          <div
+            :class="`scrolled ${disableOverscroll ? 'disable-overscroll' : ''}`"
+            @wheel="onWheel"
+          >
+            <slot></slot>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script>
@@ -40,6 +42,7 @@ export default {
       type: Boolean,
       default: true,
     },
+    trigger: String,
   },
   data() {
     return {
@@ -47,30 +50,35 @@ export default {
       maxHeight: null,
       position: 'fixed',
       width: null,
+      visible: !this.trigger,
     };
   },
   mounted() {
-    this.parent = document.querySelector(this.scrolledParentSelector);
-    this.header = window.document.querySelector(this.topSelector);
-    this.footer = window.document.querySelector(this.bottomSelector);
-
-    this.resize();
-    const throttledResize = this.resize; //throttle(this.resize, 1000 / 120, { leading: true });
-    window.addEventListener("resize", throttledResize);
-
-    if (this.header && this.footer) {
-      this.updatePosition();
-      const throttled = this.updatePosition;
-      // const throttled = throttle(this.updatePosition, 1, { leading: true });
-      this.parent.addEventListener("scroll", throttled);
-      window.addEventListener("resize", throttled);
-    } else {
-      // eslint-disable-next-line no-console
-      console.error(`Fitter didn't find element ${this.topSelector} or element ${this.bottomSelector}.`);
-    }
+    this.init();
+    this.initShowHide();
   },
 
   methods: {
+    init() {
+      this.parent = document.querySelector(this.scrolledParentSelector);
+      this.header = window.document.querySelector(this.topSelector);
+      this.footer = window.document.querySelector(this.bottomSelector);
+
+      this.resize();
+      const throttledResize = this.resize; //throttle(this.resize, 1000 / 120, { leading: true });
+      window.addEventListener("resize", throttledResize);
+
+      if (this.header && this.footer) {
+        this.updatePosition();
+        const throttled = this.updatePosition;
+        // const throttled = throttle(this.updatePosition, 1, { leading: true });
+        this.parent.addEventListener("scroll", throttled);
+        window.addEventListener("resize", throttled);
+      } else {
+        // eslint-disable-next-line no-console
+        console.error(`Fitter didn't find element ${this.topSelector} or element ${this.bottomSelector}.`);
+      }
+    },
     updatePosition() {
       this.top = Math.max(0, this.header.getBoundingClientRect().bottom);
       this.maxHeight = Math.min(this.height, this.footer.getBoundingClientRect().top) - this.top;
@@ -90,6 +98,22 @@ export default {
         e.stopPropagation();
       }
     },
+    initShowHide() {
+      if (this.trigger) {
+        document.querySelector(this.trigger).addEventListener("click", () => {
+          this.toggle();
+        });
+        document.body.addEventListener("click", () => {
+          // this.hide();
+        })
+      }
+    },
+    toggle() {
+      this.visible = !this.visible;
+    },
+    hide() {
+      this.visible = false;
+    },
   },
 };
 </script>
@@ -98,8 +122,21 @@ export default {
 .positioned {
   display: flex;
   flex-direction: column;
+  height: 100%;
+
+  .vb {
+    display: flex;
+    flex-direction: column;
+  }
 }
 .scrolled.disable-overscroll {
   overscroll-behavior: none;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .3s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>

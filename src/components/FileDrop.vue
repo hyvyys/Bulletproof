@@ -45,6 +45,10 @@ export default {
     this.scrolledParent = document.querySelector(this.scrolledParentSelector);
     this.scrolledParent.addEventListener("dragenter", this.handleBodyDragEnter);
   },
+  destroyed() {
+    this.scrolledParent.removeEventListener("dragenter", this.handleBodyDragEnter);
+    this.scrolledParent.removeEventListener("scroll", this.preventScroll);
+  },
   methods: {
     showDrop() {
       this.visible = true;
@@ -87,10 +91,7 @@ export default {
     toggleBodyScroll(on) {
       this.scrolledParentTop = this.scrolledParent.scrollTop;
       if (on) {
-        this.scrolledParent.removeEventListener(
-          "scroll",
-          this.preventScroll
-        );
+        this.scrolledParent.removeEventListener("scroll", this.preventScroll);
       } else {
         this.scrolledParent.addEventListener("scroll", this.preventScroll);
       }
