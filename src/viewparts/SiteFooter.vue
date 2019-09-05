@@ -1,24 +1,31 @@
 <template>
   <div class="site-footer">
     <div class="main">
-      Copyright 2019 Adam Jagosz
+      <div>
+        Copyright 2019 Adam Jagosz.
+      </div>
+      <div>
+        Sample texts come from
+        <a href="https://github.com/hyvyys/language-data" target="_blank">
+          Language-Data
+        </a>.
+        Visit link to contribute.
+      </div>
     </div>
     <SigmoidContainer sides="left" direction="top" class="large light aside">
-      <div class="github-link">
+      <a class="github-link" href="https://github.com/hyvyys/Bulletproof" target="_blank">
         <div>
           Bulletproof
           <br />
           on Github
         </div>
-        <a href="https://github.com/hyvyys/Bulletproof">
-          <img
-            height="32"
-            width="32"
-            alt="Github"
-            src="https://unpkg.com/simple-icons@latest/icons/github.svg"
-          />
-        </a>
-      </div>
+        <img
+          height="32"
+          width="32"
+          alt="Github"
+          src="https://unpkg.com/simple-icons@latest/icons/github.svg"
+        />
+      </a>
     </SigmoidContainer>
   </div>
 </template>
@@ -38,7 +45,7 @@ export default {
 
 @mixin footer-background() {
   background: $accent;
-  @include gradient-red;
+  @include gradient-red-2(0.1, 0.045);
   background-size: 100% 150px;
   background-position: 0 100%;
 }
@@ -55,6 +62,15 @@ export default {
     color: $accent-text;
     flex: 1;
     padding: 0 20px;
+    display: flex;
+    align-items: center;
+    > :not(:last-child) {
+      margin-right: 2em;
+    }
+
+    a {
+      color: $brand-primary-color;
+    }
   }
 
   .light {
@@ -67,6 +83,7 @@ export default {
     --adjust-y: 1px;
 
     .github-link {
+      text-decoration: none;
       line-height: 1;
       padding: 0.5em;
       flex: 1;
