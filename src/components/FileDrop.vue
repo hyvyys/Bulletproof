@@ -52,6 +52,7 @@ export default {
   methods: {
     showDrop() {
       this.visible = true;
+      this.toggleBodyScroll(false);
     },
     hideDrop() {
       this.visible = false;
@@ -77,7 +78,6 @@ export default {
     },
 
     handleBodyDragEnter(e) {
-      this.toggleBodyScroll(false);
       if (e.dataTransfer.types.indexOf("Files") > -1) {
         e.preventDefault();
         this.showDrop();
@@ -86,6 +86,7 @@ export default {
 
     preventScroll() {
       this.scrolledParent.scrollTop = this.scrolledParentTop;
+      console.log('prevented scroll');
     },
 
     toggleBodyScroll(on) {
