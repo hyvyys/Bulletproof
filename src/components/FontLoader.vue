@@ -238,10 +238,10 @@ export default {
         f => f.family === v.family && f.cssWeight - v.cssWeight > 0,
         f => f.family === v.family && f.cssWeight - v.cssWeight === 0,
       )[0];
-      const matchingItalic = waterfallFilter(this.fonts,
-        f => f.family === v.family && f.cssWeight === v.cssWeight && f.style === "italic",
-        f => f.family === v.family && f.cssWeight < v.cssWeight && f.style === "italic",
-        f => f.family === v.family && f.style === "italic",
+      const matchingItalic = waterfallFilter(this.fonts.slice(),
+        f => f.family === v.family && f.cssWeight === v.cssWeight && f.cssStyle === "italic",
+        f => f.family === v.family && f.cssWeight < v.cssWeight && f.cssStyle === "italic",
+        f => f.family === v.family && f.cssStyle === "italic",
         f => f.family === v.family && f.cssWeight <= v.cssWeight,
       )[0];
 
