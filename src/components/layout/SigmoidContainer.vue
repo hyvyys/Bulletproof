@@ -80,6 +80,21 @@ export default {
     z-index: 1;
   }
 
+  &.top {
+    border-top: var(--adjust-y) solid $light;
+    margin-top: calc(-1 * var(--adjust-y));
+    .content {
+      border-top: var(--adjust-y) solid $light;
+    }
+  }
+  &.bottom {
+    border-bottom: var(--adjust-y) solid $light;
+    margin-bottom: calc(-1 * var(--adjust-y));
+    .content {
+      border-bottom: var(--adjust-y) solid $light;
+    }
+  }
+
   &.left,
   &.both {
     margin-left: $margin;

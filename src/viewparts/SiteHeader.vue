@@ -103,9 +103,6 @@ $header-background: linear-gradient(to right, $light, $accent);
   padding-top: 8px;
   @include header-background(-8px);
 
-  /* cover up aside's sigmoid container --adjust-y */
-  border-bottom: 1px solid $light;
-
   position: sticky;
   top: -100%;
   transition: top 0.7s;

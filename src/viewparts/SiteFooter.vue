@@ -51,9 +51,6 @@ export default {
   padding-bottom: 8px;
   @include footer-background();
 
-  /* cover up aside's sigmoid container --adjust-y */
-  border-top: 1px solid $light;
-
   .main {
     color: $accent-text;
     flex: 1;
