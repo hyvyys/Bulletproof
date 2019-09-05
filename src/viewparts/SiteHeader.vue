@@ -2,7 +2,13 @@
   <div :class="`site-header ${sticky ? 'sticky' : ''}`">
     <div class="dark">
       <div class="logo">
-        <SiteLogo class />
+        <router-link
+          to="/"
+          class="home"
+          @click.native="scrollToTop"
+        >
+          <SiteLogo />
+        </router-link>
       </div>
 
       <div class="main">
@@ -20,8 +26,7 @@
 
     <SigmoidContainer class="light aside" sides="left" direction="bottom">
       <nav class="nav nav-aside">
-        <UiButton>Languages</UiButton>
-        <UiPopover></UiPopover>
+        <UiButton id="language-nav-trigger">Languages</UiButton>
       </nav>
     </SigmoidContainer>
   </div>
@@ -32,17 +37,21 @@ import { mapGetters } from "vuex";
 import fireEvent from "@/utils/fireEvent";
 import Hamster from "hamsterjs";
 
-import UiPopover from "keen-ui/src/UiPopover.vue";
 import UiButton from "keen-ui/src/UiButton.vue";
-import FontLoader from "@/components/FontLoader.vue";
 import SigmoidContainer from "@/components/layout/SigmoidContainer.vue";
+import FontLoader from "@/components/FontLoader.vue";
 import SiteLogo from "@/components/SiteLogo.vue";
 
 import textKinds from "@/models/textKinds";
 import textKindTitle from "@/models/textKindTitle";
 
 export default {
-  components: { UiPopover, UiButton, SiteLogo, SigmoidContainer, FontLoader },
+  components: {
+    UiButton,
+    SigmoidContainer,
+    SiteLogo,
+    FontLoader,
+  },
   data() {
     return {
       textKinds,
@@ -51,7 +60,9 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["scrolledParentSelector"]),
+    ...mapGetters([
+      "scrolledParentSelector",
+    ]),
     showFontLoader() {
       return !!this.$route.params.text;
     },
@@ -60,9 +71,11 @@ export default {
     const deltaUp = 3;
     const deltaDown = 7;
     const scrolled = document.querySelector(this.scrolledParentSelector);
+    this.scrolled = scrolled;
     const hamster = Hamster(scrolled);
     hamster.wheel((event, delta, deltaX, deltaY) => {
-      if (Math.sign(deltaY) !== Math.sign(this.scrollDelta)) this.scrollDelta = 0;
+      if (Math.sign(deltaY) !== Math.sign(this.scrollDelta))
+        this.scrollDelta = 0;
       this.scrollDelta += deltaY;
       if (this.scrollDelta > deltaUp) {
         this.sticky = true;
@@ -76,6 +89,9 @@ export default {
   methods: {
     navlinkText(kind) {
       return textKindTitle(kind);
+    },
+    scrollToTop() {
+      this.scrolled.scrollTo(0, 0);
     },
   },
 };
@@ -125,6 +141,9 @@ $header-background: linear-gradient(to right, $light, $accent);
     width: $sidebar-width;
     display: flex;
     justify-content: center;
+    a.home {
+      text-decoration: none;
+    }
   }
 
   .main {

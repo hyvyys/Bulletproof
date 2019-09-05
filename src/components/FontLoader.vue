@@ -94,24 +94,46 @@ export default {
       errorMessage: "",
       errorLogs: [],
       loadingFonts: false,
+      openedWithoutFonts: true,
+      defaultFontsLoaded: false,
     };
   },
-  beforeMount() {
-    const dir = "/fonts/";
-    const fonts = [
-      "alegreya-sans/alegreya-sans-v10-latin-ext_cyrillic_cyrillic-ext_latin_vietnamese_greek-ext_greek-regular.ttf",
-      "alegreya-sans/alegreya-sans-v10-latin-ext_cyrillic_cyrillic-ext_latin_vietnamese_greek-ext_greek-italic.ttf",
-      "alegreya-sans/alegreya-sans-v10-latin-ext_cyrillic_cyrillic-ext_latin_vietnamese_greek-ext_greek-700.ttf",
-      "Rywalka-Regular.ttf",
-    ];
+  watch: {
+    gui () {
+      this.init();
+    },
+  },
+  mounted() {
     styles.setProperty("--fallbackFontFamily", this.settings.fallbackFontFamily);
-    this.loadFonts({ urls: fonts.map(f => dir + f) });
+    this.init();
   },
   methods: {
-    onFilesDropped(files) {
+    init() {
+      if (this.gui && this.openedWithoutFonts && !this.defaultFontsLoaded) {
+        this.loadDefaultFonts();
+      }
+    },
+
+    loadDefaultFonts() {
+      this.defaultFontsLoaded = true;
+      const dir = "/fonts/";
+      const fonts = [
+        "alegreya-sans/alegreya-sans-v10-latin-ext_cyrillic_cyrillic-ext_latin_vietnamese_greek-ext_greek-regular.ttf",
+        "alegreya-sans/alegreya-sans-v10-latin-ext_cyrillic_cyrillic-ext_latin_vietnamese_greek-ext_greek-italic.ttf",
+        "alegreya-sans/alegreya-sans-v10-latin-ext_cyrillic_cyrillic-ext_latin_vietnamese_greek-ext_greek-700.ttf",
+        "Rywalka-Regular.ttf",
+      ];
+      this.loadFonts({ urls: fonts.map(f => dir + f) });
+    },
+
+    async onFilesDropped(files) {
+      this.openedWithoutFonts = false;
       // disable Fireworks
       // this.$refs.fireworks.$emit('event');
-      this.loadFonts({ files });
+      await this.loadFonts({ files });
+      if (this.$route.path === "/") {
+        this.$router.push({ path: 'lettering' });
+      }
     },
 
     async loadFonts({ files = [], urls = [] } = {}) {
