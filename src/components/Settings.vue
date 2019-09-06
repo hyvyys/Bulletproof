@@ -166,6 +166,28 @@
         >{{ feature.name }}</UiCheckbox>
       </div>
     </div>
+
+    <h3>Variation axes</h3>
+    <div class="setting-group">
+      <div class="notice" v-if="variationAxes.length === 0">
+        The selected font is not variable.
+      </div>
+      <div class="row" v-for="(axis, key) in variationAxes" :key="key">
+        <label class="row-label axis-label">
+          {{ axis.displayName }}
+        </label>
+        <UiSlider
+          :value="axis.value"
+          @input="v => $store.commit('updateVariationAxis', { tag: axis.tag, value: v })"
+          :min="axis.minValue"
+          :max="axis.maxValue"
+          :step="0.5"
+          :snapToStep="true"
+          :showMarker="true"
+        />
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -175,6 +197,7 @@ import { mapGetters } from "vuex";
 
 import UiCheckbox from "keen-ui/src/UiCheckbox.vue";
 import UiRadioGroup from "keen-ui/src/UiRadioGroup.vue";
+import UiSlider from "keen-ui/src/UiSlider.vue";
 import UiSelect from "@/components/UiSelect.vue";
 import UiNumber from "@/components/UiNumber.vue";
 import UiColorPicker from "@/components/UiColorPicker.vue";
@@ -184,6 +207,7 @@ export default {
   components: {
     UiSelect,
     UiCheckbox,
+    UiSlider,
     UiRadioGroup,
     UiNumber,
     UiColorPicker,
@@ -272,6 +296,9 @@ export default {
           ].includes(f.tag)
       );
     },
+    variationAxes() {
+      return this.settings.variationAxes;
+    },
   },
   watch: {
     figureHeight(val, oldVal) {
@@ -336,5 +363,16 @@ export default {
     margin-left: 0.25em;
     opacity: 0.6;
   }
+}
+
+.axis-label {
+  min-width: 5em;
+  margin: 5px 0;
+}
+
+.notice {
+  padding: 0.5em 0;
+  opacity: 0.7;
+  font-size: 0.85rem !important;
 }
 </style>

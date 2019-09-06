@@ -18,6 +18,7 @@
         text-align: ${settings.textAlign};
         text-transform: ${settings.textTransform};
         font-feature-settings: ${ fontFeatureSettings };
+        font-variation-settings: ${ fontVariationSettings };
       `"
       @input="onInput"
       v-html="html"
@@ -55,6 +56,11 @@ export default {
     fontFeatureSettings() {
       return this.settings.gsubFeatures.concat(this.settings.gposFeatures)
         .map(f => `'${f.tag}' ${f.value ? '1' : '0'} `)
+        .join(', ');
+    },
+    fontVariationSettings() {
+      return this.settings.variationAxes
+        .map(a => `'${a.tag}' ${a.value} `)
         .join(', ');
     },
   },

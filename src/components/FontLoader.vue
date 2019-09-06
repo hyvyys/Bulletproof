@@ -122,6 +122,7 @@ export default {
         "alegreya-sans/alegreya-sans-v10-latin-ext_cyrillic_cyrillic-ext_latin_vietnamese_greek-ext_greek-italic.ttf",
         "alegreya-sans/alegreya-sans-v10-latin-ext_cyrillic_cyrillic-ext_latin_vietnamese_greek-ext_greek-700.ttf",
         "Rywalka-Regular.ttf",
+        "Graduate.ttf",
       ];
       this.loadFonts({ urls: fonts.map(f => dir + f) });
     },

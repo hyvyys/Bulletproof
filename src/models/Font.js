@@ -122,7 +122,10 @@ export default class Font {
       }
     });
 
-    this.variationAxes = (font && font.tables.fvar && font.tables.fvar.axes) || [];
+    this.variationAxes = [];
+    if (font && font.tables.fvar && font.tables.fvar.axes) {
+      this.variationAxes = font && font.tables.fvar && font.tables.fvar.axes;
+    }
   }
 
   generateFontFace({ family, style, weight } = {}) {

@@ -88,6 +88,10 @@ export default class Settings {
         type: Object,
         default: () => ([]),
       },
+      variationAxes: {
+        type: Object,
+        default: () => ([]),
+      },
     }
   }
 

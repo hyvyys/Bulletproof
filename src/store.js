@@ -52,6 +52,7 @@ export default new Vuex.Store({
       if (font) {
         state.selectedFont = font;
         this.commit("mapFontFeatureSettings");
+        this.commit("mapFontVariationSettings");
       }
       if (boldFont) {
         state.selectedBoldFont = boldFont;
@@ -114,6 +115,22 @@ export default new Vuex.Store({
       const matching = features.find(f => f.tag === "locl");
       if (matching) {
         matching.selectedLanguage = selectedLanguage;
+      }
+    },
+
+    mapFontVariationSettings(state) {
+      const font = state.selectedFont;
+      state.settings.variationAxes = font.variationAxes.map(a => ({
+        ...a,
+        value: a.defaultValue,
+        displayName: a.name.en,
+      }));
+    },
+
+    updateVariationAxis(state, { tag, value }) {
+      const axis = state.settings.variationAxes.find(a => a.tag === tag);
+      if (axis) {
+        axis.value = value;
       }
     },
 
