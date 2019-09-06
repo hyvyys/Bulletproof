@@ -1,8 +1,11 @@
 $font-scale: 1;
 
 $font-stack: "Alegreya Sans", Helvetica, Arial, sans-serif;
-// font-family: "Livvic", Helvetica, Arial, sans-serif;
-// font-family: "FiraSansCondensed", Helvetica, Arial, sans-serif;
+
+$monospaced: "Iosevka SS09 Web", Consolas, "Courier New", Courier, monospace;
+$monospaced-font-size: 13px;
+
+// $monospaced: "Inconsolata", Consolas, "Courier New", Courier, monospace;
 
 /* ------------------------------------------------------------ *\
    color variables, groupped by background color (first value)
@@ -21,6 +24,8 @@ $accent-link: #bcdeff;
 $accent-link-hover: #ffffff;
 
 $sidebar-width: 220px;
+$sidebar-padding: 6px 10px;
+$contextual-sidebar-width: 190px;
 
 $font-select-width: 12em;
 

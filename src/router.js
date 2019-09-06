@@ -2,6 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 
 import Home from "@/views/Home.vue";
+import Help from "@/views/Help.vue";
 import FontTester from "@/views/FontTester.vue";
 import SiteHeader from "@/viewparts/SiteHeader.vue";
 
@@ -28,6 +29,14 @@ export default new Router({
       components: {
         header: SiteHeader,
         main: FontTester,
+      },
+    },
+    {
+      path: "/help",
+      name: "Help",
+      components: {
+        header: SiteHeader,
+        main: Help,
       },
     },
   ],

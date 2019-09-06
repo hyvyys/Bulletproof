@@ -1,0 +1,88 @@
+@import "./variables.scss";
+@import "keen-ui/src/styles/imports";
+
+.contextual-sidebar {
+  padding: $sidebar-padding;
+  padding-right: 4px;
+
+  .toolbar {
+    display: flex;
+    align-items: center;
+    margin: 0 -2px;
+
+    > * {
+      margin-right: 2px;
+      margin-left: 2px;
+    }
+  }
+
+  $radius: 8px;
+  .btn-group,
+  &.btn-group {
+    .ui-icon-button {
+      border: 2px solid $ui-input-border-color;
+      height: 1.75rem;
+      border-radius: $radius;
+      margin: 0 2px;
+      &:hover {
+        border-color: $ui-input-border-color--hover;
+        z-index: 1;
+      }
+    }
+
+    margin: 0 2px;
+    .ui-icon-button {
+      border-radius: 0;
+      margin: 0 -1px;
+      &:hover {
+        border-color: $ui-input-border-color--hover;
+        z-index: 1;
+      }
+      $radius: 8px;
+      &:first-child {
+        border-radius: $radius 0 0 $radius;
+      }
+      &:last-child {
+        border-radius: 0 $radius $radius 0;
+      }
+    }
+  }
+
+  .toolbar,
+  .nav {
+    padding: 4px;
+  }
+
+  $bullet-size: 18px;
+
+  .heading-link {
+    margin-left: $bullet-size;
+    display: block;
+    @include pseudo();
+    &::before {
+      left: -1.25em;
+      // right: 100%;
+      width: $bullet-size;
+      height: $bullet-size;
+      background: url("../assets/icons/link.svg");
+      background-size: $bullet-size $bullet-size;
+    }
+
+    &:hover {
+      &::before {
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  .ui-icon-button--type-primary.ui-icon-button--color-default:not(:hover),
+  .ui-icon-button--type-primary.ui-icon-button--color-default:not(.has-dropdown-open),
+  .ui-button--type-primary.ui-button--color-default:not(:hover),
+  .ui-button--type-primary.ui-button--color-default:not(.has-dropdown-open) {
+    border: 2px solid $md-grey-400;
+  }
+  .ui-icon-button--type-primary.ui-icon-button--color-default:hover,
+  .ui-icon-button--type-primary.ui-icon-button--color-default.has-dropdown-open {
+    // border: none;
+  }
+}

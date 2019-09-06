@@ -145,6 +145,9 @@ export default {
     display: flex;
     flex-direction: column;
     height: 100%;
+    &.vb-visible .vb-content {
+      box-sizing: border-box !important;
+    }
   }
 }
 .scrolled.disable-overscroll {

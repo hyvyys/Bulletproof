@@ -122,29 +122,29 @@ export default {
 $height: 1.2rem;
 $preset-size: 1.52rem;
 
-/deep/ .vc-sketch-presets {
+::v-deep .vc-sketch-presets {
   padding: 0;
   margin: 0;
   margin-top: 2px;
 }
 
-/deep/ .vc-sketch-presets-color {
+::v-deep .vc-sketch-presets-color {
   margin: 2px;
   height: $preset-size;
   width: $preset-size;
 }
 
-/deep/ .vc-sketch-hue-wrap,
-/deep/ .vc-sketch-alpha-wrap {
+::v-deep .vc-sketch-hue-wrap,
+::v-deep .vc-sketch-alpha-wrap {
   height: $height;
 }
 
-/deep/ .vc-hue-picker,
-/deep/ .vc-alpha-picker {
+::v-deep .vc-hue-picker,
+::v-deep .vc-alpha-picker {
   height: calc(#{$height} - 2px);
 }
 
-/deep/ .vc-sketch-color-wrap {
+::v-deep .vc-sketch-color-wrap {
   display: none;
 }
 </style>

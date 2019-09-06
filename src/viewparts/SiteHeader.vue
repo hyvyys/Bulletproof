@@ -36,7 +36,7 @@
     <SigmoidContainer class="light aside" sides="left" direction="bottom">
       <nav class="nav nav-aside">
         <UiIconButton id="nav-trigger">
-          <div class="transition-wrapper">
+          <div class="transition-wrapper" style="width: 24px; height: 24px;">
             <transition name="swap">
               <img v-if="isCustomTextActive"
                 svg-inline

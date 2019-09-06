@@ -59,6 +59,7 @@
                     :close-on-scroll="false"
                     :constrain-to-scroll-parent="false"
                     :disabled="disabled"
+                    :position="dropdownPosition"
 
                     @close="onClose"
                     @open="onOpen"
@@ -251,7 +252,11 @@ export default {
             type: Boolean,
             default: false
         },
-        dropdownClass: String
+        dropdownClass: String,
+        dropdownPosition: {
+          type: String,
+          default: "bottom-start",
+        },
     },
     data() {
         return {

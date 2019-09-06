@@ -5,6 +5,8 @@
 @import "./vuebar.scss";
 @import "./dark.scss";
 @import "./transitions.scss";
+@import "./contextual-sidebar.scss";
+@import "./row.scss";
 
 .mask {
   mask-type: alpha;
@@ -14,6 +16,24 @@ html {
   font-family: $font-stack;
   font-size: 100% * $font-scale;
   overflow: hidden;
+}
+
+code, pre, samp, kbd {
+  font-family: $monospaced;
+  font-size: 13px;
+}
+
+h3 {
+  margin: 4px 0 0 0;
+  font-size: 1em;
+}
+
+.reading {
+  max-width: 800px;
+  margin: 40px auto;
+  font-size: 1.35em;
+  line-height: 1.45;
+  font-weight: 500;
 }
 
 // :target::before {
@@ -50,4 +70,12 @@ a {
       color: unset;
     }
   }
+}
+
+.help-link {
+  text-decoration: none;
+  flex: unset !important;
+  font-size: 0.9em;
+  font-weight: 700;
+  transform: translateY(-2px);
 }

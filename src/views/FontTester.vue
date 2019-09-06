@@ -13,20 +13,21 @@
       @update="e => modifyText(e)"
     />
 
-    <Fitter
-      class="nav-wrapper"
-      :scrolledParentSelector="scrolledParentSelector"
-      bottomSelector=".site-footer"
-      topSelector=".site-header"
-      trigger="#nav-trigger"
-    >
-      <div class="transition-wrapper">
-        <transition name="swap">
-          <FontSampleNav v-if="visibleLanguages.length === 0" />
-          <LanguageNav v-else />
-        </transition>
-      </div>
-    </Fitter>
+      <Fitter
+        class="nav-wrapper"
+        :scrolledParentSelector="scrolledParentSelector"
+        bottomSelector=".site-footer"
+        topSelector=".site-header"
+        trigger="#nav-trigger"
+      >
+        <div class="transition-wrapper">
+    <transition name="swap">
+            <LanguageNav v-if="visibleLanguages.length > 0" />
+            <KerningNav v-else-if="selectedTextKind === 'kerning'" />
+            <FontSampleNav v-else />
+    </transition>
+        </div>
+      </Fitter>
   </div>
 </template>
 
@@ -37,6 +38,7 @@ import Fitter from "@/components/layout/Fitter.vue";
 import Settings from "@/components/Settings.vue";
 import FontSample from "@/components/FontSample.vue";
 import LanguageNav from "@/components/LanguageNav.vue";
+import KerningNav from "@/components/KerningNav.vue";
 import FontSampleNav from "@/components/FontSampleNav.vue";
 
 export default {
@@ -46,6 +48,7 @@ export default {
     Settings,
     FontSample,
     LanguageNav,
+    KerningNav,
     FontSampleNav,
   },
   data() {
@@ -96,6 +99,7 @@ export default {
 
 <style scoped lang="scss">
 @import "@/scss/variables";
+@import "@/scss/mixins";
 
 .font-tester {
   flex: 1;
@@ -110,12 +114,16 @@ export default {
 .nav-wrapper {
   width: 0;
 
-  /deep/ .positioned {
+  ::v-deep .positioned {
     background: $light;
     right: $vuebar-width;
-    margin-right: -$vuebar-width;
-    padding-right: $vuebar-width;
-    width: 175px;
+    width: $contextual-sidebar-width;
+    @include pseudo;
+    &::after {
+      left: 100%;
+      background: $light;
+      width: $vuebar-width;
+    }
   }
 }
 </style>

@@ -1,8 +1,13 @@
 import Vue from "vue";
 import router from "@/router";
 
+import characterRange from "@/utils/characterRange";
+import cartesianProduct from "@/utils/cartesianProduct";
+import kerningPatterns from "@/models/kerningPatterns";
+import kerningPatternId from "@/models/kerningPatternId";
 import languageDataFields from "@/models/textKindLanguageDataField";
 import LanguageData from "language-data";
+import escapeHtmlId from "./utils/escapeHtmlId";
 
 let id = 0;
 let customTextId = 1;
@@ -15,6 +20,8 @@ export default {
     languages: LanguageData.map(l => ({ ...l, id: id++, isSelected: true })),
     textHeadings: [],
     formatRequested: false,
+    kerningPatterns: [],
+    defaultKerningPatterns: kerningPatterns,
   },
 
   mutations: {
@@ -60,6 +67,78 @@ export default {
     selectLanguage(state, { id, checked }) {
       state.languages.find(l => l.id === id).isSelected = checked;
     },
+
+    clearKerningPatterns(state) {
+      state.kerningPatterns.splice(0);
+      this.commit("setText", { sampleKey: "kerning", html: "" });
+    },
+
+    initKerningPatterns(state) {
+      state.defaultKerningPatterns.forEach(p => {
+        this.commit("addKerningPattern", { segments: p.segments });
+      });
+    },
+
+    addKerningPattern(state, { segments }) {
+      const sets = segments.map(s => {
+        // character sets incl. ranges, only hyphen is escaped as \-
+        if (/^\[.+\]$/.test(s)) {
+          let characters = [];
+          s = s.replace(/^\[/, "").replace(/]/, ""); // trim range delimiters [ ]
+
+          const ranges = s.matchAll(/([^\\])-(.)/g); // e.g. a-z
+          Array.from(ranges).forEach(r => {
+            let [, start, end] = r;
+            [].push.apply(characters, characterRange(start, end));
+          });
+
+          s = s.replace(/([^\\])-(.)/g, "");
+
+          const singleCharacters = s.replace(/\\-/g, "-").split("");
+          [].push.apply(characters, singleCharacters);
+          return characters;
+        }
+
+        // words etc.
+        else if (/^\(.+\)$/.test(s)) {
+          s = s.replace(/^\(/, "").replace(/\)/, ""); // trim group delimiters ( )
+
+          let options = [];
+          let current = "";
+          s.split("").forEach(char => {
+            if (char === "|" && !/\\$/.test(current)) {
+              options.push(current);
+              current = "";
+            }
+            else { // pipe was escaped as \|
+              current += char;
+            }
+          });
+          options.push(current);
+
+          options = options.map(o => o.replace(/\\\|/, "|"));
+          return options;
+        }
+
+        return [s];
+      });
+
+      const id = kerningPatternId(segments)
+      const copy = state.kerningPatterns.slice();
+      copy.push({ id, sets, isVisible: true });
+      state.kerningPatterns = copy;
+    },
+
+    removeKerningPattern(state, { id }) {
+      const index = state.kerningPatterns.findIndex(p => p.id === id);
+      state.kerningPatterns.splice(index, 1);
+    },
+
+    toggleKerningPattern(state, { id, on }) {
+      const index = state.kerningPatterns.findIndex(p => p.id === id);
+      state.kerningPatterns[index].isVisible = on;
+    },
+
   },
 
   actions: {
@@ -76,7 +155,14 @@ export default {
       dispatch("updateText");
     },
 
-    updateText({ state, commit, getters }) {
+    updateText({ state, commit, getters, dispatch }) {
+      if (state.selectedSampleKey === "kerning") {
+        if (state.kerningPatterns.length === 0) {
+          commit("initKerningPatterns");
+        }
+        dispatch("updateKerning");
+        return;
+      }
       const fieldKey = getters.selectedSampleTextKey;
       if (!fieldKey) {
         return;
@@ -92,20 +178,62 @@ export default {
           let header, fragments;
           switch (getters.selectedSampleKey) {
             case "gotchas":
-              header = `<h3 class="gotcha-heading" id="${ id }">${ language }</h3>`;
+              header = `<h3 class="gotcha-heading" id="${id}">${language}</h3>`;
+              // eslint-disable-next-line no-unused-vars
               fragments = texts.map(({ topic, tags, tests }) =>
                 `<h4>${topic}</h4>${tests.map(t => `<p>${t}</p>`).join("")}`);
               break;
+            case "kerning":
+              break;
             default:
-              header = `<h3 id="${ id }">${ language }</h3>`;
-              fragments = texts.map(t =>`<p>${t}</p>`);
+              header = `<h3 id="${id}">${language}</h3>`;
+              fragments = texts.map(t => `<p>${t}</p>`);
           }
           return header + fragments.join("");
         })
         .join("");
       commit("setText", { sampleKey: state.selectedSampleKey, html });
     },
+
+    updateKerning({ state, commit }) {
+      let html = state.kerningPatterns
+        .filter(pattern => pattern.isVisible)
+        .map(pattern => {
+          function clone(array) { return JSON.parse(JSON.stringify(array)); }
+          const sets = clone(pattern.sets);
+          sets[sets.length - 1].push("\n");
+          let line = cartesianProduct(...sets)
+            .map(r => r.join(""))
+            .join("");
+          return `<p><h6 id="${escapeHtmlId(pattern.id)}"></h6>${line}</p>`;
+        })
+        .join("");
+      commit("setText", { sampleKey: "kerning", html });
+    },
+
+    addKerningPattern({ dispatch, commit }, { segments }) {
+      commit("addKerningPattern", { segments });
+      dispatch("updateKerning");
+    },
+
+    removeKerningPattern({ dispatch, commit }, { id }) {
+      commit("removeKerningPattern", { id });
+      dispatch("updateKerning");
+    },
+
+    toggleKerningPattern({ dispatch, commit }, { id, on }) {
+      commit("toggleKerningPattern", { id, on });
+      dispatch("updateKerning");
+    },
+
+    resetKerningPatterns({ dispatch, commit }) {
+      commit("clearKerningPatterns");
+      setTimeout(() => {
+        dispatch("updateText");
+      }, 50);
+    },
   },
+
 
   getters: {
     texts: state => {
@@ -135,7 +263,7 @@ export default {
     visibleLanguages: (state, getters) => {
       if (getters.selectedSampleTextKey) {
         return getters.filteredLanguages
-        .filter(l => l[getters.selectedSampleTextKey].length);
+          .filter(l => l[getters.selectedSampleTextKey].length);
       }
       else {
         return [];
@@ -143,6 +271,9 @@ export default {
     },
     selectedLanguages: (state, getters) => {
       return getters.visibleLanguages.filter(l => l.isSelected);
+    },
+    kerningPatterns: (state) => {
+      return state.kerningPatterns;
     },
   },
 }

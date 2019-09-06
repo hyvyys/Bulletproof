@@ -302,7 +302,7 @@ export default {
 .bi-button {
   min-width: unset;
   text-transform: none;
-  font-family: Consolas, "Courier New", Courier, monospace;
+  font-family: $monospaced;
   b {
     margin-right: 0.2em;
   }

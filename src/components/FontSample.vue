@@ -129,6 +129,9 @@ export default {
 
   .font-sample-content {
     height: 100%;
+    padding-bottom: 10em;
+    white-space: pre;
+
     &:focus {
       outline: none;
     }

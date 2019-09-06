@@ -5,25 +5,26 @@
   opacity: 0;
 }
 
+.fade-move {
+  transition: transform .3s;
+}
+.fade-leave-active {
+  position: absolute;
+}
+
 .swap-enter-active, .swap-leave-active {
   transition: transform .3s, opacity .3s;
 }
 .swap-enter, .swap-leave-to {
   opacity: 0;
-  transform: translateX(100%);
-}
-
-.fade-move {
-  transition: transform .3s;
-}
-.fade-enter-to {
-  transition: none;
+  transform: translateX(60%); // somehow 90% or more causes weird jumps
 }
 
 .transition-wrapper {
   position: relative;
   height: 100%;
-  .swap-leave-active {
+  width: 100%;
+  .swap-enter-active {
     position: absolute;
     top: 0;
     left: 0;

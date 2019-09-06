@@ -1,6 +1,6 @@
 <template>
   <div class="settings">
-    <div class="setting-row">
+    <div class="row">
       <label class="row-label">Font size</label>
       <UiNumber
         ref="settingFontSize"
@@ -20,7 +20,7 @@
       />
     </div>
 
-    <div class="setting-row">
+    <div class="row">
       <label class="row-label">Line height</label>
       <UiNumber
         ref="settingLineHeight"
@@ -40,7 +40,7 @@
       >default</UiCheckbox>
     </div>
 
-    <div class="setting-row">
+    <div class="row">
       <label class="row-label">Text align</label>
       <UiSelect
         ref="settingTextAlign"
@@ -50,7 +50,7 @@
       />
     </div>
 
-    <div class="setting-row">
+    <div class="row">
       <label class="row-label">Text color</label>
       <UiColorPicker
         ref="settingTextColor"
@@ -59,7 +59,7 @@
       />
     </div>
 
-    <div class="setting-row">
+    <div class="row">
       <label class="row-label">Back color</label>
       <UiColorPicker
         ref="settingBackgroundColor"
@@ -68,7 +68,7 @@
       />
     </div>
 
-    <div class="setting-row">
+    <div class="row">
       <label class="row-label">Case transform</label>
       <UiSelect
         ref="settingTextTransform"
@@ -80,7 +80,7 @@
 
     <h3 v-if="capFeatures.length > 0">Caps</h3>
     <div class="setting-group">
-      <div class="setting-row" v-for="(feature, key) in capFeatures" :key="key">
+      <div class="row" v-for="(feature, key) in capFeatures" :key="key">
         <UiCheckbox
           :value="feature.value"
           @input="v => $store.commit('updateGsubFeature', { tag: feature.tag, value: v })"
@@ -90,7 +90,7 @@
 
     <h3 v-if="localization">Localization</h3>
     <div v-if="localization" class="setting-group">
-      <div class="setting-row">
+      <div class="row">
         <UiSelect
           :value="localization.selectedLanguage"
           :options="localization.languages"
@@ -115,7 +115,7 @@
 
     <h3 v-if="numberFeatures.length > 0">Numbers</h3>
     <div class="setting-group">
-      <div class="setting-row">
+      <div class="row">
         <UiRadioGroup v-if="!!(pnum && tnum)"
           name="figureWidth"
           v-model="figureWidth"
@@ -129,7 +129,7 @@
           :vertical="true"
         />
       </div>
-      <div class="setting-row" v-for="(feature, key) in numberFeatures" :key="key">
+      <div class="row" v-for="(feature, key) in numberFeatures" :key="key">
         <UiCheckbox
           :value="feature.value"
           @input="v => $store.commit('updateGsubFeature', { tag: feature.tag, value: v })"
@@ -139,7 +139,7 @@
 
     <h3 v-if="stylisticSets.length > 0">Stylistic Sets</h3>
     <div class="setting-group">
-      <div class="setting-row" v-for="(feature, key) in stylisticSets" :key="key">
+      <div class="row" v-for="(feature, key) in stylisticSets" :key="key">
         <UiCheckbox
           :value="feature.value"
           @input="v => $store.commit('updateGsubFeature', { tag: feature.tag, value: v })"
@@ -149,7 +149,7 @@
 
     <h3 v-if="otherGsub.length > 0">Other GSUB</h3>
     <div class="setting-group">
-      <div class="setting-row" v-for="(feature, key) in otherGsub" :key="key">
+      <div class="row" v-for="(feature, key) in otherGsub" :key="key">
         <UiCheckbox
           :value="feature.value"
           @input="v => $store.commit('updateGsubFeature', { tag: feature.tag, value: v })"
@@ -159,7 +159,7 @@
 
     <h3 v-if="activeGpos.length > 0">GPOS</h3>
     <div class="setting-group">
-      <div class="setting-row" v-for="(feature, key) in activeGpos" :key="key">
+      <div class="row" v-for="(feature, key) in activeGpos" :key="key">
         <UiCheckbox
           :value="feature.value"
           @input="v => $store.commit('updateGposFeature', { tag: feature.tag, value: v })"
@@ -306,43 +306,7 @@ export default {
 @import "@/scss/variables";
 
 .settings {
-  padding: 5px;
-
-  h3 {
-    margin: 4px 0 0 0;
-    font-size: 1em;
-  }
-}
-.setting-row {
-  display: flex;
-  width: 100%;
-  align-items: baseline;
-
-  margin: 0 -0.2em;
-  > * {
-    margin: 0 0.2em 2px;
-  }
-  > .row-label {
-    margin-right: 0.3em;
-    min-width: 4em;
-  }
-  > :not(label) {
-    flex: 1;
-  }
-  > .row-label,
-  /deep/ .ui-checkbox__label-text,
-  /deep/ .ui-radio__label-text {
-    opacity: 0.7;
-    font-size: 0.85rem !important;
-  }
-
-  @for $i from 1 to 30 {
-    .const#{$i}ch {
-      display: block;
-      flex: 0.1 1 #{$i}ch;
-      min-width: #{$i}ch;
-    }
-  }
+  padding: $sidebar-padding;
 }
 
 .checkbox-small.ui-checkbox {
@@ -350,12 +314,12 @@ export default {
   font-size: 1em;
   align-self: center;
 
-  /deep/ .ui-checkbox__checkmark {
+  ::v-deep .ui-checkbox__checkmark {
     height: 1rem;
     width: 1rem;
     margin-top: 0.2rem;
   }
-  /deep/ .ui-checkbox__label-text {
+  ::v-deep .ui-checkbox__label-text {
     font-size: 1em;
     margin-left: 0.15em;
   }

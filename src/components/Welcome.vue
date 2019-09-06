@@ -1,5 +1,5 @@
 <template>
-  <div class="welcome">
+  <div class="welcome reading">
     <figure class="banner">
       <img class="logo" svg-inline src="../assets/images/logo.svg" />
       <h1>Bulletproof</h1>
@@ -24,13 +24,6 @@ export default {
 @import "@/scss/variables";
 @import "@/scss/mixins";
 
-.welcome {
-  max-width: 800px;
-  margin: 40px auto;
-  font-size: 1.35em;
-  line-height: 1.45;
-  font-weight: 500;
-}
 .banner {
   font-size: 6rem;
   text-align: center;

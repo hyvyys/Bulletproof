@@ -1,0 +1,42 @@
+
+.row {
+  display: flex;
+  width: 100%;
+  align-items: baseline;
+
+  > * {
+    margin: 0 0.2em 2px;
+    &:first-child {
+      margin-left: 0;
+    }
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+  > .row-label {
+    margin-right: 0.3em;
+    min-width: 4em;
+  }
+  > :not(label):not(.ui-icon-button) {
+    flex: 1;
+  }
+  > .ui-icon-button {
+    height: 1.75rem;
+    width: 1.75rem;
+    margin: 2px 0;
+  }
+  > .row-label,
+  ::v-deep .ui-checkbox__label-text,
+  ::v-deep .ui-radio__label-text {
+    opacity: 0.7;
+    font-size: 0.85rem !important;
+  }
+
+  @for $i from 1 to 30 {
+    .const#{$i}ch {
+      display: block;
+      flex: 0.1 1 #{$i}ch;
+      min-width: #{$i}ch;
+    }
+  }
+}

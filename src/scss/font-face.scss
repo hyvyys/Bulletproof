@@ -1,32 +1,11 @@
 @import "./utils/font-face.scss";
 
-// $fontDir: "../assets/fonts";
-$fontDir: "/fonts"; // /public/
+$fontDir: "/fonts";
 
 @include font-face("Rywalka", $fontDir, ((Regular, 400, normal), ), (ttf));
 
-// @include font-face("Livvic",
-//   "../assets/Livvic",
-//   ((ExtraLight, 200, normal),
-//     (Regular, 400, normal),
-    // (RegularItalic, 400, italic),
-    // (SemiBold, bold, normal),
-    // (Black, 900, normal),
-  // ),
-  // (ttf));
-
-// @include font-face("FiraSansCondensed",
-//   "../assets/Fira_Sans_Condensed",
-//   ((ExtraLight, 200, normal),
-//     (Regular, 400, normal),
-//     (RegularItalic, 400, italic),
-//     (SemiBold, bold, normal),
-//     (Black, 900, normal),
-//   ),
-//   (ttf));
-
 @include font-face("alegreya-sans-v10-latin-ext_cyrillic_cyrillic-ext_latin_vietnamese_greek-ext_greek",
-  $fontDir + "/alegreya-sans",
+  $fontDir + "/Alegreya-Sans",
   (
     // (100, 100, normal),
     (regular, 400, normal),
@@ -37,3 +16,6 @@ $fontDir: "/fonts"; // /public/
   ),
   (eot, woff2, woff, ttf, svg),
   'Alegreya Sans');
+  
+@import "/fonts/iosevka-ss09/webfont.css";
+// @include font-face("Inconsolata", $fontDir + "/Inconsolata", ((Regular, 400, normal), (Bold, 700, normal)), (ttf));
