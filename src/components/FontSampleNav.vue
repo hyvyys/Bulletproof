@@ -23,7 +23,7 @@
 
     <div class="nav">
       <div v-for="(heading, i) in textHeadings" :key="i">
-        <a :href="`#${heading.id}`">
+        <a class="heading-link" :href="`#${heading.id}`">
           {{ heading.text }}
         </a>
       </div>
@@ -59,6 +59,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/scss/mixins";
 @import 'keen-ui/src/styles/imports';
 
 .font-sample-nav {
@@ -89,5 +90,27 @@ export default {
 
 .toolbar, .nav {
   padding: 4px;
+}
+
+$bullet-size: 18px;
+
+.heading-link {
+  margin-left: $bullet-size;
+  display: block;
+  @include pseudo();
+  &::before {
+    left: -1.25em;
+    // right: 100%;
+    width: $bullet-size;
+    height: $bullet-size;
+    background: url("../assets/icons/link.svg");
+    background-size: $bullet-size $bullet-size;
+  }
+
+  &:hover {
+    &::before {
+      transform: scale(1.1);
+    }
+  }
 }
 </style>

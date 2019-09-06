@@ -14,7 +14,7 @@
     />
 
     <Fitter
-      class="language-nav-wrapper"
+      class="nav-wrapper"
       :scrolledParentSelector="scrolledParentSelector"
       bottomSelector=".site-footer"
       topSelector=".site-header"
@@ -107,7 +107,7 @@ export default {
   min-width: $sidebar-width;
   width: $sidebar-width;
 }
-.language-nav-wrapper {
+.nav-wrapper {
   width: 0;
 
   /deep/ .positioned {
@@ -115,7 +115,7 @@ export default {
     right: $vuebar-width;
     margin-right: -$vuebar-width;
     padding-right: $vuebar-width;
-    width: 200px;
+    width: 175px;
   }
 }
 </style>
