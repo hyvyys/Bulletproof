@@ -1,3 +1,9 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
 .ui-textbox__input,
 .ui-select__display {
   border-bottom-width: 2px !important;
@@ -36,14 +42,8 @@
   margin-left: 0.25rem !important;
 }
 
-$radio-size: 16px;
-.ui-radio__outer-circle,
-.ui-radio__inner-circle {
-  height: $radio-size !important;
-  width: $radio-size !important;
-}
 .ui-radio-group.is-vertical .ui-radio-group__radio {
-  margin-bottom: 6px !important;
+  margin-bottom: 2px !important;
 }
 
 .ui-button {

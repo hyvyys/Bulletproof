@@ -174,7 +174,7 @@
 import { mapGetters } from "vuex";
 
 import UiCheckbox from "keen-ui/src/UiCheckbox.vue";
-import UiRadioGroup from "@/components/UiRadioGroup.vue";
+import UiRadioGroup from "keen-ui/src/UiRadioGroup.vue";
 import UiSelect from "@/components/UiSelect.vue";
 import UiNumber from "@/components/UiNumber.vue";
 import UiColorPicker from "@/components/UiColorPicker.vue";
@@ -199,17 +199,17 @@ export default {
       capTags: ["smcp", "c2sc", "pcap", "c2pc"],
       figureTags: ["pnum", "tnum", "lnum", "onum"],
       figureHeights: [
-        { value: "", label: "default" },
+        { value: "default", label: "default" },
         { value: "lnum", label: "lining" },
         { value: "onum", label: "oldstyle" },
       ],
-      figureHeight: "",
+      figureHeight: "default",
       figureWidths: [
-        { value: "", label: "default" },
+        { value: "default", label: "default" },
         { value: "pnum", label: "proportional" },
         { value: "tnum", label: "tabular" },
       ],
-      figureWidth: "",
+      figureWidth: "default",
       numberTags: ["sups", "subs", "numr", "dnom", "frac", "zero"],
       stylisticSetTags: Array(20)
         .fill(0)
@@ -275,12 +275,10 @@ export default {
   },
   watch: {
     figureHeight(val, oldVal) {
-      this.$store.commit("updateGsubFeature", { tag: oldVal, value: false });
-      this.$store.commit("updateGsubFeature", { tag: val, value: true });
+      this.setFigureVariant(val, oldVal);
     },
     figureWidth(val, oldVal) {
-      this.$store.commit("updateGsubFeature", { tag: oldVal, value: false });
-      this.$store.commit("updateGsubFeature", { tag: val, value: true });
+      this.setFigureVariant(val, oldVal);
     },
   },
   methods: {
@@ -291,6 +289,14 @@ export default {
     },
     getGsubFeature(tag) {
       return this.activeGsub.find(f => tag === f.tag);
+    },
+    setFigureVariant(val, oldVal) {
+      if (oldVal !== "default") {
+        this.$store.commit("updateGsubFeature", { tag: oldVal, value: false });
+      }
+      if (val !== "default") {
+        this.$store.commit("updateGsubFeature", { tag: val, value: true });
+      }
     },
   },
 };
