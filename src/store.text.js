@@ -81,27 +81,28 @@ export default {
 
     addKerningPattern(state, { segments }) {
       const sets = segments.map(s => {
+        let fragments = [];
+
         // character sets incl. ranges, only hyphen is escaped as \-
         if (/^\[.+\]$/.test(s)) {
-          let characters = [];
-          s = s.replace(/^\[/, "").replace(/]/, ""); // trim range delimiters [ ]
+          s = s.replace(/^\[/, "").replace(/]$/, ""); // trim range delimiters [ ]
 
           const ranges = s.matchAll(/([^\\])-(.)/g); // e.g. a-z
           Array.from(ranges).forEach(r => {
             let [, start, end] = r;
-            [].push.apply(characters, characterRange(start, end));
+            [].push.apply(fragments, characterRange(start, end));
           });
 
           s = s.replace(/([^\\])-(.)/g, "");
 
           const singleCharacters = s.replace(/\\-/g, "-").split("");
-          [].push.apply(characters, singleCharacters);
-          return characters;
+          console.log(singleCharacters);
+          [].push.apply(fragments, singleCharacters);
         }
 
         // words etc.
         else if (/^\(.+\)$/.test(s)) {
-          s = s.replace(/^\(/, "").replace(/\)/, ""); // trim group delimiters ( )
+          s = s.replace(/^\(/, "").replace(/\)$/, ""); // trim group delimiters ( )
 
           let options = [];
           let current = "";
@@ -117,10 +118,13 @@ export default {
           options.push(current);
 
           options = options.map(o => o.replace(/\\\|/, "|"));
-          return options;
+          [].push.apply(fragments, options);
+        }
+        else {
+          fragments.push(s);
         }
 
-        return [s];
+        return fragments;
       });
 
       const id = kerningPatternId(segments)
