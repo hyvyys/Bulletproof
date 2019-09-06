@@ -1,6 +1,6 @@
 <template>
   <div class="font-sample-nav contextual-sidebar">
-    <div class="toolbar btn-group">
+    <div class="toolbar panel btn-group">
       <UiIconButton
         @click="makeHeading"
         tooltip="Heading"
@@ -21,7 +21,7 @@
       </UiIconButton>
     </div>
 
-    <div class="nav">
+    <div class="nav panel">
       <div v-for="(heading, i) in textHeadings" :key="i">
         <a class="heading-link" :href="`#${heading.id}`">
           {{ heading.text }}

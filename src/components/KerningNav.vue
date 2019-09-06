@@ -1,6 +1,6 @@
 <template>
   <div class="kerning-nav contextual-sidebar">
-    <div class="editor">
+    <div class="editor panel">
       <div class="row">
         <h3>
           Kerning string editor
@@ -56,7 +56,7 @@
       </div>
     </div>
 
-    <div class="nav">
+    <div class="nav panel">
       <h3>Kerning patterns</h3>
 
       <transition-group name="fade">
