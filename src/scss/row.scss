@@ -26,8 +26,8 @@
     margin: 2px 0;
   }
   > .row-label,
-  ::v-deep .ui-checkbox__label-text,
-  ::v-deep .ui-radio__label-text {
+  .ui-checkbox__label-text,
+  .ui-radio__label-text {
     opacity: 0.7;
     font-size: 0.85rem !important;
   }
