@@ -11,7 +11,18 @@
         <FontLoader :gui="showFontLoader" />
 
         <nav class="nav nav-text-kinds">
-          <router-link v-for="id in customTextIds" :key="id" :to="`/custom/${id}`">Custom {{ id }}</router-link>
+          <transition-group name="fade">
+            <span v-for="id in customTextIds" :key="id" class="custom-text-link">
+              <router-link :to="`/custom/${id}`">Custom {{ id }}</router-link>
+              <UiIconButton color="secondary" style="color: white" @click="removeCustomText(id)">
+                <img
+                  svg-inline
+                  src="@/assets/icons/close.svg"
+                  key="1"
+                >
+              </UiIconButton>
+            </span>
+          </transition-group>
 
           <router-link
             v-for="kind in textKinds"
@@ -112,6 +123,9 @@ export default {
     scrollToTop() {
       this.scrolled.scrollTo(0, 0);
     },
+    removeCustomText(id) {
+      this.$store.commit("removeCustomText", { id });
+    },
   },
 };
 </script>
@@ -211,6 +225,23 @@ $header-background: linear-gradient(to right, $light, $accent);
     &.router-link-active {
       text-decoration: underline;
       transform: scale(1);
+    }
+  }
+}
+
+.custom-text-link {
+  display: inline-flex;
+  align-items: center;
+  a {
+    margin-right: 0;
+  }
+  $button-size: 22px;
+  .ui-icon-button {
+    height: $button-size;
+    width: $button-size;
+    svg {
+      height: $button-size;
+      width: $button-size;
     }
   }
 }

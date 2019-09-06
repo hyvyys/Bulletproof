@@ -36,6 +36,15 @@ export default {
       state.textHeadings = headings;
     },
 
+    removeCustomText(state, { id }) {
+      const i = state.customTextIds.indexOf(id);
+      state.customTextIds.splice(i, 1);
+      delete state.texts[id];
+      if (router.currentRoute.path === `/custom/${id}`) {
+        router.push(`/lettering`);
+      }
+    },
+
     format(state, { tag }) {
       state.formatRequested = tag;
     },

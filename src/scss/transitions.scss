@@ -13,6 +13,13 @@
   transform: translateX(100%);
 }
 
+.fade-move {
+  transition: transform .3s;
+}
+.fade-enter-to {
+  transition: none;
+}
+
 .transition-wrapper {
   position: relative;
   height: 100%;
