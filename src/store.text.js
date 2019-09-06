@@ -96,7 +96,6 @@ export default {
           s = s.replace(/([^\\])-(.)/g, "");
 
           const singleCharacters = s.replace(/\\-/g, "-").split("");
-          console.log(singleCharacters);
           [].push.apply(fragments, singleCharacters);
         }
 
