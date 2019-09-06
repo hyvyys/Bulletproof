@@ -21,11 +21,11 @@
         trigger="#nav-trigger"
       >
         <div class="transition-wrapper">
-    <transition name="swap">
+          <transition name="swap">
             <LanguageNav v-if="visibleLanguages.length > 0" />
             <KerningNav v-else-if="selectedTextKind === 'kerning'" />
             <FontSampleNav v-else />
-    </transition>
+          </transition>
         </div>
       </Fitter>
   </div>

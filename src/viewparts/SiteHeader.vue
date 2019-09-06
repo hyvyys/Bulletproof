@@ -15,11 +15,7 @@
             <span v-for="id in customTextIds" :key="id" class="custom-text-link">
               <router-link :to="`/custom/${id}`">Custom {{ id }}</router-link>
               <UiIconButton color="secondary" style="color: white" @click="removeCustomText(id)">
-                <img
-                  svg-inline
-                  src="@/assets/icons/close.svg"
-                  key="1"
-                >
+                <img svg-inline src="@/assets/icons/close.svg" key="1" />
               </UiIconButton>
             </span>
           </transition-group>
@@ -38,16 +34,23 @@
         <UiIconButton id="nav-trigger">
           <div class="transition-wrapper" style="width: 24px; height: 24px;">
             <transition name="swap">
-              <img v-if="isCustomTextActive"
+              <img
+                v-if="textKind === 'custom'"
                 svg-inline
                 src="@/assets/icons/view_headline.svg"
                 key="1"
-              >
-              <img v-else
+              />
+              <img
+                v-else-if="textKind === 'kerning'"
+                svg-inline src="@/assets/icons/kerning.svg"
+                key="2"
+              />
+              <img
+                v-else
                 svg-inline
                 src="@/assets/icons/playlist_add_check.svg"
-                key="2"
-              >
+                key="3"
+              />
             </transition>
           </div>
         </UiIconButton>
@@ -92,9 +95,11 @@ export default {
     showFontLoader() {
       return !!this.$route.params.text;
     },
-    isCustomTextActive() {
+    textKind() {
       const key = this.selectedSampleKey;
-      return typeof key === "number";
+      if (typeof key === "number") return "custom";
+      else if (key === "kerning") return "kerning";
+      else return "default";
     },
   },
   mounted() {

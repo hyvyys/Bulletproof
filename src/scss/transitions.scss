@@ -17,6 +17,7 @@
 }
 .swap-enter, .swap-leave-to {
   opacity: 0;
+  width: 190px;
   transform: translateX(60%); // somehow 90% or more causes weird jumps
 }
 
@@ -24,9 +25,12 @@
   position: relative;
   height: 100%;
   width: 100%;
+
   .swap-enter-active {
     position: absolute;
     top: 0;
     left: 0;
+    right: 0;
+    bottom: 0;
   }
 }
