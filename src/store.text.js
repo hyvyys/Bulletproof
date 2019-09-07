@@ -39,7 +39,8 @@ export default {
         customTextId++;
       }
       else {
-        state.texts[state.selectedSampleKey] = html;
+        Vue.set(state.texts, state.selectedSampleKey, html);
+        // state.texts[state.selectedSampleKey] = html;
       }
       state.textHeadings = headings;
     },
@@ -61,7 +62,12 @@ export default {
       if (kind in languageDataFields) {
         state.selectedSampleKey = kind;
       } else if (kind === "custom") {
-        state.selectedSampleKey = id;
+        if (id in state.texts) {
+          state.selectedSampleKey = id;
+        }
+        else {
+          router.push(`/lettering`);
+        }
       }
     },
 
