@@ -62,3 +62,7 @@
 .ui-select:not(.is-multiple) .ui-select__display {
   height: unset !important;
 }
+
+.ui-icon-button {
+  flex-shrink: 0 !important;
+}

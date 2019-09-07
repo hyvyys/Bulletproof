@@ -8,6 +8,7 @@ import kerningPatternId from "@/models/kerningPatternId";
 import languageDataFields from "@/models/textKindLanguageDataField";
 import LanguageData from "language-data";
 import escapeHtmlId from "./utils/escapeHtmlId";
+import escapeHtml from "./utils/escapeHtml";
 
 let id = 0;
 let customTextId = 1;
@@ -74,17 +75,24 @@ export default {
     },
 
     initKerningPatterns(state) {
-      state.defaultKerningPatterns.forEach(p => {
-        this.commit("addKerningPattern", { segments: p.segments });
+      state.defaultKerningPatterns.forEach(({ segments, isVisible = true }) => {
+        this.commit("addKerningPattern", { segments, isVisible });
       });
     },
 
-    addKerningPattern(state, { segments }) {
-      const sets = segments.map(s => {
-        let fragments = [];
+    addKerningPattern(state, { segments, isVisible }) {
+      const sets = [];
+      let closures = [];
+
+      segments.forEach(s => {
+        if (/^@/.test(s)) {
+          s = s.replace(/^@/, "");
+          closures = Array.from(s.matchAll(/(.)(.)/g)).map(m => [m[1], m[2]]);
+        }
 
         // character sets incl. ranges, only hyphen is escaped as \-
-        if (/^\[.+\]$/.test(s)) {
+        else if (/^\[.+\]$/.test(s)) {
+          let fragments = [];
           s = s.replace(/^\[/, "").replace(/]$/, ""); // trim range delimiters [ ]
 
           const ranges = s.matchAll(/([^\\])-(.)/g); // e.g. a-z
@@ -97,10 +105,12 @@ export default {
 
           const singleCharacters = s.replace(/\\-/g, "-").split("");
           [].push.apply(fragments, singleCharacters);
+          sets.push(fragments);
         }
 
         // words etc.
         else if (/^\(.+\)$/.test(s)) {
+          let fragments = [];
           s = s.replace(/^\(/, "").replace(/\)$/, ""); // trim group delimiters ( )
 
           let options = [];
@@ -118,17 +128,17 @@ export default {
 
           options = options.map(o => o.replace(/\\\|/, "|"));
           [].push.apply(fragments, options);
-        }
-        else {
-          fragments.push(s);
+          sets.push(fragments);
         }
 
-        return fragments;
+        else {
+          sets.push([s]);
+        }
       });
 
       const id = kerningPatternId(segments)
       const copy = state.kerningPatterns.slice();
-      copy.push({ id, sets, isVisible: true });
+      copy.push({ id, sets, closures, isVisible });
       state.kerningPatterns = copy;
     },
 
@@ -204,11 +214,30 @@ export default {
         .map(pattern => {
           function clone(array) { return JSON.parse(JSON.stringify(array)); }
           const sets = clone(pattern.sets);
-          sets[sets.length - 1].push("\n");
-          let line = cartesianProduct(...sets)
-            .map(r => r.join(""))
-            .join("");
-          return `<p><h6 id="${escapeHtmlId(pattern.id)}"></h6>${line}</p>`;
+          let product = cartesianProduct(...sets);
+          let section = [];
+          let current = product[0][0];
+          let line = "";
+          product.forEach(sub => {
+            if (sub[0] !== current) {
+              if (!pattern.closures.length) {
+                line += current;
+              }
+              section.push(line);
+              line = "";
+              current = sub[0];
+            }
+            let fragment = sub.join("");
+            if (pattern.closures.length) {
+              fragment = pattern.closures
+                .map(closure => `${closure[0]}${fragment}${closure[1]}`)
+                .join(" ") + " ";
+            }
+            line += fragment;
+          });
+
+          return `<h6 id="${escapeHtmlId(pattern.id)}"></h6>`
+            + `<p>${escapeHtml(section.join("\n"))}</p>`;
         })
         .join("");
       commit("setText", { sampleKey: "kerning", html });
