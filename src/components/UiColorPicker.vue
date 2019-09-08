@@ -71,7 +71,45 @@ export default {
     },
 
     updateFromInput() {
-      this.colorValue = TinyColor(this.textValue);
+      const tiny = TinyColor(this.textValue);
+      if (tiny.isValid) {
+        this.colorValue = tiny;
+        // allow user to choose format
+        this.formatText();
+        this.update();
+      }
+    },
+
+    updateFromPicker(color) {
+      this.colorValue = TinyColor({ ...color.rgba });
+      // force hex format
+      this.updateText();
+      this.update();
+    },
+
+    updateProgrammatically() {
+      function toHex8(val) {
+        return TinyColor(val).toHex8String();
+      }
+
+      if (toHex8(this.value) !== toHex8(this.textValue)) {
+        this.colorValue = TinyColor(this.value);
+        // force hex format
+        this.updateText();
+      }
+      // this.update(); // don't emit event if set programmatically; should I?
+    },
+
+    updateText() {
+      this.textValue = this.colorValue.toHex8String();
+      // if opacity is full (ff), omit it and return 6 digit hex
+      if (/ff$/.test(this.textValue)) {
+        this.textValue = this.colorValue.toHexString();
+      }
+      this.formatText();
+    },
+
+    formatText() {
       if (this.colorValue.getFormat() === "hex") {
         if (!/^#/.test(this.textValue)) {
           this.textValue = "#" + this.textValue;
@@ -79,17 +117,13 @@ export default {
       }
     },
 
-    updateFromPicker(color) {
-      this.colorValue = TinyColor({ ...color.rgba });
-      const text = this.colorValue.toHex8String();
-      this.textValue = /ff$/.test(text) ? this.colorValue.toHexString() : text;
+    update() {
+      this.$emit("input", this.textValue);
     },
   },
   watch: {
-    textValue(val) {
-      if (val) {
-        this.$emit("input", val);
-      }
+    value() {
+      this.updateProgrammatically();
     },
   },
 };

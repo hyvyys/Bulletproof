@@ -28,16 +28,20 @@
         </a>
       </div>
     </div>
+
+    <AnimationEditor />
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import UiIconButton from "keen-ui/src/UiIconButton.vue";
+import AnimationEditor from "@/components/AnimationEditor.vue";
 
 export default {
   components: {
     UiIconButton,
+    AnimationEditor,
   },
   computed: {
     ...mapGetters([

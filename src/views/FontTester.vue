@@ -52,7 +52,8 @@ export default {
     FontSampleNav,
   },
   data() {
-    return {};
+    return {
+    };
   },
   computed: {
     selectedTextKind() {

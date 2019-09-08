@@ -5,6 +5,12 @@
     :style="`
         color: ${settings.textColor};
         background: ${settings.backgroundColor};
+        font-size: ${settings.fontSize}${settings.fontSizeUnit};
+        line-height: ${settings.defaultLineHeight ? '' : settings.lineHeight};
+        text-align: ${settings.textAlign};
+        text-transform: ${settings.textTransform};
+        font-feature-settings: ${ fontFeatureSettings };
+        font-variation-settings: ${ fontVariationSettings };
     `"
   >
     <div
@@ -12,14 +18,6 @@
       class="font-sample-content"
       contenteditable
       spellcheck="false"
-      :style="`
-        font-size: ${settings.fontSize}${settings.fontSizeUnit};
-        line-height: ${settings.defaultLineHeight ? '' : settings.lineHeight};
-        text-align: ${settings.textAlign};
-        text-transform: ${settings.textTransform};
-        font-feature-settings: ${ fontFeatureSettings };
-        font-variation-settings: ${ fontVariationSettings };
-      `"
       @input="onInput"
       v-html="html"
     />
@@ -52,27 +50,14 @@ export default {
       "selectedBoldFont",
       "selectedItalicFont",
       "formatRequested",
+      "fontFeatureSettings",
+      "fontVariationSettings",
     ]),
-    fontFeatureSettings() {
-      return this.settings.gsubFeatures.concat(this.settings.gposFeatures)
-        .map(f => `'${f.tag}' ${f.value ? '1' : '0'} `)
-        .join(', ');
-    },
-    fontVariationSettings() {
-      return this.settings.variationAxes
-        .map(a => `'${a.tag}' ${a.value} `)
-        .join(', ');
-    },
   },
   watch: {
     async html() {
       // wait for html to get rendered
       await this.$nextTick();
-      // this is only called when custom text is being created
-      // html is still being synced for custom texts,
-      // but this watcher isn't triggered
-      // ...idk why, but that's convenient
-      // TODO: debug the reason
       this.selection.restore();
     },
     formatRequested(tag) {
@@ -90,7 +75,22 @@ export default {
     onInput(e) {
       this.notifyWindow();
       this.selection.save();
-      const headingNodes = this.$refs.content.querySelectorAll('h1, h2, h3, h4, h5, h6');
+
+      const headingSelector = 'h1, h2, h3, h4, h5, h6';
+
+      this.$refs.content.querySelectorAll("h3 h3").forEach(h3 => {
+        const text = h3.innerText;
+        h3.parentNode.replaceChild(document.createTextNode(text), h3);
+      });
+
+      this.$refs.content.querySelectorAll(headingSelector).forEach(h => {
+        const text = h.innerText.trim();
+        if (!text) {
+          h.parentNode.removeChild(h);
+        }
+      });
+
+      const headingNodes = this.$refs.content.querySelectorAll(headingSelector);
       headingNodes.forEach(h => {
         if (!h.id) {
           const isCurrent = window.location.hash === `#${h.id}`;
@@ -102,6 +102,9 @@ export default {
       });
       const headings = Array.from(headingNodes)
         .map(({ id, innerText }) => ({ id, text: innerText }));
+
+      this.$refs.content.querySelectorAll("[style]").forEach(e => e.removeAttribute("style"));
+
       const html = e.target.innerHTML;
       this.$emit("update", { html, headings });
     },

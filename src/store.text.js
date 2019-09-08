@@ -30,19 +30,26 @@ export default {
       Vue.set(state.texts, sampleKey, html)
     },
 
-    modifyText(state, { html, headings }) {
+    modifyText(state, { html, headings = [] }) {
       if (state.selectedSampleKey in languageDataFields) {
-        state.customTextIds.push(customTextId);
-        state.texts[customTextId] = html;
-        this.commit("selectSample", { kind: "custom", id: customTextId });
-        router.push(`/custom/${state.selectedSampleKey}`);
-        customTextId++;
+        this.commit("addCustomText", { html });
       }
       else {
         Vue.set(state.texts, state.selectedSampleKey, html);
         // state.texts[state.selectedSampleKey] = html;
       }
       state.textHeadings = headings;
+    },
+
+    addCustomText(state, { html }) {
+      state.customTextIds.push(customTextId);
+      state.texts[customTextId] = html;
+      this.commit("selectSample", { kind: "custom", id: customTextId });
+      const route = `/custom/${state.selectedSampleKey}`;
+      if (router.currentRoute.path !== route) {
+        router.push(route);
+      }
+      customTextId++;
     },
 
     removeCustomText(state, { id }) {
@@ -66,7 +73,8 @@ export default {
           state.selectedSampleKey = id;
         }
         else {
-          router.push(`/lettering`);
+          const html = "Type here";
+          this.commit("addCustomText", { html });
         }
       }
     },

@@ -382,7 +382,8 @@ export default {
     },
     watch: {
       options(val, oldVal) {
-        this.refreshScrollbar();
+        if (val.length !== oldVal.length)
+          this.refreshScrollbar();
       },
     },
     methods: {

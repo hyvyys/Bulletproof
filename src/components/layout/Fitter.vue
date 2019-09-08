@@ -8,6 +8,7 @@
       >
         <div v-bar>
           <div
+            ref="scrolled"
             :class="`scrolled ${disableOverscroll ? 'disable-overscroll' : ''}`"
             @wheel="onWheel"
           >
@@ -47,6 +48,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    scrollSyncStartEvent: {
+      type: String,
+      default: "scrollSyncStart",
+    },
+    scrollSyncEndEvent: {
+      type: String,
+      default: "scrollSyncEnd",
+    },
   },
   data() {
     return {
@@ -55,6 +64,7 @@ export default {
       position: 'fixed',
       width: null,
       visible: !this.trigger,
+      storedScrollPosition: 0,
     };
   },
   watch: {
@@ -65,6 +75,7 @@ export default {
   mounted() {
     this.init();
     this.initShowHide();
+    this.initScrollSync();
   },
   destroyed() {
     this.cleanup();
@@ -130,6 +141,14 @@ export default {
     },
     hide() {
       this.visible = false;
+    },
+    initScrollSync() {
+      this.$on(this.scrollSyncStartEvent, () => {
+        this.storedScrollPosition = this.$refs.scrolled.scrollTop;
+      });
+      this.$on(this.scrollSyncEndEvent, () => {
+        this.$refs.scrolled.scrollTop = this.storedScrollPosition;
+      });
     },
   },
 };

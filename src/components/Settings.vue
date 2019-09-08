@@ -9,14 +9,14 @@
         :max="settings.maxFontSize"
         :step="settings.fontSizeStep"
         :clickStep="settings.fontSizeClickStep"
-        @input="v => $store.commit('updateSettings', { fontSize: v })"
+        @input="v => updateSetting('updateSettings', { fontSize: v })"
       />
       <UiSelect
         ref="settingFontSizeUnit"
         class="const3ch"
         :value="settings.fontSizeUnit"
         :options="settings.fontSizeUnitOptions"
-        @input="v => $store.commit('updateSettings', { fontSizeUnit: v })"
+        @input="v => updateSetting('updateSettings', { fontSizeUnit: v })"
       />
     </div>
 
@@ -29,14 +29,14 @@
         :max="settings.maxLineHeight"
         :step="settings.lineHeightStep"
         :clickStep="settings.lineHeightClickStep"
-        @input="v => $store.commit('updateSettings', { lineHeight: v })"
+        @input="v => updateSetting('updateSettings', { lineHeight: v })"
         :disabled="settings.defaultLineHeight"
       />
       <UiCheckbox
         ref="settingDefaultLineHeight"
         class="checkbox-small"
         :value="settings.defaultLineHeight"
-        @input="v => $store.commit('updateSettings', { defaultLineHeight: v })"
+        @input="v => updateSetting('updateSettings', { defaultLineHeight: v })"
       >default</UiCheckbox>
     </div>
 
@@ -46,7 +46,7 @@
         ref="settingTextAlign"
         :value="settings.textAlign"
         :options="settings.textAlignOptions"
-        @input="v => $store.commit('updateSettings', { textAlign: v })"
+        @input="v => updateSetting('updateSettings', { textAlign: v })"
       />
     </div>
 
@@ -55,7 +55,7 @@
       <UiColorPicker
         ref="settingTextColor"
         :value="settings.textColor"
-        @input="v => $store.commit('updateSettings', { textColor: v })"
+        @input="v => updateSetting('updateSettings', { textColor: v })"
       />
     </div>
 
@@ -64,7 +64,7 @@
       <UiColorPicker
         ref="settingBackgroundColor"
         :value="settings.backgroundColor"
-        @input="v => $store.commit('updateSettings', { backgroundColor: v })"
+        @input="v => updateSetting('updateSettings', { backgroundColor: v })"
       />
     </div>
 
@@ -74,7 +74,7 @@
         ref="settingTextTransform"
         :value="settings.textTransform"
         :options="settings.textTransformOptions"
-        @input="v => $store.commit('updateSettings', { textTransform: v })"
+        @input="v => updateSetting('updateSettings', { textTransform: v })"
       />
     </div>
 
@@ -83,7 +83,7 @@
       <div class="row" v-for="(feature, key) in capFeatures" :key="key">
         <UiCheckbox
           :value="feature.value"
-          @input="v => $store.commit('updateGsubFeature', { tag: feature.tag, value: v })"
+          @input="v => updateSetting('updateGsubFeature', { tag: feature.tag, value: v })"
         >{{ feature.name }}</UiCheckbox>
       </div>
     </div>
@@ -97,7 +97,7 @@
           :keys="loclSelectKeys"
           placeholder="select language"
           :invalid="isLocalizationInvalid"
-          @input="v => $store.commit('updateLoclFeature', { selectedLanguage: v })"
+          @input="v => updateSetting('updateLoclFeature', { selectedLanguage: v })"
         >
           <div slot="option" slot-scope="props" class="locl-select__option">
             <div class="name">{{ props.option.name }}</div>
@@ -108,7 +108,7 @@
         <UiCheckbox
           class="checkbox-small"
           :value="localization.value"
-          @input="v => $store.commit('updateGsubFeature', { tag: 'locl', value: v })"
+          @input="v => updateSetting('updateGsubFeature', { tag: 'locl', value: v })"
         >enable</UiCheckbox>
       </div>
     </div>
@@ -132,7 +132,7 @@
       <div class="row" v-for="(feature, key) in numberFeatures" :key="key">
         <UiCheckbox
           :value="feature.value"
-          @input="v => $store.commit('updateGsubFeature', { tag: feature.tag, value: v })"
+          @input="v => updateSetting('updateGsubFeature', { tag: feature.tag, value: v })"
         >{{ feature.name }}</UiCheckbox>
       </div>
     </div>
@@ -142,7 +142,7 @@
       <div class="row" v-for="(feature, key) in stylisticSets" :key="key">
         <UiCheckbox
           :value="feature.value"
-          @input="v => $store.commit('updateGsubFeature', { tag: feature.tag, value: v })"
+          @input="v => updateSetting('updateGsubFeature', { tag: feature.tag, value: v })"
         >{{ feature.friendlyName ? (feature.tag.slice(2) + ' ' + feature.friendlyName) : feature.name }}</UiCheckbox>
       </div>
     </div>
@@ -152,7 +152,7 @@
       <div class="row" v-for="(feature, key) in otherGsub" :key="key">
         <UiCheckbox
           :value="feature.value"
-          @input="v => $store.commit('updateGsubFeature', { tag: feature.tag, value: v })"
+          @input="v => updateSetting('updateGsubFeature', { tag: feature.tag, value: v })"
         >{{ feature.name }}</UiCheckbox>
       </div>
     </div>
@@ -162,7 +162,7 @@
       <div class="row" v-for="(feature, key) in activeGpos" :key="key">
         <UiCheckbox
           :value="feature.value"
-          @input="v => $store.commit('updateGposFeature', { tag: feature.tag, value: v })"
+          @input="v => updateSetting('updateGposFeature', { tag: feature.tag, value: v })"
         >{{ feature.name }}</UiCheckbox>
       </div>
     </div>
@@ -178,7 +178,7 @@
         </label>
         <UiSlider
           :value="axis.value"
-          @input="v => $store.commit('updateVariationAxis', { tag: axis.tag, value: v })"
+          @input="v => updateSetting('updateVariationAxis', { tag: axis.tag, value: v })"
           :min="axis.minValue"
           :max="axis.maxValue"
           :step="0.5"
@@ -247,7 +247,12 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["settings"]),
+    ...mapGetters([
+      "displayedSettings",
+      "animating",
+    ]),
+    settings() { return this.displayedSettings },
+
     activeGpos() {
       return this.settings.gposFeatures.filter(f => f.active);
     },
@@ -308,7 +313,17 @@ export default {
       this.setFigureVariant(val, oldVal);
     },
   },
+  beforeUpdate() {
+    this.$parent.$emit("scrollSyncStart")
+  },
+  updated() {
+    this.$parent.$emit("scrollSyncEnd")
+  },
   methods: {
+    updateSetting(mutation, payload) {
+      if (this.animating) return;
+      this.$store.commit(mutation, payload);
+    },
     getGsubSubset(tags) {
       return this.activeGsub
         .filter(f => tags.includes(f.tag))

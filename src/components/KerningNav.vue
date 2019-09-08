@@ -9,7 +9,7 @@
       </div>
 
       <transition-group name="fade">
-        <div class="row" v-for="(segment, i) in segments" :key="segment.key" :id="segment.key">
+        <div class="row" v-for="(segment, i) in segments" :key="segment.key">
           <UiTextbox
             v-model="segments[i].characters"
             autofocus

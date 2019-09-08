@@ -80,8 +80,13 @@ export default {
     },
     coerceValue(value) {
       const corrected = this.correctValue(value);
+      // ???
       if (Math.abs(value - corrected) < Number.EPSILON) {
         this.displayedText = null;
+        this.$emit("input", corrected);
+      }
+      else {
+        this.displayedText = corrected;
         this.$emit("input", corrected);
       }
     },
@@ -157,7 +162,7 @@ $button-width: $button-height + 0.25rem;
 .ui-textbox__input {
   box-sizing: border-box;
   padding-right: $button-width + 0.25rem;
-  text-align: right;
+  // text-align: right;
 }
 
 .ui-number-buttons {

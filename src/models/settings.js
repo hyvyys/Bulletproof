@@ -108,4 +108,52 @@ export default class Settings {
     });
     return data;
   }
+
+  static getStyleFromSettings(settings) {
+    return {
+      fontSize: settings.fontSize,
+      lineHeight: settings.lineHeight,
+      textAlign: settings.textAlign,
+      textTransform: settings.textTransform,
+      color: settings.textColor,
+      backgroundColor: settings.backgroundColor,
+      fontFeatureSettings: settings.gsubFeatures.concat(settings.gposFeatures)
+          .map(f => `'${f.tag}' ${f.value ? '1' : '0'} `)
+          .join(', '),
+      fontVariationSettings: settings.variationAxes
+          .map(a => `'${a.tag}' ${a.value} `)
+          .join(', '),
+    };
+  }
+
+  static mergeStyleOntoSettings(settings, style) {
+    settings.fontSize = parseFloat(style.fontSize),
+    settings.lineHeight = parseFloat(settings.lineHeight),
+    // settings.textAlign = style.textAlign
+    // settings.textTransform = style.textTransform
+    settings.textColor = style.color
+    settings.backgroundColor = style.backgroundColor
+
+    function mapCompoundProp(from, to) {
+      // debugger
+      const features = {};
+      (style[from] || "").split(/, ?/g).filter(s => s).map(f => {
+        let match = f.match(/[a-z]{4}/i);
+        if (match) {
+          const tag = match[0];
+          match = f.match(/ \d+/);
+          const val = match ? parseInt(match[0]) : 1;
+          features[tag] = val;
+        }
+      });
+      settings[to].forEach((f, i) => {
+        if (f.tag in features) {
+          settings[to][i].value = features[f.tag];
+        }
+      });
+    }
+    mapCompoundProp("fontFeatureSettings", "gsubFeatures");
+    mapCompoundProp("fontFeatureSettings", "gposFeatures");
+    mapCompoundProp("fontVariationSettings", "variationAxes");
+  }
 }
