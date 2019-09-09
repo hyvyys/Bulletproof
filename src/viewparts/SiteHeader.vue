@@ -12,43 +12,39 @@
       <nav class="nav nav-text-kinds">
         <EditorNav />
 
-        <span
-          class="nav-link"
-          v-for="kind in textKinds"
-          :key="kind"
-        >
-          <router-link :to="`/${kind}`" >
-            {{ navlinkText(kind) }}
-          </router-link>
+        <span class="nav-link" v-for="kind in textKinds" :key="kind">
+          <router-link :to="`/${kind}`">{{ navlinkText(kind) }}</router-link>
         </span>
       </nav>
     </div>
 
     <SigmoidContainer class="light aside" sides="left" direction="bottom">
-      <nav class="nav nav-aside">
-        <UiIconButton id="nav-trigger">
-          <div class="transition-wrapper" style="width: 24px; height: 24px;">
-            <transition name="swap">
+      <nav class="nav nav-aside" id="nav-trigger">
+        <div class="transition-wrapper">
+          <transition name="swap">
+            <a v-if="!textKind"
+              key="0"
+              href="https://github.com/hyvyys/Bulletproof"
+              target="_blank"
+              class="ui-icon-button github-icon-link"
+            >
               <img
-                v-if="textKind === 'custom'"
                 svg-inline
-                src="@/assets/icons/view_headline.svg"
-                key="1"
+                alt="Github"
+                src="@/assets/icons/github.svg"
               />
-              <img
-                v-else-if="textKind === 'kerning'"
-                svg-inline src="@/assets/icons/kerning.svg"
-                key="2"
-              />
-              <img
-                v-else
-                svg-inline
-                src="@/assets/icons/playlist_add_check.svg"
-                key="3"
-              />
-            </transition>
-          </div>
-        </UiIconButton>
+            </a>
+            <UiIconButton v-else-if="textKind === 'custom'" key="1">
+              <img svg-inline src="@/assets/icons/view_headline.svg" />
+            </UiIconButton>
+            <UiIconButton v-else-if="textKind === 'kerning'" key="2">
+              <img svg-inline src="@/assets/icons/kerning.svg" />
+            </UiIconButton>
+            <UiIconButton v-else key="3">
+              <img svg-inline src="@/assets/icons/playlist_add_check.svg" />
+            </UiIconButton>
+          </transition>
+        </div>
       </nav>
     </SigmoidContainer>
   </div>
@@ -93,10 +89,7 @@ export default {
       return !!this.$route.params.text;
     },
     textKind() {
-      const key = this.selectedSampleKey;
-      if (typeof key === "number") return "custom";
-      else if (key === "kerning") return "kerning";
-      else return "default";
+      return this.$route.params.text;
     },
   },
   mounted() {
@@ -228,6 +221,19 @@ $header-background: linear-gradient(to right, $light, $accent);
         transform: scale(1);
       }
     }
+  }
+}
+
+.github-icon-link {
+  cursor: pointer;
+  color: mix(black, $brand-primary-color, 60%);
+  transition: color .3s;
+  &:hover {
+    color: mix(black, $brand-primary-color, 20%);
+  }
+  svg {
+    width: 32px;
+    height: 32px;
   }
 }
 </style>

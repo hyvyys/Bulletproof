@@ -25,10 +25,11 @@
           on Github
         </div>
         <img
+          svg-inline
           height="32"
           width="32"
           alt="Github"
-          src="https://unpkg.com/simple-icons@latest/icons/github.svg"
+          src="@/assets/icons/github.svg"
         />
       </a>
     </SigmoidContainer>
