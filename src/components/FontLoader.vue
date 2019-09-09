@@ -173,11 +173,14 @@ export default {
     },
 
     loadFonts({ files = [], urls = [] } = {}) {
-      this.fontLoadingProgress = 0;
-      this.$store.dispatch("fontLoadStart");
       if (!urls.length) {
         urls = files.map(file => URL.createObjectURL(file));
       }
+      if (!urls.length) {
+        return;
+      }
+      this.fontLoadingProgress = 0;
+      this.$store.dispatch("fontLoadStart");
       const fileNames = files.length
         ? files.map(f => f.name)
         : urls.map(u => u.replace(/.*\//, ""));
