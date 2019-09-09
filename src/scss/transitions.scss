@@ -24,12 +24,6 @@ $fade-slow-delay: 0.45s;
   &-enter, &-leave-to /* .fade-leave-active below version 2.1.8 */ {
     opacity: 0;
   }
-  &-move {
-    transition: transform .3s;
-  }
-  &-leave-active {
-    position: absolute;
-  }
 }
 
 .fade-slow-reverse {
