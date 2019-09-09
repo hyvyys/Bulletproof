@@ -1,7 +1,7 @@
 <template>
   <div class="font-loader">
     <FontSelect
-      class="dark"
+      class="dark font-select-main"
       v-if="gui"
       :fonts="fontOptions"
       :value="selectedFont"
@@ -274,6 +274,7 @@ export default {
 <style lang="scss">
 @import "@/scss/variables";
 @import "@/scss/mixins";
+@import "@/scss/dark";
 
 .font-loader {
   display: flex;
@@ -289,10 +290,8 @@ export default {
   }
 }
 
-.font-loader {
-  > :not(:last-child) {
-    margin-right: 0.5em;
-  }
+.font-select-main {
+  margin-right: 0.5em;
 }
 
 .font-select-popover {
@@ -302,10 +301,16 @@ export default {
 
 .bi-button {
   min-width: unset;
+  padding: 0 6px;
+  border-radius: 3px;
   text-transform: none;
   font-family: $monospaced;
   b {
     margin-right: 0.2em;
+  }
+  border-bottom: 2px solid $color-tinted;
+  &:hover {
+    border-color: $color-tinted-active;
   }
 }
 </style>

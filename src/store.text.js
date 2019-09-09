@@ -57,7 +57,15 @@ export default {
       state.customTextIds.splice(i, 1);
       delete state.texts[id];
       if (router.currentRoute.path === `/custom/${id}`) {
-        router.push(`/lettering`);
+        let path = '/lettering';
+        if (i < state.customTextIds.length) {
+          id = state.customTextIds[i];
+          path = `/custom/${id}`;
+        } else if (i - 1 >= 0 && i - 1 < state.customTextIds.length) {
+          id = state.customTextIds[i - 1];
+          path = `/custom/${id}`;
+        }
+        router.push(path);
       }
     },
 

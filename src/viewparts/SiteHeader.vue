@@ -1,32 +1,27 @@
 <template>
   <div :class="`site-header ${sticky ? 'sticky' : ''}`">
-    <div class="dark">
+    <div class="dark main">
       <div class="logo">
         <router-link to="/" class="home" @click.native="scrollToTop">
           <SiteLogo />
         </router-link>
       </div>
 
-      <div class="main">
-        <FontLoader :gui="showFontLoader" />
+      <FontLoader :gui="showFontLoader" />
 
-        <nav class="nav nav-text-kinds">
-          <transition-group name="fade">
-            <span v-for="id in customTextIds" :key="id" class="custom-text-link">
-              <router-link :to="`/custom/${id}`">Custom {{ id }}</router-link>
-              <UiIconButton color="secondary" style="color: white" @click="removeCustomText(id)">
-                <img svg-inline src="@/assets/icons/close.svg" key="1" />
-              </UiIconButton>
-            </span>
-          </transition-group>
+      <nav class="nav nav-text-kinds">
+        <EditorNav />
 
-          <router-link
-            v-for="kind in textKinds"
-            :key="kind"
-            :to="`/${kind}`"
-          >{{ navlinkText(kind) }}</router-link>
-        </nav>
-      </div>
+        <span
+          class="nav-link"
+          v-for="kind in textKinds"
+          :key="kind"
+        >
+          <router-link :to="`/${kind}`" >
+            {{ navlinkText(kind) }}
+          </router-link>
+        </span>
+      </nav>
     </div>
 
     <SigmoidContainer class="light aside" sides="left" direction="bottom">
@@ -64,20 +59,22 @@ import { mapGetters } from "vuex";
 import fireEvent from "@/utils/fireEvent";
 import Hamster from "hamsterjs";
 
-import UiIconButton from "keen-ui/src/UiIconButton.vue";
-import SigmoidContainer from "@/components/layout/SigmoidContainer.vue";
 import FontLoader from "@/components/FontLoader.vue";
+import EditorNav from "@/components/EditorNav.vue";
 import SiteLogo from "@/components/SiteLogo.vue";
+import SigmoidContainer from "@/components/layout/SigmoidContainer.vue";
+import UiIconButton from "keen-ui/src/UiIconButton.vue";
 
 import textKinds from "@/models/textKinds";
 import textKindTitle from "@/models/textKindTitle";
 
 export default {
   components: {
-    UiIconButton,
-    SigmoidContainer,
-    SiteLogo,
     FontLoader,
+    EditorNav,
+    SiteLogo,
+    SigmoidContainer,
+    UiIconButton,
   },
   data() {
     return {
@@ -128,9 +125,6 @@ export default {
     scrollToTop() {
       this.scrolled.scrollTo(0, 0);
     },
-    removeCustomText(id) {
-      this.$store.commit("removeCustomText", { id });
-    },
   },
 };
 </script>
@@ -168,11 +162,12 @@ $header-background: linear-gradient(to right, $light, $accent);
     background: $light;
   }
 
-  .dark {
+  .main {
     flex: 1;
     display: flex;
     margin-top: -8px;
     align-items: center;
+    min-width: 0;
   }
 
   .logo {
@@ -182,16 +177,15 @@ $header-background: linear-gradient(to right, $light, $accent);
     a.home {
       text-decoration: none;
     }
+    flex: 0 0 auto;
   }
 
-  .main {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    padding: 0 15px;
+  .font-loader {
+    margin: 0 .5em;
   }
+
   .nav {
-    padding: 0 20px;
+    min-width: 0;
   }
   .nav-text-kinds {
     flex: 1;
@@ -203,6 +197,7 @@ $header-background: linear-gradient(to right, $light, $accent);
   }
 
   .aside {
+    padding-right: $vuebar-width;
     --adjust-y: 1px;
     --sigmoid-adjust: -15px;
 
@@ -214,39 +209,27 @@ $header-background: linear-gradient(to right, $light, $accent);
     }
   }
 
-  a {
-    display: inline-block;
-    color: $accent-text;
-    text-decoration: none;
+  ::v-deep .nav-link {
     margin: 0 5px;
-    font-size: 1.1em;
-    font-weight: 500;
-    // transition: transform 0.2s;
+    a {
+      display: inline-block;
+      color: $accent-text;
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
+      font-size: 1.1em;
+      font-weight: 500;
+      // transition: transform 0.2s;
 
-    transform: scale(0.95);
-    // will-change: transform;
-    -webkit-font-smoothing: antialiased;
+      transform: scale(0.95);
+      // will-change: transform;
+      -webkit-font-smoothing: antialiased;
 
-    &.router-link-active {
-      text-decoration: underline;
-      transform: scale(1);
-    }
-  }
-}
-
-.custom-text-link {
-  display: inline-flex;
-  align-items: center;
-  a {
-    margin-right: 0;
-  }
-  $button-size: 22px;
-  .ui-icon-button {
-    height: $button-size;
-    width: $button-size;
-    svg {
-      height: $button-size;
-      width: $button-size;
+      &.router-link-active {
+        text-decoration: underline;
+        transform: scale(1);
+      }
     }
   }
 }
