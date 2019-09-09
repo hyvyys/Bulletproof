@@ -59,7 +59,6 @@ export default {
       this.toggleBodyScroll(true);
     },
     handleDragEnter(e) {
-      this.showDrop();
       e.preventDefault();
     },
     handleDragLeave(e) {
@@ -71,10 +70,10 @@ export default {
     },
     handleDrop(e) {
       e.preventDefault();
-      this.hideDrop();
       // fetch FileList object
-      var files = Array.from(e.target.files || e.dataTransfer.files);
-      this.$emit("files-dropped", files);
+      var files = e.target.files || e.dataTransfer.files;
+      this.$emit("filesDropped", files);
+      this.hideDrop();
     },
 
     handleBodyDragEnter(e) {

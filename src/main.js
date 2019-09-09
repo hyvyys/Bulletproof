@@ -5,7 +5,10 @@ import Vuebar from "vuebar";
 Vue.use(Vuebar);
 
 import VueObserveVisibility from 'vue-observe-visibility'
-Vue.use(VueObserveVisibility)
+Vue.use(VueObserveVisibility);
+
+import VueWorker from 'vue-worker';
+Vue.use(VueWorker);
 
 import "@/scss/styles.scss";
 import App from "@/App.vue";

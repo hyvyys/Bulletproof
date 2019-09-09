@@ -17,6 +17,7 @@ const store = new Vuex.Store({
     animation: animationModule,
   },
   state: {
+    fontLoading: false,
     selectedFont: { family: "" },
     selectedBoldFont: { family: "" },
     selectedItalicFont: { family: "" },
@@ -63,6 +64,14 @@ const store = new Vuex.Store({
   },
 
   mutations: {
+    fontLoadStart(state) {
+      state.fontLoading = true;
+    },
+
+    fontLoadEnd(state) {
+      state.fontLoading = false;
+    },
+
     selectFont(state, { font, boldFont, italicFont }) {
       if (font) {
         state.selectedFont = font;

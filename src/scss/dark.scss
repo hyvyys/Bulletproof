@@ -8,6 +8,9 @@ $color-accent: $brand-primary-color;
 @mixin dark() {
   background: transparent !important;
   color: $color !important;
+  * {
+    color: $color;
+  }
 
   @include pseudo();
   &::before {
@@ -20,7 +23,7 @@ $color-accent: $brand-primary-color;
 }
 
 .dark {
-  &.ui-button {
+  &.ui-button, &.ui-fileupload {
     @include dark();
   }
 

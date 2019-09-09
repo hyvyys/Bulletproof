@@ -151,7 +151,7 @@ $pane-top-height: 800px;
     }
 
     &.background-parallax {
-      font-family: Rywalka;
+      font-family: "Rywalka Bulletproof";
       font-size: 2vw;
       line-height: 1.2;
       top: -1.2em;

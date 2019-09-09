@@ -172,16 +172,13 @@ $header-background: linear-gradient(to right, $light, $accent);
 
   .logo {
     width: $sidebar-width;
+    padding: 0 15px 0 0;
     display: flex;
     justify-content: center;
     a.home {
       text-decoration: none;
     }
     flex: 0 0 auto;
-  }
-
-  .font-loader {
-    margin: 0 .5em;
   }
 
   .nav {

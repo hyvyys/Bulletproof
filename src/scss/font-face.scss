@@ -2,7 +2,7 @@
 
 $fontDir: "/fonts";
 
-@include font-face("Rywalka", $fontDir, ((Regular, 400, normal), ), (ttf));
+@include font-face("Rywalka", $fontDir, ((Regular, 400, normal), ), (ttf), "Rywalka Bulletproof");
 
 @include font-face("alegreya-sans-v10-latin-ext_cyrillic_cyrillic-ext_latin_vietnamese_greek-ext_greek",
   $fontDir + "/Alegreya-Sans",

@@ -1,38 +1,42 @@
 <template>
   <div class="font-tester">
-    <Fitter
-      class="settings-wrapper"
-      :scrolledParentSelector="scrolledParentSelector"
-      bottomSelector=".site-footer"
-      topSelector=".site-header"
-    >
-      <Settings />
-    </Fitter>
-    <FontSample
-      :html="texts[selectedSampleKey]"
-      @update="e => modifyText(e)"
-    />
+    <transition name="fade">
+      <div class="font-tester-content" v-show="!fontLoading">
+        <Fitter
+          class="settings-wrapper"
+          :scrolledParentSelector="scrolledParentSelector"
+          bottomSelector=".site-footer"
+          topSelector=".site-header"
+        >
+          <Settings />
+        </Fitter>
+        <FontSample
+          :html="texts[selectedSampleKey]"
+          @update="e => modifyText(e)"
+        />
 
-      <Fitter
-        class="nav-wrapper"
-        :scrolledParentSelector="scrolledParentSelector"
-        bottomSelector=".site-footer"
-        topSelector=".site-header"
-        trigger="#nav-trigger"
-      >
-        <div class="transition-wrapper">
-          <transition name="swap">
-            <LanguageNav v-if="visibleLanguages.length > 0" />
-            <KerningNav v-else-if="selectedTextKind === 'kerning'" />
-            <FontSampleNav v-else />
-          </transition>
-        </div>
-      </Fitter>
+          <Fitter
+            class="nav-wrapper"
+            :scrolledParentSelector="scrolledParentSelector"
+            bottomSelector=".site-footer"
+            topSelector=".site-header"
+            trigger="#nav-trigger"
+          >
+            <div class="transition-wrapper">
+              <transition name="swap">
+                <LanguageNav v-if="visibleLanguages.length > 0" />
+                <KerningNav v-else-if="selectedTextKind === 'kerning'" />
+                <FontSampleNav v-else />
+              </transition>
+            </div>
+          </Fitter>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapState, mapGetters } from "vuex";
 
 import Fitter from "@/components/layout/Fitter.vue";
 import Settings from "@/components/Settings.vue";
@@ -56,6 +60,9 @@ export default {
     };
   },
   computed: {
+    ...mapState([
+      "fontLoading",
+    ]),
     selectedTextKind() {
       return this.$route.params.text;
     },
@@ -107,6 +114,10 @@ export default {
   display: flex;
   height: 100vh;
   // position: relative;
+  .font-tester-content {
+    flex: 1;
+    display: flex;
+  }
 }
 .settings-wrapper {
   min-width: $sidebar-width;

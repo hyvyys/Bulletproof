@@ -1,10 +1,5 @@
-var opentype = require("opentype.js");
-import util from "util";
-const loadFont = util.promisify(opentype.load);
-
 import opentypeLanguageTags from "./opentypeLanguageTags";
 import opentypeFeatureNames from "./opentypeFeatureNames";
-import findHtmlTag from "language-data/src/LanguageDataParser/findHtmlTag";
 
 function findFeatureName(tag) {
   const match = opentypeFeatureNames.find(f => f.tag.test(tag));
@@ -12,20 +7,11 @@ function findFeatureName(tag) {
 }
 
 export default class Font {
-  init(url) {
-    return new Promise((resolve) => {
-      this.version = 0;
-      this.url = url;
-      loadFont(url)
-        .then(font => {
-          this.font = font;
-          this.processFont();
-          resolve({ font: this });
-        })
-        .catch(error => {
-          resolve({ error });
-        });
-    });
+  constructor(font, url) {
+    this.version = 0;
+    this.url = url;
+    this.font = font;
+    this.processFont();
   }
 
   serialize() {
@@ -68,17 +54,11 @@ export default class Font {
         .flatMap(s => s.script.langSysRecords).map(lsr => lsr.tag)
     );
     const loclLanguages = Array.from(languageSet)
-      .map(tag => {
-        function compareTags(a, b) {
-          if (a && b) {
-            return a.padEnd(4, " ") === b.padEnd(4, " ");
-          }
-          else return false;
-        }
-        const language = opentypeLanguageTags.find(l => compareTags(l.tag, tag));
+    .map(tag => {
+      // tags are four characters, last most commonly space
+        const language = opentypeLanguageTags.find(l => l.opentypeTag === tag);
         const name = language ? language.name : tag;
-        const htmlTag = findHtmlTag({ language: name });
-
+        const htmlTag = language ? language.htmlTag : tag.toLowerCase();
         return ({ tag, name, htmlTag });
       })
       .sort((a, b) => a.name > b.name);

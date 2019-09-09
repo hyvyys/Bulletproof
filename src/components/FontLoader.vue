@@ -1,26 +1,42 @@
 <template>
   <div class="font-loader">
+    <span class="font-loader-item" v-if="gui">
+      <UiFileupload
+        class="dark"
+        label=" "
+        name="font-file-input"
+        accept=".ttf,.otf,.woff,.woff2"
+        :multiple="true"
+        size="small"
+        @change="onFilesDropped"
+      />
+      <UiTooltip>
+        You can also drag and drop font files anywhere on the page.
+      </UiTooltip>
+    </span>
+
     <FontSelect
-      class="dark font-select-main"
+      class="dark font-select-main font-loader-item"
       v-if="gui"
       :fonts="fontOptions"
       :value="selectedFont"
       @input="selectFont"
-      :loading="loadingFonts"
+      :loading="fontLoading"
     />
 
-    <div v-if="gui">
+    <div v-if="gui" class="font-loader-item">
       <UiButton class="dark bi-button" ref="button1">
         <b>B</b>
         <i>I</i>
       </UiButton>
+
       <UiPopover :trigger="$refs.button1" class="font-select-popover" :zIndex="58">
         <FontSelect
           :fonts="fontOptions"
           :value="selectedBoldFont"
           @input="selectBoldFont"
           label="Headings & strong emphasis"
-          :loading="loadingFonts"
+          :loading="fontLoading"
         />
 
         <FontSelect
@@ -28,16 +44,24 @@
           :value="selectedItalicFont"
           @input="selectItalicFont"
           label="Emphasis"
-          :loading="loadingFonts"
+          :loading="fontLoading"
         />
       </UiPopover>
     </div>
 
-    <FileDrop @files-dropped="onFilesDropped" />
+    <FileDrop ref="fileDrop" @filesDropped="onFilesDropped" />
+
+    <UiProgressLinear
+      v-show="fontLoading"
+      type="determinate"
+      :progress="fontLoadingProgress"
+      class="font-loading-progress"
+    />
+
     <UiModal ref="modal" title="Error opening fonts.">
       <div>
         <div>{{ errorMessage }}</div>
-        <code v-for="(log, i) in errorLogs" :key="i">{{ log }}</code>
+        <pre v-for="(log, i) in errorLogs" :key="i">{{ log }}</pre>
       </div>
     </UiModal>
 
@@ -46,20 +70,23 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 
 import UiModal from "keen-ui/src/UiModal.vue";
+import UiFileupload from "keen-ui/src/UiFileupload.vue";
 import UiButton from "keen-ui/src/UiButton.vue";
 import UiPopover from "keen-ui/src/UiPopover.vue";
+import UiTooltip from "keen-ui/src/UiTooltip.vue";
+import UiProgressLinear from "keen-ui/src/UiProgressLinear";
 
 import FontSelect from "@/components/FontSelect.vue";
 import FileDrop from "@/components/FileDrop.vue";
 import Fireworks from "@/components/Fireworks.vue";
 
-import FontParser from "@/models/FontParser";
+import LoadFontWorker from 'worker-loader!@/models/loadFont.worker.js';
+import Font from "@/models/Font";
 
 import styles from "@/utils/styles";
-import { Promise } from "q";
 
 export default {
   name: "FontTester",
@@ -68,7 +95,10 @@ export default {
     UiModal,
     UiButton,
     UiPopover,
+    UiProgressLinear,
+    UiFileupload,
     FileDrop,
+    UiTooltip,
     Fireworks,
   },
   props: {
@@ -78,6 +108,9 @@ export default {
     },
   },
   computed: {
+    ...mapState([
+      "fontLoading",
+    ]),
     ...mapGetters([
       "settings",
       "selectedFont",
@@ -93,7 +126,7 @@ export default {
       fonts: [],
       errorMessage: "",
       errorLogs: [],
-      loadingFonts: false,
+      fontLoadingProgress: 0,
       openedWithoutFonts: true,
       defaultFontsLoaded: false,
     };
@@ -127,74 +160,75 @@ export default {
       this.loadFonts({ urls: fonts.map(f => dir + f) });
     },
 
-    async onFilesDropped(files) {
+    onFilesDropped(files) {
       this.openedWithoutFonts = false;
       // disable Fireworks
       // this.$refs.fireworks.$emit('event');
-      await this.loadFonts({ files });
       if (this.$route.path === "/") {
         this.$router.push({ path: 'lettering' });
       }
+      this.loadFonts({ files: Array.from(files) });
     },
 
-    async loadFonts({ files = [], urls = [] } = {}) {
-      this.loadingFonts = true;
-
+    loadFonts({ files = [], urls = [] } = {}) {
+      this.fontLoadingProgress = 0;
+      this.$store.commit("fontLoadStart");
       if (!urls.length) {
         urls = files.map(file => URL.createObjectURL(file));
       }
-
       const fileNames = files.length
         ? files.map(f => f.name)
         : urls.map(u => u.replace(/.*\//, ""));
 
-      Promise.all(urls.map(url => FontParser.parse(url)))
-        .then(responses => {
-          const results = responses.map((r, i) => ({
-            fileName: fileNames[i],
-            ...r,
-          }));
-          const fonts = results
-            .filter(r => r.font)
-            .map(r => r.font);
-          fonts.sort((a, b) =>
+      const fonts = [];
+      const errors = [];
+      const worker = new LoadFontWorker();
+
+      worker.onmessage = (e) => {
+        i++;
+        if (e.data.font) {
+          const { font: opentypeFont, url } = e.data;
+          const font = new Font(opentypeFont, url);
+          const duplicates = this.fonts.concat(fonts).filter(f =>
+            f.originalFamily === font.originalFamily &&
+            f.style === font.style
+          ).map(f => f.version);
+          if (duplicates.length > 0) {
+            const highest = Math.max(...duplicates);
+            font.bumpVersion(highest + 1);
+          }
+          styles.add(font.fontFace);
+          fonts.push(font);
+          this.fontLoadingProgress = 100 * i / urls.length;
+
+        }
+        else if (e.data.error) {
+          const { error, fileName } = e.data;
+          errors.push({ error, fileName });
+        }
+
+        if (i === urls.length) {
+          if (fonts.length) {
+            fonts.sort((a, b) =>
               a.family.localeCompare(b.family)
               || a.cssWeight - b.cssWeight
               || b.cssStyle.localeCompare(a.cssStyle)
             );
-
-          fonts.reverse();
-          fonts.forEach(font => {
-            const duplicates = this.fonts.filter(
-              f =>
-                f.originalFamily === font.originalFamily &&
-                f.style === font.style
-            );
-            if (duplicates.length > 0) {
-              const highest = duplicates.sort(
-                (a, b) => a.version < b.version
-              )[0];
-              font.bumpVersion(highest.version + 1);
-            }
-            this.fonts.unshift(font);
-            styles.add(font.fontFace);
-          });
-          if (fonts.length) {
-            fonts.reverse();
+            // don't make font objects reactive for performance gains
+            this.fonts = Object.freeze([ ...fonts, ...this.fonts ]);
             this.selectFont(fonts[0]);
           }
-
-          const errors = results.filter(r => r.error);
           if (errors.length) {
-            this.printFontLoadingError(results);
+            this.printFontLoadingError(errors);
           }
-        })
-        .catch(error => {
-          this.printFontLoadingError([], error);
-        })
-        .finally(() => {
-          this.loadingFonts = false;
-        });
+          this.$store.commit("fontLoadEnd");
+        }
+      }
+
+      let i = 0;
+      urls.forEach((url, i) => {
+        worker.postMessage({ url, fileName: fileNames[i] });
+      })
     },
 
     printFontLoadingError(results, extraError) {
@@ -280,6 +314,20 @@ export default {
   display: flex;
   align-items: center;
 
+  .font-loader-item {
+    margin: 0 2px;
+  }
+
+  .ui-fileupload {
+    padding: 4px;
+    min-width: 0;
+    .ui-fileupload__icon {
+      margin-right: 0;
+    }
+    .ui-fileupload__display-text {
+      display: none !important;
+    }
+  }
   .ui-select.font-select {
     .ui-select__display {
       padding: 2px 8px;
@@ -290,10 +338,6 @@ export default {
   }
 }
 
-.font-select-main {
-  margin-right: 0.5em;
-}
-
 .font-select-popover {
   padding: 8px;
   width: calc(#{$font-select-width} + 16px);
@@ -301,16 +345,46 @@ export default {
 
 .bi-button {
   min-width: unset;
-  padding: 0 6px;
-  border-radius: 3px;
   text-transform: none;
   font-family: $monospaced;
+  padding: 0 6px;
   b {
     margin-right: 0.2em;
   }
+}
+
+.bi-button, .ui-fileupload {
+  border-radius: 3px;
   border-bottom: 2px solid $color-tinted;
   &:hover {
     border-color: $color-tinted-active;
   }
+}
+
+.font-loading-progress {
+  position: fixed;
+  top: 50%;
+  left: 30%;
+  right: 30%;
+  width: 40%;
+  height: 1rem;
+
+  .ui-progress-linear__progress-bar {
+    height: 100%;
+  }
+}
+
+
+.overlay {
+  z-index: 1;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba($light, 0.8);
+  box-shadow: inset 0 0 20vh $light;
+
+  transition: opacity 0.5s;
 }
 </style>

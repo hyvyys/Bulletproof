@@ -26,6 +26,7 @@
     "vue-color": "^2.7.0",
     "vue-observe-visibility": "^0.4.4",
     "vue-router": "^3.0.3",
+    "vue-worker": "^1.2.1",
     "vuebar": "github:hyvyys/vuebar",
     "vuex": "^3.1.1"
   },
@@ -46,7 +47,8 @@
     "sass-loader": "^7.1.0",
     "vue-svg-inline-loader": "^1.2.16",
     "vue-template-compiler": "^2.6.10",
-    "ware-loader": "^0.2.4"
+    "ware-loader": "^0.2.4",
+    "worker-loader": "^2.0.0"
   },
   "postcss": {
     "plugins": {

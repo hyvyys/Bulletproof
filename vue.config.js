@@ -15,8 +15,19 @@ module.exports = {
     }
   },
 
+  parallel: false,
+
+  configureWebpack: config => {
+    config.node = {fs: "empty"};
+  },
+
   chainWebpack: config => {
     config.resolve.symlinks(false);
+
+    // config.module.rule('worker')
+    //   .test(/\.worker\.js$/i)
+    //   .use('worker-loader')
+    //   .loader('worker-loader');
 
     const MarkdownIt = require("markdown-it");
     const md = new MarkdownIt();
