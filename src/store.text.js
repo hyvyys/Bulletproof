@@ -15,7 +15,7 @@ let customTextId = 1;
 
 export default {
   state: {
-    selectedSampleKey: "lettering",
+    selectedSampleKey: "",
     texts: [],
     customTextIds: [],
     languages: LanguageData.map(l => ({ ...l, id: id++, isSelected: true })),

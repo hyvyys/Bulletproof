@@ -53,7 +53,7 @@
 
     <transition name="fade-slow-reverse">
       <UiProgressLinear
-        v-show="fontLoading"
+        v-show="progressVisible"
         type="determinate"
         :progress="fontLoadingProgress"
         class="font-loading-progress"
@@ -118,9 +118,13 @@ export default {
       "selectedFont",
       "selectedBoldFont",
       "selectedItalicFont",
+      "selectedSampleKey",
     ]),
     fontOptions() {
       return this.fonts.map(f => f.serialize());
+    },
+    progressVisible() {
+      return this.fontLoading && this.selectedSampleKey !== "";
     },
   },
   data() {
