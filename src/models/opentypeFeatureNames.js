@@ -1,4 +1,9 @@
-module.exports = [
+export function getOpenTypeFeatureName(tag) {
+  const match = opentypeFeatureNames.find(f => f.tag.test(tag));
+  return match ? tag.replace(match.tag, match.name) : tag;
+}
+
+const opentypeFeatureNames = [
   { tag: /aalt/, name: "Access All Alternates" },
   { tag: /abvf/, name: "Above-base Forms" },
   { tag: /abvm/, name: "Above-base Mark Positioning" },
@@ -18,7 +23,7 @@ module.exports = [
   { tag: /cpsp/, name: "Capital Spacing" },
   { tag: /cswh/, name: "Contextual Swash" },
   { tag: /curs/, name: "Cursive Positioning" },
-  { tag: /cv\d{2}/, name: "Character Variants" },
+  { tag: /cv(\d{2})/, name: "Character Variants $1" },
   { tag: /c2pc/, name: "Petite Capitals From Capitals" },
   { tag: /c2sc/, name: "Small Capitals From Capitals" },
   { tag: /dist/, name: "Distances" },

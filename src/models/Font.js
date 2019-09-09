@@ -1,10 +1,5 @@
 import opentypeLanguageTags from "./opentypeLanguageTags";
-import opentypeFeatureNames from "./opentypeFeatureNames";
-
-function findFeatureName(tag) {
-  const match = opentypeFeatureNames.find(f => f.tag.test(tag));
-  return match && match.name || tag;
-}
+import { getOpenTypeFeatureName } from "./opentypeFeatureNames";
 
 export default class Font {
   constructor(font, url) {
@@ -77,7 +72,7 @@ export default class Font {
       if (!duplicate) {
         const feature = {
           tag: f.tag,
-          name: findFeatureName(f.tag),
+          name: getOpenTypeFeatureName(f.tag),
         };
         this.gposFeatures.push(feature);
       }
@@ -89,7 +84,7 @@ export default class Font {
       if (!duplicate) {
         const feature = {
           tag: f.tag,
-          name: findFeatureName(f.tag),
+          name: getOpenTypeFeatureName(f.tag),
         };
 
         if (f.tag == "locl") {
