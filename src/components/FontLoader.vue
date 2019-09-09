@@ -51,12 +51,14 @@
 
     <FileDrop ref="fileDrop" @filesDropped="onFilesDropped" />
 
-    <UiProgressLinear
-      v-show="fontLoading"
-      type="determinate"
-      :progress="fontLoadingProgress"
-      class="font-loading-progress"
-    />
+    <transition name="fade-slow-reverse">
+      <UiProgressLinear
+        v-show="fontLoading"
+        type="determinate"
+        :progress="fontLoadingProgress"
+        class="font-loading-progress"
+      />
+    </transition>
 
     <UiModal ref="modal" title="Error opening fonts.">
       <div>
@@ -172,7 +174,7 @@ export default {
 
     loadFonts({ files = [], urls = [] } = {}) {
       this.fontLoadingProgress = 0;
-      this.$store.commit("fontLoadStart");
+      this.$store.dispatch("fontLoadStart");
       if (!urls.length) {
         urls = files.map(file => URL.createObjectURL(file));
       }
@@ -221,7 +223,7 @@ export default {
           if (errors.length) {
             this.printFontLoadingError(errors);
           }
-          this.$store.commit("fontLoadEnd");
+          this.$store.dispatch("fontLoadEnd");
         }
       }
 

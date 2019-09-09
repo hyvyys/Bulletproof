@@ -17,7 +17,7 @@ const store = new Vuex.Store({
     animation: animationModule,
   },
   state: {
-    fontLoading: false,
+    fontLoading: true,
     selectedFont: { family: "" },
     selectedBoldFont: { family: "" },
     selectedItalicFont: { family: "" },
@@ -240,7 +240,13 @@ const store = new Vuex.Store({
 
 
   actions: {
+    fontLoadStart({ commit }) {
+      commit("fontLoadStart");
+    },
 
+    fontLoadEnd({ commit }) {
+      commit("fontLoadEnd");
+    },
   },
 })
 

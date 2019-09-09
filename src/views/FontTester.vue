@@ -1,6 +1,6 @@
 <template>
   <div class="font-tester">
-    <transition name="fade">
+    <transition name="fade-slow">
       <div class="font-tester-content" v-show="!fontLoading">
         <Fitter
           class="settings-wrapper"

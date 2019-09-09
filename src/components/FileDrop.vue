@@ -19,9 +19,9 @@
   background: rgba($light, 0.5);
   box-shadow: inset 0 0 20vh $light;
 
-    transition: opacity 0.5s;
+  transition: opacity 0.3s;
   &.hidden {
-  transition: opacity 2.5s;
+    transition: opacity 0.8s;
     opacity: 0;
     pointer-events: none;
   }
