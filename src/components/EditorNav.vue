@@ -1,10 +1,10 @@
 <template>
   <span class="editor-nav">
     <div class="links-wrapper">
-      <transition-group class="links" name="fade" key="1">
+      <transition-group class="links" name="fade">
         <EditorNavLink v-for="id in lessCustomTextIds" :key="id" :id="id" />
       </transition-group>
-      <transition-group class="links" name="fade" key="2">
+      <transition-group class="links" name="fade">
         <EditorNavLink v-for="id in moreCustomTextIds" :key="id" :id="id" />
       </transition-group>
     </div>

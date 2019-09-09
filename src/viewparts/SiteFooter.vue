@@ -1,8 +1,13 @@
 <template>
   <div class="site-footer">
     <div class="main">
-      <div>
-        Copyright 2019 Adam Jagosz.
+      <div class="subtle">
+        <div>
+          Bulletproof Font Tester v{{version}}
+        </div>
+        <div>
+          Copyright 2019 Adam Jagosz.
+        </div>
       </div>
       <div>
         Sample texts come from
@@ -31,10 +36,17 @@
 </template>
 
 <script>
+const version = require('@/../package.json').version;
+
 import SigmoidContainer from "@/components/layout/SigmoidContainer.vue";
 
 export default {
   components: { SigmoidContainer },
+  data() {
+    return {
+      version,
+    }
+  },
 };
 </script>
 
@@ -71,6 +83,10 @@ export default {
     a {
       color: $brand-primary-color;
     }
+  }
+
+  .subtle {
+    opacity: 0.8;
   }
 
   .light {

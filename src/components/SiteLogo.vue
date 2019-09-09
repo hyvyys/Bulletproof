@@ -14,7 +14,7 @@
 h1.site-logo {
   font-weight: normal;
   font-size: 1.8em;
-  margin: 0 10px 0 0;
+  margin: 0 20px 0 0;
   color: $light;
   display: flex;
   align-items: center;

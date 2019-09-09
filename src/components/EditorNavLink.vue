@@ -77,7 +77,6 @@ export default {
   text-overflow:ellipsis;
   white-space:nowrap;
   flex-shrink: 1;
-  // direction: rtl;
 }
 .end {
   white-space:nowrap;
