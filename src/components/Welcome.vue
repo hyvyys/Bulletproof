@@ -56,9 +56,6 @@ export default {
 }
 
 .fold {
-  min-height: 100vh;
-}
-
-.readme {
+  padding-bottom: 3em;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div :class="`sigmoid-container ${sides} ${direction}`">
-    <svg style="display: block;" height="0" width="0">
+    <svg style="display: block;" height="0" width="0" preserveAspectRatio="none">
       <defs>
         <clipPath id="sigmoid-right" clipPathUnits="objectBoundingBox">
           <path :d="path" />
