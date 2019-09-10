@@ -22,8 +22,8 @@
       <nav class="nav nav-aside" id="nav-trigger">
         <div class="transition-wrapper">
           <transition name="swap">
-            <div v-if="!textKind" key="0" class="ui-icon-button github-icon-link" @click.stop>
-              <a
+            <div v-if="!textKind" key="0" class="ui-icon-button github-icon-link-wrapper" @click.stop>
+              <a class="github-icon-link"
                 href="https://github.com/hyvyys/Bulletproof"
                 target="_blank"
               >
@@ -224,23 +224,16 @@ $header-background: linear-gradient(to right, $light, $accent);
   }
 }
 
-.github-icon-link {
+.github-icon-link-wrapper {
   cursor: pointer;
   display: flex; // saves the day! (if it comes to transitions)
   a {
     display: flex;
-    color: mix(black, $brand-primary-color, 60%);
-    transition: color .3s;
-  }
-  &:hover {
-    a {
-      color: mix(black, $brand-primary-color, 20%);
+    svg {
+      width: 32px;
+      height: 32px;
+      margin: 2px;
     }
-  }
-  svg {
-    width: 32px;
-    height: 32px;
-    margin: 2px;
   }
 }
 </style>

@@ -79,3 +79,18 @@ a {
   font-weight: 700;
   transform: translateY(-2px);
 }
+
+
+.github-icon-link, .github-link, .github-link-dark {
+  color: mix(black, $brand-primary-color, 60%);
+  transition: color .3s;
+  &:hover {
+    color: mix(black, $brand-primary-color, 20%);
+  }
+}
+.github-link-dark {
+  color: $brand-primary-color;
+  &:hover {
+    color: mix(white, $brand-primary-color, 45%);
+  }
+}

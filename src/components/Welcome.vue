@@ -1,11 +1,16 @@
 <template>
   <div class="welcome reading">
-    <figure class="banner">
-      <img class="logo" svg-inline src="../assets/images/logo.svg" />
-      <h1>Bulletproof</h1>
-      <div class="subtitle">I Wish I Was...</div>
-    </figure>
-    <Readme />
+    <div class="fold">
+      <figure class="banner">
+        <img class="logo" svg-inline src="../assets/images/logo.svg" />
+        <h1>Bulletproof</h1>
+        <div class="subtitle">I Wish I Was...</div>
+      </figure>
+      <div class="invitation">
+        Drop font files anywhere to start
+      </div>
+    </div>
+    <Readme class="readme" />
   </div>
 </template>
 
@@ -27,6 +32,7 @@ export default {
 .banner {
   font-size: 6rem;
   text-align: center;
+  margin-bottom: 2rem;
   .logo {
     height: 4em;
     margin: -1em 0 -0.6em;
@@ -42,5 +48,17 @@ export default {
     position: relative;
     left: 4.75em;
   }
+}
+
+.invitation {
+  text-align: center;
+  color: #aaa;
+}
+
+.fold {
+  min-height: 100vh;
+}
+
+.readme {
 }
 </style>

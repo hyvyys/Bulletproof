@@ -11,7 +11,7 @@
       </div>
       <div>
         Sample texts come from
-        <a href="https://github.com/hyvyys/language-data" target="_blank">
+        <a href="https://github.com/hyvyys/language-data" target="_blank" class="github-link-dark">
           Language-Data
         </a>.
         Visit link to contribute.
@@ -81,8 +81,11 @@ export default {
       margin-right: 2em;
     }
 
-    a {
-      color: $brand-primary-color;
+    .github-link-dark {
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 
