@@ -22,18 +22,18 @@
       <nav class="nav nav-aside" id="nav-trigger">
         <div class="transition-wrapper">
           <transition name="swap">
-            <a v-if="!textKind"
-              key="0"
-              href="https://github.com/hyvyys/Bulletproof"
-              target="_blank"
-              class="ui-icon-button github-icon-link"
-            >
-              <img
-                svg-inline
-                alt="Github"
-                src="@/assets/icons/github.svg"
-              />
-            </a>
+            <div v-if="!textKind" key="0" class="ui-icon-button github-icon-link" @click.stop>
+              <a
+                href="https://github.com/hyvyys/Bulletproof"
+                target="_blank"
+              >
+                <img
+                  svg-inline
+                  alt="Github"
+                  src="@/assets/icons/github.svg"
+                />
+              </a>
+            </div>
             <UiIconButton v-else-if="textKind === 'custom'" key="1">
               <img svg-inline src="@/assets/icons/view_headline.svg" />
             </UiIconButton>
@@ -226,14 +226,21 @@ $header-background: linear-gradient(to right, $light, $accent);
 
 .github-icon-link {
   cursor: pointer;
-  color: mix(black, $brand-primary-color, 60%);
-  transition: color .3s;
+  display: flex; // saves the day! (if it comes to transitions)
+  a {
+    display: flex;
+    color: mix(black, $brand-primary-color, 60%);
+    transition: color .3s;
+  }
   &:hover {
-    color: mix(black, $brand-primary-color, 20%);
+    a {
+      color: mix(black, $brand-primary-color, 20%);
+    }
   }
   svg {
     width: 32px;
     height: 32px;
+    margin: 2px;
   }
 }
 </style>
