@@ -85,6 +85,7 @@ export default {
 
     preventScroll() {
       this.scrolledParent.scrollTop = this.scrolledParentTop;
+      // eslint-disable-next-line no-console
       console.log('prevented scroll');
     },
 

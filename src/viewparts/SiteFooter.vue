@@ -17,7 +17,7 @@
         Visit link to contribute.
       </div>
     </div>
-    <SigmoidContainer sides="left" direction="top" class="large light aside">
+    <SigmoidContainer sides="left bottom" width="65" class="large light aside" idSeed="footer">
       <a class="github-link" href="https://github.com/hyvyys/Bulletproof" target="_blank">
         <div>
           Bulletproof
@@ -64,6 +64,7 @@ export default {
 }
 
 .site-footer {
+  z-index: 3;
   display: flex;
   align-items: center;
   min-height: 100px;

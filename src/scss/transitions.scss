@@ -1,3 +1,5 @@
+@import "@/scss/variables";
+
 .fade-enter-active, .fade-leave-active {
   transition: opacity .3s;
 }
@@ -35,12 +37,13 @@ $fade-slow-delay: 0.45s;
   }
 }
 
+/* swap right sidebar content */
 .swap-enter-active, .swap-leave-active {
   transition: transform .3s, opacity .3s;
 }
 .swap-enter, .swap-leave-to {
   opacity: 0;
-  width: 190px;
+  width: $contextual-sidebar-width;
   transform: translateX(60%); // somehow 90% or more causes weird jumps
 }
 
@@ -55,5 +58,25 @@ $fade-slow-delay: 0.45s;
     left: 0;
     right: 0;
     bottom: 0;
+  }
+}
+
+.slide-left {
+  &-enter-active,
+  &-leave-active {
+    transition: opacity 0.3s, transform 0.3s;
+  }
+  &-enter, &-leave-to {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  &-enter-to, &-leave {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  &-move {
+    transition: transform .3s;
+  }
+  &-leave-active {
   }
 }

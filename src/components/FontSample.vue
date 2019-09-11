@@ -11,6 +11,7 @@
         text-transform: ${settings.textTransform};
         font-feature-settings: ${ fontFeatureSettings };
         font-variation-settings: ${ fontVariationSettings };
+        word-break: ${wordBreak};
     `"
   >
     <div
@@ -35,6 +36,10 @@ export default {
     html: {
       type: String,
       default: "",
+    },
+    wordBreak: {
+      type: String,
+      default: 'normal',
     },
   },
   data() {
@@ -122,7 +127,6 @@ export default {
 .font-sample {
   font-size: 100% / $font-scale;
   flex: 1;
-  overflow: auto;
   padding: 10px 15px;
 
   @for $i from 1 through 6 {
@@ -135,8 +139,15 @@ export default {
   }
 
   overflow: hidden;
+  position: relative;
 
   .font-sample-content {
+    // position: absolute;
+    // top: 0;
+    // right: 0;
+    // left: 0;
+    // overflow: auto hidden;
+
     height: 100%;
     padding-bottom: 10em;
     white-space: pre-wrap;

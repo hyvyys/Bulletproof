@@ -1,11 +1,17 @@
 <template>
   <transition name="fade">
-    <div class="fitter" v-show="!forceInvisible && visible">
+    <div :class="`fitter ${pinned ? 'pinned' : ''}`" v-show="!forceInvisible && isVisible">
       <div
         ref="positioned"
-        class="positioned ui-popover is-raised"
+        :class="`positioned ui-popover is-raised ${pinned ? 'pinned' : ''}`"
         :style="`position: ${position}; width: ${width}px; top: ${top}px; max-height: ${maxHeight}px; `"
       >
+        <div class="titlebar" v-if="title">
+          <h2>{{ title }}</h2>
+          <UiIconButton size="small" @click="togglePinPanel" :class="pinned ? 'active' : ''">
+            <img svg-inline src="@/assets/icons/pin.svg" />
+          </UiIconButton>
+        </div>
         <div v-bar>
           <div
             ref="scrolled"
@@ -23,10 +29,38 @@
 <script>
 // import throttle from "lodash.throttle";
 import viewport from "@/utils/viewport";
+import UiIconButton from "keen-ui/src/UiIconButton";
+
+function closestLike(el, predicate, depth = 3) {
+  let i = 0;
+  var node = el;
+  while (node != null && i <= depth) {
+    if (predicate(node)) {
+      return node;
+    }
+    node = node.parentNode;
+    i++;
+  }
+  return null;
+}
 
 export default {
   name: "Fitter",
+  components: {
+    UiIconButton,
+  },
   props: {
+    title: {
+      type: String,
+    },
+    isPinned: {
+      type: Boolean,
+      default: true,
+    },
+    isVisible: {
+      type: Boolean,
+      default: true,
+    },
     topSelector: {
       type: String,
       default: "header",
@@ -61,21 +95,21 @@ export default {
     return {
       top: 0,
       maxHeight: null,
-      position: 'fixed',
+      position: "fixed",
       width: null,
-      visible: !this.trigger,
       storedScrollPosition: 0,
+      pinned: this.isPinned,
     };
   },
   watch: {
-    $route (){
+    $route() {
       this.updatePosition();
     },
   },
   mounted() {
     this.init();
-    this.initShowHide();
     this.initScrollSync();
+    this.initPinnable();
   },
   destroyed() {
     this.cleanup();
@@ -96,17 +130,27 @@ export default {
         window.addEventListener("resize", this.updatePosition);
       } else {
         // eslint-disable-next-line no-console
-        console.error(`Fitter didn't find element ${this.topSelector} or element ${this.bottomSelector}.`);
+        console.error(
+          `Fitter didn't find element ${this.topSelector} or element ${this.bottomSelector}.`
+        );
       }
+    },
+    initPinnable() {
+      window.addEventListener("click", this.mysteriousClick);
+      // window.addEventListener("scroll", this.mysteriousClick);
     },
     cleanup() {
       window.removeEventListener("resize", this.resize);
       this.parent.removeEventListener("scroll", this.updatePosition);
       window.removeEventListener("resize", this.updatePosition);
+      window.removeEventListener("click", this.mysteriousClick);
+      // window.removeEventListener("scroll", this.mysteriousClick);
     },
     updatePosition() {
       this.top = Math.max(0, this.header.getBoundingClientRect().bottom);
-      this.maxHeight = Math.min(this.height, this.footer.getBoundingClientRect().top) - this.top;
+      this.maxHeight =
+        Math.min(this.height, this.footer.getBoundingClientRect().top) -
+        this.top;
       // this.position = this.top > 0 ? "static" : "fixed";
     },
     size() {
@@ -126,21 +170,29 @@ export default {
         e.stopPropagation();
       }
     },
-    initShowHide() {
-      if (this.trigger) {
-        document.querySelector(this.trigger).addEventListener("click", () => {
-          this.toggle();
-        });
-        document.body.addEventListener("click", () => {
-          // this.hide();
-        })
-      }
-    },
     toggle() {
-      this.visible = !this.visible;
+      this.$emit("toggle");
     },
     hide() {
-      this.visible = false;
+      this.$emit("hide");
+    },
+    getTriggerElement() {
+      return document.querySelector(this.trigger);
+    },
+    mysteriousClick(event) {
+      const clickedTrigger = this.getTriggerElement().contains(event.target);
+      if (
+        !this.pinned &&
+        this.isVisible &&
+        !clickedTrigger
+      ) {
+        const el = event.target;
+        const anchor = closestLike(el, node => node.tagName === "A", 3);
+        const isNavigationAnchor = anchor ? anchor.getAttribute("href").startsWith("#") : false;
+        if (!this.$el.contains(event.target) || isNavigationAnchor) {
+          this.hide();
+        }
+      }
     },
     initScrollSync() {
       this.$on(this.scrollSyncStartEvent, () => {
@@ -149,6 +201,9 @@ export default {
       this.$on(this.scrollSyncEndEvent, () => {
         this.$refs.scrolled.scrollTop = this.storedScrollPosition;
       });
+    },
+    togglePinPanel() {
+      this.pinned = !this.pinned;
     },
   },
 };
@@ -159,6 +214,7 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100%;
+  z-index: 1;
 
   .vb {
     display: flex;
@@ -168,9 +224,42 @@ export default {
       box-sizing: border-box !important;
     }
   }
+  transition: box-shadow 0.15s;
+  &.pinned {
+    // box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14);
+  }
 }
 .scrolled.disable-overscroll {
   overscroll-behavior: none;
   height: 100%;
+}
+
+.titlebar {
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  h2 {
+    padding: 0 8px;
+    flex: 1;
+    font-size: 1.2rem;
+    color: mix($brand-primary-color, #444);
+    margin: 0;
+  }
+  .ui-icon-button {
+    color: mix($brand-primary-color, #444);
+    width: 24px;
+    height: 24px;
+    transform: translateX(3px) rotate(45deg);
+    opacity: 0.65;
+    &.active {
+      opacity: 1;
+      transform: rotate(5deg);
+    }
+  }
+}
+
+.fitter:not(.pinned) {
+  width: 0;
 }
 </style>

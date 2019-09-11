@@ -1,8 +1,14 @@
 <template>
   <div class="font-tester">
-    <transition name="fade-slow">
+    <transition name="fade-slow" mode='in-out'>
       <div class="font-tester-content" v-show="!fontLoading">
         <Fitter
+          title="Settings"
+          :isPinned="true"
+          :isVisible="settingsPanelVisible"
+          @toggle="$store.commit('toggleSettingsPanel')"
+          @hide="$store.commit('toggleSettingsPanel', {value: false})"
+          trigger="#settings-trigger"
           class="settings-wrapper"
           :scrolledParentSelector="scrolledParentSelector"
           bottomSelector=".site-footer"
@@ -10,26 +16,31 @@
         >
           <Settings />
         </Fitter>
+
         <FontSample
           :html="texts[selectedSampleKey]"
+          :wordBreak="wordBreak"
           @update="e => modifyText(e)"
         />
 
-          <Fitter
-            class="nav-wrapper"
-            :scrolledParentSelector="scrolledParentSelector"
-            bottomSelector=".site-footer"
-            topSelector=".site-header"
-            trigger="#nav-trigger"
-          >
-            <div class="transition-wrapper">
-              <transition name="swap">
-                <LanguageNav v-if="visibleLanguages.length > 0" />
-                <KerningNav v-else-if="selectedTextKind === 'kerning'" />
-                <FontSampleNav v-else />
-              </transition>
-            </div>
-          </Fitter>
+        <Fitter
+          :title="navElementTitle"
+          :isPinned="false"
+          :isVisible="contextualPanelVisible"
+          @toggle="$store.commit('toggleContextualPanel')"
+          @hide="$store.commit('toggleContextualPanel', {value: false})"
+          trigger="#nav-trigger"
+          class="nav-wrapper"
+          :scrolledParentSelector="scrolledParentSelector"
+          bottomSelector=".site-footer"
+          topSelector=".site-header"
+        >
+          <div class="transition-wrapper">
+            <transition name="swap">
+              <component :is="navElement" :key="navElementTitle" />
+            </transition>
+          </div>
+        </Fitter>
       </div>
     </transition>
   </div>
@@ -62,6 +73,8 @@ export default {
   computed: {
     ...mapState([
       "fontLoading",
+      "settingsPanelVisible",
+      "contextualPanelVisible",
     ]),
     selectedTextKind() {
       return this.$route.params.text;
@@ -78,6 +91,19 @@ export default {
     fontSampleHtml() {
       return this.texts[this.selectedSampleKey];
     },
+    navElement() {
+      if (this.visibleLanguages.length > 0) return LanguageNav;
+      else if (this.selectedTextKind === 'kerning') return KerningNav;
+      else return FontSampleNav;
+    },
+    navElementTitle() {
+      if (this.navElement === LanguageNav) return "Languages";
+      else if (this.navElement === KerningNav) return "Kerning editor";
+      else return "Playground";
+    },
+    wordBreak() {
+      return this.selectedTextKind === 'kerning' ? 'break-all' : 'normal';
+    }
   },
   watch: {
     selectedTextKind() {
@@ -117,14 +143,20 @@ export default {
   .font-tester-content {
     flex: 1;
     display: flex;
+    overflow: auto;
+    width: 100vw;
   }
+  z-index: 0;
 }
 .settings-wrapper {
-  min-width: $sidebar-width;
   width: $sidebar-width;
+  ::v-deep .positioned {
+    width: $sidebar-width;
+    background: $light;
+  }
 }
 .nav-wrapper {
-  width: 0;
+  width: $contextual-sidebar-width + $vuebar-width;
 
   ::v-deep .positioned {
     background: $light;

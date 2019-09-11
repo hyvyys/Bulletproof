@@ -100,6 +100,7 @@ export default {
       if (!this.canAnimate) return;
 
       // change each value to Array containing two copies of the value
+      // eslint-disable-next-line no-unused-vars
       function duplicateValues(object) {
         Object.keys(object).forEach(k => {
           object[k] = [object[k], object[k]];

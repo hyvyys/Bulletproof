@@ -1,4 +1,3 @@
-import anime from "animejs";
 import Vue from "vue";
 import Settings from "./models/Settings";
 

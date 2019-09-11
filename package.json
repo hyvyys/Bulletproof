@@ -23,6 +23,7 @@
     "lodash.throttle": "^4.1.1",
     "opentype.js": "^1.1.0",
     "vue": "^2.6.10",
+    "vue-closable": "0.0.3",
     "vue-color": "^2.7.0",
     "vue-observe-visibility": "^0.4.4",
     "vue-router": "^3.0.3",

@@ -135,7 +135,6 @@ export default class Settings {
     settings.backgroundColor = style.backgroundColor
 
     function mapCompoundProp(from, to) {
-      // debugger
       const features = {};
       (style[from] || "").split(/, ?/g).filter(s => s).map(f => {
         let match = f.match(/[a-z]{4}/i);

@@ -25,6 +25,8 @@ const store = new Vuex.Store({
     scrolledParentSelector: ".app-content",
     animating: false,
     displayedSettings: {},
+    settingsPanelVisible: true,
+    contextualPanelVisible: false,
   },
 
   getters: {
@@ -64,6 +66,15 @@ const store = new Vuex.Store({
   },
 
   mutations: {
+    toggleSettingsPanel(state, { value } = { value: null }) {
+      const val = value != null ? value : !state.settingsPanelVisible;
+      state.settingsPanelVisible = val;
+    },
+    toggleContextualPanel(state, { value } = { value: null }) {
+      const val = value != null ? value : !state.contextualPanelVisible;
+      state.contextualPanelVisible = val;
+    },
+
     fontLoadStart(state) {
       state.fontLoading = true;
     },

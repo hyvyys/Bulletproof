@@ -1,37 +1,52 @@
 <template>
   <div :class="`site-header ${sticky ? 'sticky' : ''}`">
-    <div class="dark main">
-      <div class="logo">
+    <transition-group tag="div" class="above-sidebar" name="slide-left">
+      <div key="button" v-if="!!textKind" class="settings-aside-wrap">
+        <SigmoidContainer class="settings-aside light" sides="right top">
+          <nav class="nav nav-aside" id="settings-trigger" @click="toggleSettingsPanel">
+            <div class="transition-wrapper">
+              <UiIconButton>
+                <img svg-inline src="@/assets/icons/view_headline.svg" />
+              </UiIconButton>
+            </div>
+          </nav>
+        </SigmoidContainer>
+      </div>
+
+      <div key="logo" class="logo">
         <router-link to="/" class="home" @click.native="scrollToTop">
           <SiteLogo />
         </router-link>
       </div>
+    </transition-group>
 
+    <div class="dark main">
       <FontLoader :gui="showFontLoader" />
 
       <nav class="nav nav-text-kinds">
         <EditorNav />
-
         <span class="nav-link" v-for="kind in textKinds" :key="kind">
           <router-link :to="`/${kind}`">{{ navlinkText(kind) }}</router-link>
         </span>
       </nav>
     </div>
 
-    <SigmoidContainer class="light aside" sides="left" direction="bottom">
-      <nav class="nav nav-aside" id="nav-trigger">
+    <SigmoidContainer class="light aside" sides="left top">
+      <nav class="nav nav-aside" id="nav-trigger" @click="toggleContextualPanel">
         <div class="transition-wrapper">
           <transition name="swap">
-            <div v-if="!textKind" key="0" class="ui-icon-button github-icon-link-wrapper" @click.stop>
-              <a class="github-icon-link"
+            <div
+              v-if="!textKind"
+              key="0"
+              class="ui-icon-button github-icon-link-wrapper"
+              @click.stop
+            >
+              <a
+                class="github-icon-link"
                 href="https://github.com/hyvyys/Bulletproof"
                 target="_blank"
               >
-                <img
-                  svg-inline
-                  alt="Github"
-                  src="@/assets/icons/github.svg"
-                />
+                <img svg-inline alt="Github" src="@/assets/icons/github.svg" />
               </a>
             </div>
             <UiIconButton v-else-if="textKind === 'custom'" key="1">
@@ -118,6 +133,12 @@ export default {
     scrollToTop() {
       this.scrolled.scrollTo(0, 0);
     },
+    toggleSettingsPanel() {
+      this.$store.commit("toggleSettingsPanel");
+    },
+    toggleContextualPanel() {
+      this.$store.commit("toggleContextualPanel");
+    },
   },
 };
 </script>
@@ -140,7 +161,7 @@ $header-background: linear-gradient(to right, $light, $accent);
   display: flex;
   align-items: stretch;
   justify-items: space-between;
-  z-index: 1;
+  z-index: 2;
   padding-top: 8px;
   @include header-background(-8px);
 
@@ -156,15 +177,21 @@ $header-background: linear-gradient(to right, $light, $accent);
   }
 
   .main {
+    margin-top: -4px;
     flex: 1;
     display: flex;
-    margin-top: -8px;
     align-items: center;
     min-width: 0;
+    // flex-wrap: wrap-reverse;
+  }
+
+  .above-sidebar {
+    width: $sidebar-width;
+    display: flex;
   }
 
   .logo {
-    width: $sidebar-width;
+    margin-top: -4px;
     padding: 0 15px 0 0;
     display: flex;
     justify-content: center;
@@ -177,13 +204,33 @@ $header-background: linear-gradient(to right, $light, $accent);
   .nav {
     min-width: 0;
   }
+  // .editor-nav {
+  //   flex: 100 0 auto;
+  //   justify-content: flex-end;
+  // }
   .nav-text-kinds {
-    flex: 1;
+    flex: 1 0 auto;
     display: flex;
     align-items: center;
     justify-content: flex-end;
     padding-right: 0;
     text-shadow: 0 0 15px darken($accent, 30%);
+  }
+
+  .settings-aside-wrap {
+    display: flex;
+  }
+
+  .settings-aside {
+    --adjust-y: 1px;
+    --sigmoid-adjust: -15px;
+
+    .nav-aside {
+      padding-left: 0;
+      .ui-button {
+        padding: 0;
+      }
+    }
   }
 
   .aside {

@@ -22,16 +22,10 @@
 
 <script>
 import { mapGetters } from "vuex";
-import UiIconButton from "keen-ui/src/UiIconButton.vue";
-import UiButton from "keen-ui/src/UiButton.vue";
-import UiPopover from "keen-ui/src/UiPopover.vue";
 import EditorNavLink from "@/components/EditorNavLink.vue";
 
 export default {
   components: {
-    UiIconButton,
-    UiButton,
-    UiPopover,
     EditorNavLink,
   },
   computed: {
