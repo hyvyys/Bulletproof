@@ -1,6 +1,6 @@
 <template>
   <div :class="`site-header ${sticky ? 'sticky' : ''}`">
-    <transition-group tag="div" class="above-sidebar" name="slide-left">
+    <transition-group tag="div" class="above-sidebar slide-left-wrapper" name="slide-left">
       <div key="button" v-if="!!textKind" class="settings-aside-wrap">
         <SigmoidContainer class="settings-aside light" sides="right top">
           <nav class="nav nav-aside" id="settings-trigger" @click="toggleSettingsPanel">

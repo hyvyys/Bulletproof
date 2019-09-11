@@ -62,9 +62,11 @@ $fade-slow-delay: 0.45s;
 }
 
 .slide-left {
+  $duration: 0.3s;
+
   &-enter-active,
   &-leave-active {
-    transition: opacity 0.3s, transform 0.3s;
+    transition: opacity $duration, transform $duration;
   }
   &-enter, &-leave-to {
     opacity: 0;
@@ -75,8 +77,13 @@ $fade-slow-delay: 0.45s;
     transform: translateX(0);
   }
   &-move {
-    transition: transform .3s;
+    transition: transform $duration;
   }
   &-leave-active {
+    position: absolute;
+    height: 100%;
+  }
+  &-wrapper {
+    position: relative;
   }
 }
