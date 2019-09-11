@@ -8,7 +8,7 @@
       >
         <div class="titlebar" v-if="title">
           <h2>{{ title }}</h2>
-          <UiIconButton size="small" @click="togglePinPanel" :class="pinned ? 'active' : ''">
+          <UiIconButton size="small" @click="togglePinPanel" :class="`pin ${pinned ? 'active' : ''}`">
             <img svg-inline src="@/assets/icons/pin.svg" />
           </UiIconButton>
         </div>
@@ -246,15 +246,19 @@ export default {
     color: mix($brand-primary-color, #444);
     margin: 0;
   }
-  .ui-icon-button {
+  .ui-icon-button.pin {
     color: mix($brand-primary-color, #444);
     width: 24px;
     height: 24px;
-    transform: translateX(3px) rotate(45deg);
+    svg {
+      transform: rotate(35deg);
+    }
     opacity: 0.65;
     &.active {
       opacity: 1;
-      transform: rotate(5deg);
+      svg {
+        transform: rotate(20deg);
+      }
     }
   }
 }

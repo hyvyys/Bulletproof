@@ -156,6 +156,8 @@ export default {
   }
 }
 .nav-wrapper {
+  // extend background to page right margin, beneath the main scrollbar
+
   width: $contextual-sidebar-width + $vuebar-width;
 
   ::v-deep .positioned {
