@@ -44,7 +44,7 @@ h3 {
 // }
 
 .app-content {
-  scroll-padding-top: 64px; /* height of sticky header */
+  scroll-padding-top: 80px; /* height greater than that of the sticky header */
 }
 
 body {

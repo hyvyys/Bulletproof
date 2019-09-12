@@ -1,6 +1,6 @@
 <template>
   <div :class="`site-header ${sticky ? 'sticky' : ''}`">
-    <transition-group tag="div" class="above-sidebar slide-left-wrapper" name="slide-left">
+    <transition-group tag="div" class="above-sidebar slide-left-wrapper" :name="aboveHeaderTransition">
       <div key="button" v-if="!!textKind" class="settings-aside-wrap">
         <SigmoidContainer class="settings-aside light" sides="right top">
           <nav class="nav nav-aside" id="settings-trigger" @click="toggleSettingsPanel">
@@ -70,6 +70,8 @@ import { mapGetters } from "vuex";
 import fireEvent from "@/utils/fireEvent";
 import Hamster from "hamsterjs";
 
+import viewport from "@/utils/viewport";
+
 import FontLoader from "@/components/FontLoader.vue";
 import EditorNav from "@/components/EditorNav.vue";
 import SiteLogo from "@/components/SiteLogo.vue";
@@ -92,6 +94,7 @@ export default {
       textKinds,
       scrollDelta: 0,
       sticky: true,
+      aboveHeaderTransition: "slide-left",
     };
   },
   computed: {
@@ -125,8 +128,15 @@ export default {
         setTimeout(() => fireEvent(scrolled, "scroll"), 700);
       }
     });
+
+    // duct tape to avoid erroneous transition up/down when clicking a hash anchor
+    window.addEventListener("resize", this.setAboveHeaderTransition);
+    this.setAboveHeaderTransition();
   },
   methods: {
+    setAboveHeaderTransition() {
+      this.aboveHeaderTransition = viewport.height < 500 ? "" : "slide-left";
+    },
     navlinkText(kind) {
       return textKindTitle(kind);
     },
