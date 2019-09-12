@@ -130,7 +130,6 @@ export default {
       return `
         background: ${this.background};
         height: calc(100% + 0.5px) /* fixes gap left by imprecise clip-path */;
-        ${ this.top ? "" : "transform: translateY(-0.5px);" }
         width: calc(100% + 0.5px) /* fixes gap left by imprecise clip-path */;
         ${side === 'left' ? `
           clip-path: url('#${this.svgLeftId}');
