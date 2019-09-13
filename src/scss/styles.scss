@@ -36,13 +36,6 @@ h3 {
   font-weight: 500;
 }
 
-// :target::before {
-//   content: '';
-//   display: block;
-//   height:      64px;
-//   margin-top: -64px;
-// }
-
 .app-content {
   scroll-padding-top: 80px; /* height greater than that of the sticky header */
 }
