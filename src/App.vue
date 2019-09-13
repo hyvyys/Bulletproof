@@ -3,23 +3,21 @@
     <div class="app-content">
       <router-view name="header"/>
 
-      <div class="fold-wrapper">
+      <div class="site-content">
         <keep-alive>
           <router-view name="main" />
         </keep-alive>
       </div>
 
-      <SiteFooter></SiteFooter>
+      <router-view name="footer"/>
     </div>
     <div class="shade" />
   </div>
 </template>
 
 <script>
-import SiteFooter from "./viewparts/SiteFooter.vue";
 
 export default {
-  components: { SiteFooter },
 };
 </script>
 
@@ -30,8 +28,14 @@ export default {
 .app {
   background: $light;
   color: $light-text;
+
+  /* this is what v-bar applies anyway */
   height: 100vh;
-  overflow-y: scroll;
+  overflow-y: hidden;
+  .app-content {
+    height: 100%;
+    overflow: auto;
+  }
 
   &.vb {
     > .vb-content {
@@ -44,14 +48,6 @@ export default {
       }
     }
   }
-}
-
-// keeps footer below the fold
-.fold-wrapper {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  overflow-x: hidden;
 }
 
 .shade {

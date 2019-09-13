@@ -1,10 +1,12 @@
 import Vue from "vue";
 import Router from "vue-router";
 
+import SiteHeader from "@/viewparts/SiteHeader.vue";
+import SiteFooter from "@/viewparts/SiteFooter.vue";
+
 import Home from "@/views/Home.vue";
 import Help from "@/views/Help.vue";
 import FontTester from "@/views/FontTester.vue";
-import SiteHeader from "@/viewparts/SiteHeader.vue";
 
 import textKinds from "@/models/textKinds";
 
@@ -20,6 +22,7 @@ export default new Router({
       components: {
         header: SiteHeader,
         main: Home,
+        footer: SiteFooter,
       },
     },
     {
@@ -29,6 +32,7 @@ export default new Router({
       components: {
         header: SiteHeader,
         main: FontTester,
+        footer: SiteFooter,
       },
     },
     {
@@ -37,6 +41,7 @@ export default new Router({
       components: {
         header: SiteHeader,
         main: Help,
+        footer: SiteFooter,
       },
     },
   ],
