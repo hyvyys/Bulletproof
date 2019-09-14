@@ -1,5 +1,6 @@
 <template>
   <div class="site-footer">
+    <div class="sentinel" ref="sentinel"/>
     <div class="main">
       <div class="subtle">
         <div>
@@ -48,6 +49,30 @@ export default {
       version,
     }
   },
+  mounted() {
+    this.initObserver();
+  },
+  destroyed() {
+    this.observer.disconnect();
+  },
+  methods: {
+    initObserver() {
+      let options = { threshold: [0, 0.25, 0.5, 0.75, 1] };
+      // eslint-disable-next-line no-unused-vars
+      let callback = (entries, observer) => {
+        entries.forEach(entry => {
+          this.updateHeight(entry);
+        });
+      };
+      this.observer = new IntersectionObserver(callback, options);
+      this.observer.observe(this.$refs.sentinel);
+    },
+    updateHeight(entry) {
+      // const height = entry.intersectionRect.height;
+      const ratio = entry.intersectionRatio;
+      this.$store.commit("updateFooter", { visible: ratio > 0.75, ratio });
+    },
+  },
 };
 </script>
 
@@ -64,10 +89,18 @@ export default {
 }
 
 .site-footer {
-  z-index: 3;
+  position: relative;
+  .sentinel {
+    position: absolute;
+    bottom: 100%;
+    height: $footer-height;
+    width: 100%;
+    pointer-events: none;
+  }
+
   display: flex;
   align-items: center;
-  min-height: 100px;
+  height: $footer-height;
   justify-items: space-between;
   padding-bottom: 8px;
   @include footer-background();

@@ -16,7 +16,6 @@
 </template>
 
 <script>
-
 export default {
 };
 </script>
@@ -51,6 +50,7 @@ export default {
 }
 
 .shade {
+  z-index: 20;
   pointer-events: none;
   position: fixed;
   top: 0;

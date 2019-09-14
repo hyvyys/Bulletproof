@@ -6,6 +6,7 @@ $color-tinted: mix($accent, $color, 60%);
 $color-accent: $brand-primary-color;
 
 @mixin dark() {
+  z-index: 10;
   background: transparent !important;
   color: $color !important;
   * {

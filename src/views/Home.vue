@@ -113,6 +113,7 @@ $holes-width: 500px;
 }
 
 .home {
+  flex: 1;
   padding: 0 80px;
   z-index: 0;
   position: relative;

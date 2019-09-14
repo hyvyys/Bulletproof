@@ -1,9 +1,9 @@
 <template>
-  <div :class="`site-header ${sticky ? 'sticky' : ''}`">
+  <div :class="`site-header ${!footerVisible && sticky ? 'sticky' : ''}`">
     <transition-group tag="div" class="above-sidebar slide-left-wrapper" :name="aboveHeaderTransition">
       <div key="button" v-if="!!textKind" class="settings-aside-wrap">
-        <SigmoidContainer class="settings-aside light" sides="right top">
-          <nav class="nav nav-aside" id="settings-trigger" @click="toggleSettingsPanel">
+        <SigmoidContainer id="settings-trigger" class="settings-aside light" sides="right top">
+          <nav class="nav nav-aside" @click="toggleSettingsPanel">
             <div class="transition-wrapper">
               <UiIconButton>
                 <img svg-inline src="@/assets/icons/view_headline.svg" />
@@ -31,8 +31,8 @@
       </nav>
     </div>
 
-    <SigmoidContainer class="light aside" sides="left top">
-      <nav class="nav nav-aside" id="nav-trigger" @click="toggleContextualPanel">
+    <SigmoidContainer id="nav-trigger" class="light aside" sides="left top">
+      <nav class="nav nav-aside" @click="toggleContextualPanel">
         <div class="transition-wrapper">
           <transition name="swap">
             <div
@@ -67,9 +67,6 @@
 
 <script>
 import { mapGetters } from "vuex";
-import fireEvent from "@/utils/fireEvent";
-import Hamster from "hamsterjs";
-
 import viewport from "@/utils/viewport";
 
 import FontLoader from "@/components/FontLoader.vue";
@@ -92,12 +89,19 @@ export default {
   data() {
     return {
       textKinds,
-      scrollDelta: 0,
       sticky: true,
       aboveHeaderTransition: "slide-left",
+      scrolledParent: null,
+      stickyShowDelta: 200, // px
+      stickyHideDelta: 300, // px
+      lastTop: 0,
+      lastHash: "",
     };
   },
   computed: {
+    footerVisible() {
+      return this.$store.state.layout.footerVisible;
+    },
     ...mapGetters([
       "scrolledParentSelector",
       "customTextIds",
@@ -110,28 +114,17 @@ export default {
       return this.$route.params.text;
     },
   },
+  watch: {
+    sticky(value) {
+      this.$store.commit("sticky", { value });
+    },
+  },
   mounted() {
-    const deltaUp = 3;
-    const deltaDown = 7;
-    const scrolled = document.querySelector(this.scrolledParentSelector);
-    this.scrolled = scrolled;
-    const hamster = Hamster(scrolled);
-    hamster.wheel((event, delta, deltaX, deltaY) => {
-      if (Math.sign(deltaY) !== Math.sign(this.scrollDelta))
-        this.scrollDelta = 0;
-      this.scrollDelta += deltaY;
-      if (this.scrollDelta > deltaUp) {
-        this.sticky = true;
-        setTimeout(() => fireEvent(scrolled, "scroll"), 700);
-      } else if (this.scrollDelta < -deltaDown) {
-        this.sticky = false;
-        setTimeout(() => fireEvent(scrolled, "scroll"), 700);
-      }
-    });
-
     // duct tape to avoid erroneous transition up/down when clicking a hash anchor
     window.addEventListener("resize", this.setAboveHeaderTransition);
     this.setAboveHeaderTransition();
+    this.scrolledParent = document.querySelector(this.scrolledParentSelector);
+    this.initStickyHeader();
   },
   methods: {
     setAboveHeaderTransition() {
@@ -141,13 +134,45 @@ export default {
       return textKindTitle(kind);
     },
     scrollToTop() {
-      this.scrolled.scrollTo(0, 0);
+      this.scrolledParent.scrollTo(0, 0);
     },
     toggleSettingsPanel() {
       this.$store.commit("toggleSettingsPanel");
     },
     toggleContextualPanel() {
       this.$store.commit("toggleContextualPanel");
+    },
+
+    hasScrolled() {
+      if (this.lastHash === window.location.hash) {
+        const el = this.scrolledParent === window ? document.documentElement : this.scrolledParent;
+        const top = el.scrollTop;
+        const delta = top - this.lastTop;
+        if (-delta > this.stickyShowDelta || top < 100) {
+          this.sticky = true;
+          this.lastTop = top;
+        }
+        else if (delta > this.stickyHideDelta) {
+          this.sticky = false;
+          this.lastTop = top;
+        }
+      }
+      this.lastHash = window.location.hash;
+    },
+
+    initStickyHeader() {
+      let didScroll = false;
+
+      this.scrolledParent.addEventListener(
+        "scroll",
+        function () { didScroll = true; }
+      );
+      setInterval(() => {
+        if (didScroll) {
+          this.hasScrolled();
+          didScroll = false;
+        }
+      }, 250);
     },
   },
 };
@@ -171,15 +196,17 @@ $header-background: linear-gradient(to right, $light, $accent);
   display: flex;
   align-items: stretch;
   justify-items: space-between;
-  z-index: 2;
   padding-top: 8px;
   @include header-background(-8px);
 
+  z-index: 5;
+  height: $header-height;
+
   position: sticky;
-  top: -100%;
-  transition: top 0.7s;
-  &.sticky {
-    top: 0;
+  top: 0;
+  transition: transform 0.2s;
+  &:not(.sticky) {
+    transform: translateY(-$header-height);
   }
 
   .light {
@@ -214,10 +241,6 @@ $header-background: linear-gradient(to right, $light, $accent);
   .nav {
     min-width: 0;
   }
-  // .editor-nav {
-  //   flex: 100 0 auto;
-  //   justify-content: flex-end;
-  // }
   .nav-text-kinds {
     flex: 1 0 auto;
     display: flex;

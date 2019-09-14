@@ -142,14 +142,8 @@ export default {
   position: relative;
 
   .font-sample-content {
-    // position: absolute;
-    // top: 0;
-    // right: 0;
-    // left: 0;
-    // overflow: auto hidden;
-
     height: 100%;
-    padding-bottom: 10em;
+    padding-bottom: 100vh;
     white-space: pre-wrap;
 
     &:focus {

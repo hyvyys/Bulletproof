@@ -2,9 +2,9 @@
 
 .vb {
   &.vb-visible > .vb-content {
-    box-sizing: border-box;
     padding-right: $vuebar-width;
     width: unquote("max(100% + 17px, 100% + 0vw)") !important;
+    box-sizing: border-box !important;
   }
 
   > .vb-dragger {
@@ -20,7 +20,7 @@
         $dragger-margin-left;
       border-radius: 4px;
       height: calc(100% - 10px);
-      min-height: 2em;
+      // min-height: 2em;
       display: block;
     }
   }

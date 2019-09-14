@@ -4,6 +4,7 @@ Vue.use(Vuex);
 
 import textModule from "./store.text";
 import animationModule from "./store.animation";
+import layoutModule from "./store.layout";
 import configureMediator from "./store-mediator";
 
 import Settings from "@/models/Settings";
@@ -15,6 +16,7 @@ const store = new Vuex.Store({
   modules: {
     text: textModule,
     animation: animationModule,
+    layout: layoutModule,
   },
   state: {
     fontLoading: true,
@@ -22,7 +24,6 @@ const store = new Vuex.Store({
     selectedBoldFont: { family: "" },
     selectedItalicFont: { family: "" },
     settings: Settings.getDefaults(),
-    scrolledParentSelector: ".app-content",
     animating: false,
     displayedSettings: {},
     settingsPanelVisible: true,
@@ -46,9 +47,6 @@ const store = new Vuex.Store({
       return state.animating ? state.displayedSettings : state.settings;
     },
     animating: state => state.animating,
-    scrolledParentSelector: state => {
-      return state.scrolledParentSelector;
-    },
     selectedLoclLanguage: state => {
       const features = state.settings.gsubFeatures;
       const matching = features.find(f => f.tag === "locl");

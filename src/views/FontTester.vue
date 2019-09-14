@@ -2,45 +2,41 @@
   <div class="font-tester">
     <transition name="fade-slow" mode='in-out'>
       <div class="font-tester-content" v-show="!fontLoading">
-        <Fitter
+
+        <Pinnable
+          class="site-sidebar sidebar-settings"
           title="Settings"
           :isPinned="true"
           :isVisible="settingsPanelVisible"
           @toggle="$store.commit('toggleSettingsPanel')"
           @hide="$store.commit('toggleSettingsPanel', {value: false})"
           trigger="#settings-trigger"
-          class="settings-wrapper"
-          :scrolledParentSelector="scrolledParentSelector"
-          bottomSelector=".site-footer"
-          topSelector=".site-header"
         >
           <Settings />
-        </Fitter>
+        </Pinnable>
 
         <FontSample
+          class="main"
           :html="texts[selectedSampleKey]"
           :wordBreak="wordBreak"
           @update="e => modifyText(e)"
         />
 
-        <Fitter
+        <Pinnable
+          class="site-sidebar sidebar-nav"
           :title="navElementTitle"
-          :isPinned="false"
+          :isPinned="true"
           :isVisible="contextualPanelVisible"
           @toggle="$store.commit('toggleContextualPanel')"
           @hide="$store.commit('toggleContextualPanel', {value: false})"
           trigger="#nav-trigger"
-          class="nav-wrapper"
-          :scrolledParentSelector="scrolledParentSelector"
-          bottomSelector=".site-footer"
-          topSelector=".site-header"
         >
           <div class="transition-wrapper">
             <transition name="swap">
-              <component :is="navElement" :key="navElementTitle" />
+              <component :is="navElement" :key="navElementTitle" class="contextual-nav" />
             </transition>
           </div>
-        </Fitter>
+        </Pinnable>
       </div>
     </transition>
   </div>
@@ -49,7 +45,7 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 
-import Fitter from "@/components/layout/Fitter.vue";
+import Pinnable from "@/components/layout/Pinnable.vue";
 import Settings from "@/components/Settings.vue";
 import FontSample from "@/components/FontSample.vue";
 import LanguageNav from "@/components/LanguageNav.vue";
@@ -59,7 +55,7 @@ import FontSampleNav from "@/components/FontSampleNav.vue";
 export default {
   name: "FontTester",
   components: {
-    Fitter,
+    Pinnable,
     Settings,
     FontSample,
     LanguageNav,
@@ -138,38 +134,28 @@ export default {
 .font-tester {
   flex: 1;
   display: flex;
-  height: 100vh;
-  // position: relative;
-  .font-tester-content {
+  min-height: 100vh;
+
+.font-tester-content {
+    padding-right: $vuebar-width;
     flex: 1;
     display: flex;
-    overflow: auto;
+    height: 100%;
     width: 100vw;
   }
   z-index: 0;
 }
-.settings-wrapper {
-  width: $sidebar-width;
-  ::v-deep .positioned {
-    width: $sidebar-width;
-    background: $light;
-  }
+
+.site-sidebar {
+  z-index: 4;
 }
-.nav-wrapper {
-  // extend background to page right margin, beneath the main scrollbar
 
-  width: $contextual-sidebar-width + $vuebar-width;
+.sidebar-settings {
+  width: $sidebar-width;
+}
 
-  ::v-deep .positioned {
-    background: $light;
-    right: $vuebar-width;
-    width: $contextual-sidebar-width;
-    @include pseudo;
-    &::after {
-      left: 100%;
-      background: $light;
-      width: $vuebar-width;
-    }
-  }
+.sidebar-nav {
+  right: $vuebar-width;
+  width: $contextual-sidebar-width;
 }
 </style>
