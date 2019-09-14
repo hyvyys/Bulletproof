@@ -182,8 +182,8 @@ $holes-width: 500px;
       }
       line-height: 1.2;
       top: -1.2em;
+      bottom: -1.2em;
       width: $solid-bg-width + 2 * $holes-width - 5px;
-      height: 100%;
       background: #333;
       &.webkit {
         background: #222;
