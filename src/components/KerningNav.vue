@@ -125,18 +125,21 @@ export default {
   watch: {
     kerningPatterns(val, oldVal) {
       const newPatterns = val.filter(x => !oldVal.includes(x));
-      const hash = decodeURI(window.location.hash);
-      const current = val.find(p => "#" + decodeURI(p.id) === hash);
-      if (hash && val.length) {
-        if (!current) {
-          window.location.hash = "#" + val[0].id;
-        }
-        else {
-          window.location = hash;
-        }
-      }
-      else if (newPatterns.length === 1) {
+      if (newPatterns.length === 1) {
         window.location.hash = "#" + newPatterns[0].id;
+      }
+      else {
+        const hash = decodeURI(window.location.hash);
+        const current = val.find(p => "#" + decodeURI(p.id) === hash);
+        if (hash && val.length) {
+          if (!current) {
+            window.location.hash = "#" + val[0].id;
+          }
+          else {
+            window.location = "";
+            window.location = hash;
+          }
+        }
       }
     },
   },
