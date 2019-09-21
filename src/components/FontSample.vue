@@ -1,6 +1,6 @@
 <template>
   <!-- eslint-disable-next-line vue/no-v-html -->
-  <div class="font-sample"
+  <div :class="`font-sample ${isGotchas ? 'gotchas' : ''}`"
     :lang="selectedLoclLanguage"
     :style="`
         color: ${settings.textColor};
@@ -28,7 +28,7 @@
 <script>
 import getId from "@/utils/id";
 import DomSelection from "@/utils/DomSelection";
-import { mapGetters } from "vuex";
+import { mapState, mapGetters } from "vuex";
 
 export default {
   name: "FontSample",
@@ -48,7 +48,11 @@ export default {
     };
   },
   computed: {
+    ...mapState({
+      scrolledParentSelector: state => state.layout.scrolledParentSelector,
+    }),
     ...mapGetters([
+      "selectedSampleKey",
       "settings",
       "selectedLoclLanguage",
       "selectedFont",
@@ -58,12 +62,14 @@ export default {
       "fontFeatureSettings",
       "fontVariationSettings",
     ]),
+    isGotchas() { return this.selectedSampleKey === "gotchas"; },
   },
   watch: {
     async html() {
       // wait for html to get rendered
       await this.$nextTick();
       this.selection.restore();
+      this.configureAnchors();
     },
     formatRequested(tag) {
       if (tag) {
@@ -75,8 +81,23 @@ export default {
   },
   mounted() {
     this.selection = new DomSelection(this.$refs.content);
+    this.configureAnchors();
   },
   methods: {
+    configureAnchors() {
+      const anchors = document.querySelectorAll("a[href^='#']");
+      const scrolled = document.querySelector(this.scrolledParentSelector);
+      anchors.forEach(a => {
+        a.onclick = function(e) {
+          e.preventDefault();
+          const href = a.getAttribute("href").slice(1);
+          const target = document.querySelector(`[id='${href}']`);
+          const top = target.offsetTop;
+          scrolled.scrollTop = top;
+          // console.log(a.innerText, href, top);
+        };
+      });
+    },
     onInput(e) {
       this.notifyWindow();
       this.selection.save();
@@ -178,4 +199,48 @@ export default {
   }
 }
 
+@import "@/scss/dark";
+
+.gotchas {
+  h3, h4, .header, .desc, .desc > * {
+    font-family: $font-stack !important;
+    font-size: 1rem;
+    em {
+      font-style: italic;
+    }
+    strong {
+      font-weight: 700;
+    }
+  }
+  h3 {
+    @include dark;
+    font-size: 1.2rem;
+    // display: inline-block;
+    padding: 0 0.5em;
+    min-width: 10em;
+  }
+  h4 {
+    font-weight: 500 !important;
+  }
+
+  .header {
+    display: flex;
+    align-items: baseline;
+    > * {
+      margin-right: .4rem;
+    }
+    h4 {
+      font-size: 1.2rem;
+    }
+  }
+  .desc {
+  }
+  .tags {
+    span {
+      @include dark;
+      padding: 2px 4px;
+      margin: 0 2px;
+    }
+  }
+}
 </style>

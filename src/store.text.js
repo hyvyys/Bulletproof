@@ -204,19 +204,33 @@ export default {
       }
       const data = getters.selectedLanguages
         .map(l => ({
+          languageTag: l.htmlTag,
           language: l.language,
           id: `${l.language}-${l.id}`,
           texts: l[fieldKey],
         }));
+
+      function squish(str) { return str.replace(/\s\s+/g, "") }
       const html = data
-        .map(({ language, id, texts }) => {
+        .map(({ language, languageTag, id, texts }) => {
           let header, fragments;
           switch (getters.selectedSampleKey) {
             case "gotchas":
-              header = `<h3 class="gotcha-heading" id="${id}">${language}</h3>`;
-              // eslint-disable-next-line no-unused-vars
-              fragments = texts.map(({ topic, tags, tests }) =>
-                `<h4>${topic}</h4>${tests.map(t => `<p>${t}</p>`).join("")}`);
+              header = `<h3 id="${id}">${language}</h3>`;
+              fragments = texts.map(({ topic, tags, tests, description }) =>
+                squish(
+                  `<div class="header">
+                    <h4>${topic}</h4>
+                    <div class="tags">${tags.map(t => `<span>${t}</span>`).join("")}</div>
+                  </div>`
+                ) +
+                `<div class="desc">${description || ''}</div>` +
+                squish(
+                  `<div lang="${languageTag}">
+                    ${tests.map(t => `<p>${t}</p>`).join("")}
+                  </div>`
+                )
+              );
               break;
             case "kerning":
               break;
@@ -231,8 +245,9 @@ export default {
     },
 
     updateKerning({ state, commit }) {
-      let html = state.kerningPatterns
-        .filter(pattern => pattern.isVisible)
+      let patterns = state.kerningPatterns
+        .filter(pattern => pattern.isVisible);
+      let html = patterns
         .map(pattern => {
           function clone(array) { return JSON.parse(JSON.stringify(array)); }
           const sets = clone(pattern.sets);
@@ -266,7 +281,7 @@ export default {
     },
 
     addKerningPattern({ dispatch, commit }, { segments }) {
-      commit("addKerningPattern", { segments });
+      commit("addKerningPattern", { segments, isVisible: true });
       dispatch("updateKerning");
     },
 

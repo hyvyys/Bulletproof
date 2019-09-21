@@ -92,11 +92,12 @@
     <div v-if="localization" class="setting-group">
       <div class="row">
         <UiSelect
-          :value="localization.selectedLanguage"
-          :options="localization.languages"
+          :value="localizationLanguage"
+          :options="localizationLanguages"
           :keys="loclSelectKeys"
           placeholder="select language"
           :invalid="isLocalizationInvalid"
+          :disabled="onGotchasTab"
           @input="v => updateSetting('updateLoclFeature', { selectedLanguage: v })"
         >
           <div slot="option" slot-scope="props" class="locl-select__option">
@@ -250,6 +251,7 @@ export default {
     ...mapGetters([
       "displayedSettings",
       "animating",
+      "selectedSampleKey",
     ]),
     settings() { return this.displayedSettings },
 
@@ -282,6 +284,15 @@ export default {
     },
     localization() {
       return this.getGsubFeature("locl");
+    },
+    onGotchasTab() {
+      return this.selectedSampleKey === "gotchas";
+    },
+    localizationLanguage() {
+      return this.onGotchasTab ? "multiple" : this.localization.selectedLanguage;
+    },
+    localizationLanguages() {
+      return this.localization.languages;
     },
     isLocalizationInvalid() {
       const selected = this.localization.selectedLanguage;
