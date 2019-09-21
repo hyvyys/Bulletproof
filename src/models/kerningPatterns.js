@@ -7,7 +7,4 @@ export default [
   { segments: ["@()[]{}", "[0-9]"] },
   { segments: ["[.,-]", "[A-Za-z]"] },
   { segments: ["@()[]{}", "[A-Za-z]"] },
-  { segments: ["[,._]", "[FPTVWfrvw]"] },
-  { segments: ["[A-Z]", "[bhklmnprstv]", "[aeiouy]"], isVisible: false },
-  { segments: ["@()[]{}", "[A-Z]", "[a-z]"], isVisible: false },
 ];
