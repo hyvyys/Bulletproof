@@ -30,7 +30,9 @@ module.exports = {
     //   .loader('worker-loader');
 
     const MarkdownIt = require("markdown-it");
-    const md = new MarkdownIt();
+    const md = new MarkdownIt({
+      html: true,
+    });
     config.module
       .rule("md1")
       .test(/\.md/)

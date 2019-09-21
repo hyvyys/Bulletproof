@@ -1,22 +1,29 @@
-# [Bulletproof](https://hyvyys.github.io/Bulletproof/)
+[Bulletproof](https://hyvyys.github.io/Bulletproof/) is a visual font testing app, loosely inspired by Pablo Impallari's font testing site.
 
-A visual font testing tool, largely inspired by Pablo Impallari's font testing site.
+The app can load selected local font files and detect their OpenType features and variation axes. Everything is processed locally in the browser, using [OpenType.js](https://github.com/opentypejs/opentype.js).
 
-# Features
+Available formatting options:
+  
+  * Changing font size, line height, text alignment, text case transform, text and background colors.
+  * Toggling OpenType features on and off.
+  * Choosing localization language from the list of languages built into the font.
+  * Manipulating OpenType Variation axes.
 
-  * Loading local font files
-  * Setting texts in various languages including pangrams, sentences, ABC's (and AĄBCĆ's), etc. (drawn from my other project [language-data](https://github.com/hyvyys/language-data)). Those text strings can be filtered by language script (Latin, Cyrillic, Greek... more to come, maybe), region, number of speakers, or specific languages can be chosen.
-  * Setting font size and line height, text alignment, text and background colors
-  * Toggling OpenType features on and off
-  * Manipulating OpenType Variation axes
-  * Animating OpenType Variation axes via CSS keyframes
-  * Feature and variation axes detection based on font file (thanks to [OpenType.js](https://github.com/opentypejs/opentype.js))
+## Text collection
 
-# Roadmap
+A set of multilingual texts is collected in a separate project [Language-Data](https://github.com/hyvyys/language-data). It&nbsp;includes a few kinds of texts:
 
-  * Kerning string generator
-  * “Waterfall” of samples of degrading point sizes
-  * Grouped and named feature toggles
-  * A more user-friendly GUI for animations, automating some bits
-  * Animation of colors, text, etc. — would be useful for recording gifs or videos
-  * Enable storing a list of font files to open. This would require downloading the built app and running it with a user-defined list of local font files (via text file). Opening local files automatically from live site is impossible for security reasons. They would need to be uploaded (you wouldn't like that!) and I would need to run a server.
+  * ordinary sentences,
+  * pangrams,
+  * lettering samples — defined as sets of A-Z words preferably repeating the&nbsp;initial letter within),
+  * _gotchas_ — edge cases characteristic to the given language, things to look out for when desigining a typeface.
+
+The selection of languages and texts is arbitrary and limited, but contributions are welcome. Currently the focus is on languages written with Latin and Cyrillic.
+
+## Kerning tester
+
+The app is equipped with a [kerning string generator](/kerning), along with a couple of predefined kerning patterns. [See kerning generator help](/help#kerning).
+
+## Playground
+
+Any open text sample can be edited. In the editor view some more options are available: setting bold and italic (with separately selectable fonts), as well as taking snapshots of the settings and using them as animation keyframes — can be useful for recording gifs or videos, or toggling multiple features on and off more quickly. [See animation editor help](/help#animation).

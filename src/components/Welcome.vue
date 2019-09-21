@@ -58,4 +58,8 @@ export default {
 .fold {
   padding-bottom: 3em;
 }
+
+.readme {
+  margin-bottom: 360px;
+}
 </style>

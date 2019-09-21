@@ -27,14 +27,8 @@ h3 {
   margin: 4px 0 0 0;
   font-size: 1em;
 }
-
-.reading {
-  max-width: 800px;
-  margin: 40px auto;
-  font-size: 1.35em;
-  line-height: 1.45;
-  font-weight: 500;
-}
+  
+@import "./reading.scss";
 
 .app-content {
   scroll-padding-top: 80px; /* height greater than that of the sticky header */

@@ -49,6 +49,10 @@ export default {
   }
 }
 
+.site-content {
+  min-height: 100vh;
+}
+
 .shade {
   z-index: 20;
   pointer-events: none;

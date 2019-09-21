@@ -1,0 +1,18 @@
+.reading {
+  max-width: 700px;
+  margin: 40px auto;
+  font-size: 1.35em;
+  line-height: 1.45;
+  font-weight: 500;
+
+  h2 {
+    margin: 1.2em 0 0.6em;
+  }
+
+  code {
+    white-space: nowrap;
+    background: mix($brand-primary-color, white, 30%);
+    padding: 4px 6px;
+    border-radius: 4px;
+  }
+}

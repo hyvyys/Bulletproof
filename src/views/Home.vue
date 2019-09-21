@@ -105,7 +105,7 @@ export default {
 @import "@/scss/variables";
 @import "@/scss/mixins";
 
-$solid-bg-width: 600px;
+$solid-bg-width: 500px;
 $holes-width: 500px;
 
 @function bg-holes($side: left, $y: 0px, $url: url("../assets/images/background-holes-bar.svg")) {
