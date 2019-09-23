@@ -1,14 +1,14 @@
 import Vue from "vue";
 import router from "@/router";
 
-import characterRange from "@/utils/characterRange";
-import cartesianProduct from "@/utils/cartesianProduct";
 import kerningPatterns from "@/models/kerningPatterns";
 import kerningPatternId from "@/models/kerningPatternId";
 import languageDataFields from "@/models/textKindLanguageDataField";
 import LanguageData from "language-data";
 import escapeHtmlId from "./utils/escapeHtmlId";
 import escapeHtml from "./utils/escapeHtml";
+import CaseFilter from "./models/CaseFilter";
+import KerningGenerator from "./models/KerningGenerator";
 
 let id = 0;
 let customTextId = 1;
@@ -103,60 +103,7 @@ export default {
     },
 
     addKerningPattern(state, { segments, isVisible }) {
-      const sets = [];
-      let closures = [];
-
-      segments.forEach(s => {
-        if (/^@/.test(s)) {
-          s = s.replace(/^@/, "");
-          closures = Array.from(s.matchAll(/(.)(.)/g)).map(m => [m[1], m[2]]);
-        }
-
-        // character sets incl. ranges, only hyphen is escaped as \-
-        else if (/^\[.+\]$/.test(s)) {
-          let fragments = [];
-          s = s.replace(/^\[/, "").replace(/]$/, ""); // trim range delimiters [ ]
-
-          const ranges = s.matchAll(/([^\\])-(.)/g); // e.g. a-z
-          Array.from(ranges).forEach(r => {
-            let [, start, end] = r;
-            [].push.apply(fragments, characterRange(start, end));
-          });
-
-          s = s.replace(/([^\\])-(.)/g, "");
-
-          const singleCharacters = s.replace(/\\-/g, "-").split("");
-          [].push.apply(fragments, singleCharacters);
-          sets.push(fragments);
-        }
-
-        // words etc.
-        else if (/^\(.+\)$/.test(s)) {
-          let fragments = [];
-          s = s.replace(/^\(/, "").replace(/\)$/, ""); // trim group delimiters ( )
-
-          let options = [];
-          let current = "";
-          s.split("").forEach(char => {
-            if (char === "|" && !/\\$/.test(current)) {
-              options.push(current);
-              current = "";
-            }
-            else { // pipe was escaped as \|
-              current += char;
-            }
-          });
-          options.push(current);
-
-          options = options.map(o => o.replace(/\\\|/, "|"));
-          [].push.apply(fragments, options);
-          sets.push(fragments);
-        }
-
-        else {
-          sets.push([s]);
-        }
-      });
+      const { sets, closures } = KerningGenerator.sets(segments);
 
       const id = kerningPatternId(segments)
       const copy = state.kerningPatterns.slice();
@@ -206,13 +153,15 @@ export default {
         .map(l => ({
           languageTag: l.htmlTag,
           language: l.language,
+          script: l.script,
           id: `${l.language}-${l.id}`,
           texts: l[fieldKey],
         }));
 
       function squish(str) { return str.replace(/\s\s+/g, "") }
+
       const html = data
-        .map(({ language, languageTag, id, texts }) => {
+        .map(({ language, languageTag, id, texts, script }) => {
           let header, fragments;
           switch (getters.selectedSampleKey) {
             case "gotchas":
@@ -234,9 +183,35 @@ export default {
               break;
             case "kerning":
               break;
+            case "ABCs": {
+              const AaBbCc = texts;
+              const ABC = CaseFilter.upper(AaBbCc).replace(/ +/g, " ").trim();
+              const abc = CaseFilter.lower(AaBbCc).replace(/ +/g, " ").trim();
+
+              header = `<h3 id="${id}">${language}</h3>`;
+              fragments = [
+                // AaBbCc,
+                // ABC,
+                // abc,
+                AaBbCc.replace(/ /g, ""),
+                ABC.replace(/ /g, ""),
+                abc.replace(/ /g, ""),
+              ];
+              if (script == 'Latn') {
+                fragments.push(
+                  abc.replace(/[a-z ]/g, "")
+                );
+              }
+
+              fragments = fragments.map(t => `<p>${t}</p>`);
+              break;
+            }
             default:
               header = `<h3 id="${id}">${language}</h3>`;
-              fragments = texts.map(t => `<p>${t}</p>`);
+              if (texts instanceof Array)
+                fragments = texts.map(t => `<p>${t}</p>`);
+              else
+                fragments = [texts].map(t => `<p>${t}</p>`);
           }
           return header + fragments.join("");
         })
@@ -249,32 +224,9 @@ export default {
         .filter(pattern => pattern.isVisible);
       let html = patterns
         .map(pattern => {
-          function clone(array) { return JSON.parse(JSON.stringify(array)); }
-          const sets = clone(pattern.sets);
-          let product = cartesianProduct(...sets);
-          let section = [];
-          let current = product[0][0];
-          let line = "";
-          product.forEach(sub => {
-            if (sub[0] !== current) {
-              if (!pattern.closures.length) {
-                line += current;
-              }
-              section.push(line);
-              line = "";
-              current = sub[0];
-            }
-            let fragment = sub.join("");
-            if (pattern.closures.length) {
-              fragment = pattern.closures
-                .map(closure => `${closure[0]}${fragment}${closure[1]}`)
-                .join(" ") + " ";
-            }
-            line += fragment;
-          });
-
+          const lines = KerningGenerator.kerningString(pattern);
           return `<h6 id="${escapeHtmlId(pattern.id)}"></h6>`
-            + `<p>${escapeHtml(section.join("\n"))}</p>`;
+            + `<p>${escapeHtml(lines.join("\n"))}</p>`;
         })
         .join("");
       commit("setText", { sampleKey: "kerning", html });
