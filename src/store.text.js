@@ -7,7 +7,7 @@ import languageDataFields from "@/models/textKindLanguageDataField";
 import LanguageData from "language-data";
 import escapeHtmlId from "./utils/escapeHtmlId";
 import escapeHtml from "./utils/escapeHtml";
-import CaseFilter from "./models/CaseFilter";
+import CharacterFilter from "./models/CharacterFilter";
 import KerningGenerator from "./models/KerningGenerator";
 
 let id = 0;
@@ -185,8 +185,10 @@ export default {
               break;
             case "ABCs": {
               const AaBbCc = texts;
-              const ABC = CaseFilter.upper(AaBbCc).replace(/ +/g, " ").trim();
-              const abc = CaseFilter.lower(AaBbCc).replace(/ +/g, " ").trim();
+              const ABC = CharacterFilter.filter(AaBbCc, g => g.toUpperCase() === g)
+                .replace(/ +/g, " ").trim();
+              const abc = CharacterFilter.filter(AaBbCc, g => g.toLowerCase() === g)
+                .replace(/ +/g, " ").trim();
 
               header = `<h3 id="${id}">${language}</h3>`;
               fragments = [
@@ -198,9 +200,8 @@ export default {
                 abc.replace(/ /g, ""),
               ];
               if (script == 'Latn') {
-                fragments.push(
-                  abc.replace(/[a-z ]/g, "")
-                );
+                const accents = CharacterFilter.filter(abc, g => !/^[a-z ]$/.test(g));
+                fragments.push(accents);
               }
 
               fragments = fragments.map(t => `<p>${t}</p>`);
