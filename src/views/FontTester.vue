@@ -99,7 +99,7 @@ export default {
     },
     wordBreak() {
       return this.selectedTextKind === 'kerning' ? 'break-all' : 'normal';
-    }
+    },
   },
   watch: {
     selectedTextKind() {
@@ -142,6 +142,7 @@ export default {
     display: flex;
     height: 100%;
     width: 100vw;
+    max-width: 100%;
   }
   z-index: 0;
 }
