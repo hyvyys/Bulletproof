@@ -15,7 +15,7 @@
           <img svg-inline src="@/assets/icons/pin.svg" />
         </UiIconButton>
       </div>
-      <div class="content" v-bar>
+      <div class="content" v-bar ref="vb">
         <div
           ref="scrolled"
           @wheel="onWheel"
@@ -100,6 +100,11 @@ export default {
    }),
    footerNear() { return this.footerSentinelVisibleRatio > 0 },
    footerNearer() { return this.footerSentinelVisibleRatio > 0.5 },
+  },
+  watch: {
+    sticky() {
+      setTimeout(() => this.$vuebar.refreshScrollbar(this.$refs.vb), 100);
+    },
   },
   mounted() {
     this.init();
