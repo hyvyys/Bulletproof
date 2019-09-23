@@ -159,10 +159,11 @@ export default {
     margin: 0.4rem 0;
   }
 
-  overflow: hidden;
+  overflow: auto hidden;
   position: relative;
 
   .font-sample-content {
+
     height: 100%;
     padding-bottom: 100vh;
     white-space: pre-wrap;
