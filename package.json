@@ -18,7 +18,7 @@
     "grapheme-splitter": "^1.0.4",
     "hamsterjs": "^1.1.3",
     "keen-ui": "^1.2.0",
-    "language-data": "0.0.8",
+    "language-data": "0.0.10",
     "lodash.debounce": "^4.0.8",
     "lodash.throttle": "^4.1.1",
     "opentype.js": "^1.1.0",
