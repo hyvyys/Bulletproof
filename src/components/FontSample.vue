@@ -91,7 +91,9 @@ export default {
         a.onclick = function(e) {
           e.preventDefault();
           const href = a.getAttribute("href").slice(1);
-          const target = document.querySelector(`[id='${href}']`);
+          const escaped = href.replace(/\\/g, "\\\\");
+          const selector = `[id='${ escaped }']`;
+          const target = document.querySelector(selector);
           const top = target.offsetTop;
           scrolled.scrollTop = top;
           // console.log(a.innerText, href, top);
