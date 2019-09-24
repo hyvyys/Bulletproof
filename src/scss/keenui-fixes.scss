@@ -8,6 +8,7 @@
 .ui-select__display {
   border-bottom-width: 2px !important;
   box-sizing: border-box;
+  text-overflow: ellipsis;
 }
 
 .ui-textbox__input {
@@ -27,6 +28,21 @@
     svg {
       transform: scale(1.1, 1.25);
     }
+  }
+  .ui-select__content {
+    max-width: 100%;
+    .ui-select__display-value {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+.ui-select-option {
+  > * {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 

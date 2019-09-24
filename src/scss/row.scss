@@ -19,6 +19,7 @@
   }
   > :not(label):not(.ui-icon-button) {
     flex: 1;
+    min-width: 0;
   }
   > .ui-icon-button {
     align-self: center;
