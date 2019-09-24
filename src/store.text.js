@@ -226,7 +226,7 @@ export default {
       let html = patterns
         .map(pattern => {
           const lines = KerningGenerator.kerningString(pattern);
-          const text = lines[0].length > 15
+          const text = lines[0].length > 50
             ? lines.join("\n")
             : lines.join(" ").replace(/ +/g, " ");
           return `<h6 id="${escapeHtmlId(pattern.id)}"></h6>`
