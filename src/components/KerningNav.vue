@@ -26,11 +26,11 @@
             :options="builtInSegments"
             dropdownClass="kerning-segment-select"
             dropdownPosition="bottom-end"
-            placeholder="select segment"
+            placeholder="empty segment"
           >
             <template v-slot:option="props">
               <kbd>
-                {{ props.option }}
+                {{ props.option || "\xa0" }}
               </kbd>
             </template>
           </UiSelect>
@@ -105,7 +105,7 @@ export default {
   data() {
     return {
       segments: [],
-      builtInSegments: kerningSegments,
+      builtInSegments: ["", ...kerningSegments],
       selectedSegment: "",
       key: 0,
     };
@@ -149,7 +149,7 @@ export default {
     },
     addKerningSegment() {
       this.segments.push({ key: this.getKey(), characters: this.selectedSegment });
-      this.selectedSegment = "";
+      this.selectedSegment = this.builtInSegments[0];
     },
     removeKerningSegment(i) {
       this.segments.splice(i, 1);
