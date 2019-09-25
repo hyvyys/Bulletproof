@@ -1,0 +1,26 @@
+@import "@/scss/pseudo";
+
+@mixin scroll-veil($height: 1em) {
+  @include pseudo;
+  &::before, &::after {
+    height: $height;
+    width: 100%;
+    background: linear-gradient($light, #0000);
+    z-index: 4;
+    pointer-events: none;
+  }
+  &::after {
+    top: unset;
+    background: linear-gradient(0deg, $light, #0000);
+  }
+
+  &.vb > .vb-content {
+    // so that veil is not visible when scrolled to edge
+    > :first-child {
+      margin-top: 0.5 * $height;
+    }
+    > :last-child {
+      margin-bottom: 0.5 * $height;
+    }
+  }
+}

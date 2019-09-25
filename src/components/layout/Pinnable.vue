@@ -1,12 +1,13 @@
 <template>
   <div
-    v-show="!forceInvisible && isVisible"
+    v-if="!forceInvisible && isVisible"
     :class="`
       pinnable ${pinned ? 'pinned' : ''}
       ${!footerVisible && sticky ? 'sticky' : ''}
       ${footerNear ? 'footer-near' : ''}
       ${footerNearer ? 'footer-nearer' : ''}
       ${triggerHover ? 'trigger-hover' : ''}
+      ${scrolled ? 'pinnable-scrolled' : ''}
     `"
   >
       <div class="titlebar" v-if="title">
@@ -15,7 +16,7 @@
           <img svg-inline src="@/assets/icons/pin.svg" />
         </UiIconButton>
       </div>
-      <div class="content" v-bar ref="vb">
+      <div class="content" v-bar ref="vb" v-if="scrolled">
         <div
           ref="scrolled"
           @wheel="onWheel"
@@ -24,6 +25,7 @@
           <slot></slot>
         </div>
       </div>
+      <slot v-else></slot>
   </div>
 </template>
 
@@ -54,6 +56,10 @@ export default {
       type: String,
     },
     isPinned: {
+      type: Boolean,
+      default: true,
+    },
+    scrolled: {
       type: Boolean,
       default: true,
     },
@@ -103,7 +109,9 @@ export default {
   },
   watch: {
     sticky() {
-      setTimeout(() => this.$vuebar.refreshScrollbar(this.$refs.vb), 100);
+      if (this.$refs.vb) {
+        setTimeout(() => this.$vuebar.refreshScrollbar(this.$refs.vb), 100);
+      }
     },
   },
   mounted() {
@@ -221,26 +229,20 @@ export default {
   }
   display: flex;
   flex-direction: column;
-  .titlebar {
+  .titlebar, .fixed-header {
     flex: 0;
   }
   .content {
     display: flex;
     flex-direction: column;
     flex: 1;
-    @include pseudo;
 
-    &::before, &::after {
-      height: 1em;
-      width: 100%;
-      background: linear-gradient($light, #0000);
-      z-index: 4;
-      pointer-events: none;
-    }
-    &::after {
-      top: unset;
-      background: linear-gradient(0deg, $light, #0000);
-    }
+    @include scroll-veil;
+  }
+
+  &:not(.pinnable-scrolled) {
+    display: flex;
+    flex-direction: column;
   }
 }
 
@@ -251,7 +253,7 @@ export default {
 
 .titlebar {
   display: flex;
-  align-items: center;
+  align-items: flex-end; // prevent jump when pinnable height changes...
   padding: 2px;
   h2 {
     padding: 0 8px;
@@ -261,7 +263,7 @@ export default {
     margin: 0;
   }
   .ui-icon-button.pin {
-    color: mix($brand-primary-color, #444);
+    color: $brand-text;
     width: 24px;
     height: 24px;
     svg {

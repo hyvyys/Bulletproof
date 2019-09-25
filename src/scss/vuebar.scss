@@ -1,10 +1,14 @@
 @import "./variables.scss";
 
 .vb {
+  
+  display: flex;
+  flex-direction: column;
+  
   &.vb-visible > .vb-content {
     padding-right: $vuebar-width;
-    width: unquote("max(100% + 17px, 100% + 0vw)") !important;
-    box-sizing: border-box !important;
+    // width: calc(100% + 17px);
+    // box-sizing: border-box !important;
   }
 
   > .vb-dragger {

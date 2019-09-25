@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import scrollToHash from "@/utils/scrollToHash";
 import getId from "@/utils/id";
 import DomSelection from "@/utils/DomSelection";
 import { mapState, mapGetters } from "vuex";
@@ -88,16 +89,10 @@ export default {
       const anchors = document.querySelectorAll("a[href^='#']");
       const scrolled = document.querySelector(this.scrolledParentSelector);
       anchors.forEach(a => {
-        a.onclick = function(e) {
+        a.addEventListener("click", function(e) {
           e.preventDefault();
-          const href = a.getAttribute("href").slice(1);
-          const escaped = href.replace(/\\/g, "\\\\");
-          const selector = `[id='${ escaped }']`;
-          const target = document.querySelector(selector);
-          const top = target.offsetTop;
-          scrolled.scrollTop = top;
-          // console.log(a.innerText, href, top);
-        };
+          scrollToHash(a, scrolled);
+        });
       });
     },
     onInput(e) {

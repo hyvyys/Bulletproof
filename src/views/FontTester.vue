@@ -27,11 +27,12 @@
           :title="navElementTitle"
           :isPinned="true"
           :isVisible="contextualPanelVisible"
+          :scrolled="false"
           @toggle="$store.commit('toggleContextualPanel')"
           @hide="$store.commit('toggleContextualPanel', {value: false})"
           trigger="#nav-trigger"
         >
-          <div class="transition-wrapper">
+          <div class="transition-wrapper u-flex-v" style="overflow: hidden;">
             <transition name="swap">
               <component :is="navElement" :key="navElementTitle" />
             </transition>

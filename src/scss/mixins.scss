@@ -2,6 +2,8 @@
 @import "./utils/to-string";
 @import "./utils/font-face";
 @import "./fade-in-out";
+@import "@/scss/pseudo";
+@import "@/scss/scroll-veil";
 
 @mixin flex() {
   display: flex;
@@ -24,14 +26,4 @@
   top: 0;
   height: 100%;
   background: inherit;
-}
-
-@mixin pseudo() {
-  position: relative;
-  &::before,
-  &::after {
-    content: "";
-    position: absolute;
-    top: 0; right: 0; bottom: 0; left: 0;
-  }
 }

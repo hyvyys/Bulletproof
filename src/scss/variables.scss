@@ -27,7 +27,7 @@ $header-height: 64px;
 $footer-height: 128px;
 $sidebar-width: 220px;
 $contextual-sidebar-width: 210px;
-$sidebar-padding: 6px 10px;
+$sidebar-padding: 0px 10px;
 
 $mq-max-width: 920px;
 $header-height-mq: 90px;
@@ -45,6 +45,8 @@ $brand-accent-color: #ff4081;
 
 $brand-primary-color: #ff4081;
 $brand-accent-color: #ff4081;
+
+$brand-text: mix($brand-primary-color, #444);
 
 /* ------------------------------------------------------------ *\
    Vuebar

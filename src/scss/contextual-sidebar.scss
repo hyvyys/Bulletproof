@@ -4,6 +4,11 @@
 .contextual-sidebar {
   padding: $sidebar-padding;
   padding-right: 4px;
+  
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 
   .toolbar {
     display: flex;

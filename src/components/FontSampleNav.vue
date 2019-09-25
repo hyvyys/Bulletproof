@@ -21,15 +21,24 @@
       </UiIconButton>
     </div>
 
-    <div class="nav panel">
-      <div v-for="(heading, i) in textHeadings" :key="i">
-        <a class="heading-link" :href="`#${heading.id}`">
-          {{ heading.text }}
-        </a>
+    <div class="nav-links" v-bar="{
+        preventParentScroll: true,
+      }"
+      ref="vb"
+    >
+      <div class="scrolled">
+        <div class="nav panel">
+          <div v-for="(heading, i) in textHeadings" :key="i">
+            <a class="heading-link" :href="`#${heading.id}`">
+              {{ heading.text }}
+            </a>
+          </div>
+        </div>
+
+       <AnimationEditor />
       </div>
     </div>
 
-    <AnimationEditor />
   </div>
 </template>
 
@@ -65,5 +74,17 @@ export default {
 <style lang="scss" scoped>
 @import "@/scss/mixins";
 @import 'keen-ui/src/styles/imports';
+
+.toolbar {
+  flex: 0 0 auto;
+}
+
+.nav-links {
+  flex: 1 1 auto;
+}
+
+.animation-editor {
+  flex: 1 1 auto;
+}
 
 </style>

@@ -81,3 +81,9 @@ a {
     color: mix(white, $brand-primary-color, 45%);
   }
 }
+
+.u-flex-v {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
