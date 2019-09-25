@@ -213,6 +213,9 @@ export default {
     height: 100%;
     display: block;
     text-decoration: none;
+    min-width: 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
   > * {
     margin-right: 0.5rem;

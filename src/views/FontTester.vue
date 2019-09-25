@@ -33,7 +33,7 @@
         >
           <div class="transition-wrapper">
             <transition name="swap">
-              <component :is="navElement" :key="navElementTitle" class="contextual-nav" />
+              <component :is="navElement" :key="navElementTitle" />
             </transition>
           </div>
         </Pinnable>

@@ -178,18 +178,25 @@ export default {
 
 .pinnable {
   position: sticky;
-  top: $header-height;
   align-self: flex-start;
-
-  position: sticky;
-  top: $header-height;
   max-height: 100vh;
   transition: transform 0.2s, max-height 0.1s;
+
+  top: $header-height;
   transform: translateY(-$header-height);
   &.sticky {
     transform: translateY(0);
     max-height: calc(100vh - #{$header-height});
   }
+
+  @media screen and (max-width: $mq-max-width) {
+    top: $header-height-mq;
+    transform: translateY(-$header-height-mq);
+    &.sticky {
+      max-height: calc(100vh - #{$header-height-mq});
+    }
+  }
+
   &.footer-near {
     margin-bottom: -$footer-height;
     transition: none;

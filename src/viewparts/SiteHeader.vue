@@ -200,13 +200,20 @@ $header-background: linear-gradient(to right, $light, $accent);
   @include header-background(-8px);
 
   z-index: 5;
-  height: $header-height;
-
   position: sticky;
   top: 0;
   transition: transform 0.2s;
+
+  height: $header-height;
   &:not(.sticky) {
     transform: translateY(-$header-height);
+  }
+
+  @media screen and (max-width: $mq-max-width) {
+    height: $header-height-mq;
+    &:not(.sticky) {
+      transform: translateY(-$header-height-mq);
+    }
   }
 
   .light {
@@ -234,6 +241,8 @@ $header-background: linear-gradient(to right, $light, $accent);
     justify-content: center;
     a.home {
       text-decoration: none;
+      display: flex;
+      align-items: center;
     }
     flex: 0 0 auto;
   }
@@ -241,13 +250,24 @@ $header-background: linear-gradient(to right, $light, $accent);
   .nav {
     min-width: 0;
   }
+
+  .font-loader {
+    flex: 0 1 15em;
+  }
   .nav-text-kinds {
-    flex: 1 0 auto;
+    // min-width: 250px;
+    // flex: 1 0 auto;
+    flex: 1 2 48em;
+    flex-wrap: wrap;
     display: flex;
     align-items: center;
     justify-content: flex-end;
     padding-right: 0;
     text-shadow: 0 0 15px darken($accent, 30%);
+
+    > :last-child {
+      margin-right: 0.75em;
+    }
   }
 
   .settings-aside-wrap {

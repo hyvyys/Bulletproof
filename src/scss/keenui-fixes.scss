@@ -1,3 +1,5 @@
+@import "@/scss/mixins";
+
 *,
 *::before,
 *::after {
@@ -8,7 +10,15 @@
 .ui-select__display {
   border-bottom-width: 2px !important;
   box-sizing: border-box;
-  text-overflow: ellipsis;
+  max-height: 46px;
+  overflow: hidden;
+}
+.ui-select__display-value {
+  max-height: 2.5em;
+  overflow: hidden;
+}
+.ui-select__dropdown-button {
+  align-self: center;
 }
 
 .ui-textbox__input {
@@ -39,7 +49,7 @@
 }
 
 .ui-select-option {
-  > * {
+  kbd {
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;

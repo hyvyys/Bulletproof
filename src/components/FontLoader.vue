@@ -320,8 +320,16 @@ export default {
 @import "@/scss/dark";
 
 .font-loader {
+  flex: 1 1 $font-select-width;
   display: flex;
   align-items: center;
+
+  .font-select {
+    flex: 1;
+    .ui-select__display-value {
+      white-space: nowrap;
+    }
+  }
 
   .font-loader-item {
     margin: 0 2px;
@@ -337,13 +345,28 @@ export default {
       display: none !important;
     }
   }
-  .ui-select.font-select {
+  .font-select {
     .ui-select__display {
       padding: 2px 8px;
-      width: $font-select-width;
       border-radius: 3px;
     }
     margin-bottom: 0;
+  }
+
+
+  @media screen and (max-width: $mq-max-width) {
+    flex-wrap: wrap;
+    .font-select {
+      flex: 0 0 100%;
+      order: -1;
+      margin-bottom: 3px;
+    }
+    .font-loader-item {
+      flex: 1;
+      > * {
+        width: 100%;
+      }
+    }
   }
 }
 
