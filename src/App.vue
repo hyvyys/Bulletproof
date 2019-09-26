@@ -1,7 +1,7 @@
 <template>
   <div v-bar class="app">
     <div class="app-content">
-      <router-view name="header"/>
+      <router-view name="header" />
 
       <div class="site-content">
         <keep-alive>
@@ -9,7 +9,7 @@
         </keep-alive>
       </div>
 
-      <router-view name="footer"/>
+      <router-view name="footer" />
     </div>
     <div class="shade" />
   </div>
@@ -17,6 +17,17 @@
 
 <script>
 export default {
+  mounted() {
+    window.addEventListener("beforeunload", this.someMethod);
+  },
+  beforeDestroy() {
+    window.removeEventListener("beforeunload", this.someMethod);
+  },
+  methods: {
+    someMethod(event) {
+      // event.returnValue = `Are you sure you want to leave?`;
+    },
+  },
 };
 </script>
 
@@ -46,6 +57,14 @@ export default {
         height: calc(100% - 20px);
       }
     }
+  }
+}
+
+.app-content {
+  scroll-padding-top: $header-height + 20px;
+
+  @media screen and (max-width: $mq-max-width) {
+    scroll-padding-top: $header-height-mq + 20px;
   }
 }
 

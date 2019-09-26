@@ -110,7 +110,9 @@ export default {
   watch: {
     sticky() {
       if (this.$refs.vb) {
+        setTimeout(() => this.$vuebar.refreshScrollbar(this.$refs.vb), 50);
         setTimeout(() => this.$vuebar.refreshScrollbar(this.$refs.vb), 100);
+        setTimeout(() => this.$vuebar.refreshScrollbar(this.$refs.vb), 250);
       }
     },
   },

@@ -1,8 +1,9 @@
 import Vue from "vue";
 import router from "@/router";
 
+import getId from "@/utils/id";
 import kerningPatterns from "@/models/kerningPatterns";
-import kerningPatternId from "@/models/kerningPatternId";
+import kerningPatternName from "@/models/kerningPatternName";
 import languageDataFields from "@/models/textKindLanguageDataField";
 import LanguageData from "language-data";
 import escapeHtmlId from "./utils/escapeHtmlId";
@@ -104,10 +105,21 @@ export default {
 
     addKerningPattern(state, { segments, isVisible }) {
       const { sets, closures } = KerningGenerator.sets(segments);
-
-      const id = kerningPatternId(segments)
+      const name = kerningPatternName(segments);
+      const id = getId('kerning-pattern-' + name);
       const copy = state.kerningPatterns.slice();
-      copy.push({ id, sets, closures, isVisible });
+      copy.unshift({ id, name, segments, sets, closures, isVisible });
+      state.kerningPatterns = copy;
+    },
+
+    updateKerningPattern(state, { id, segments }) {
+      const { sets, closures } = KerningGenerator.sets(segments);
+      const copy = state.kerningPatterns.slice();
+      const match = copy.find(kp => kp.id === id);
+      match.segments = segments;
+      match.sets = sets;
+      match.closures = closures;
+      match.name = kerningPatternName(segments);
       state.kerningPatterns = copy;
     },
 
@@ -238,6 +250,11 @@ export default {
 
     addKerningPattern({ dispatch, commit }, { segments }) {
       commit("addKerningPattern", { segments, isVisible: true });
+      dispatch("updateKerning");
+    },
+
+    updateKerningPattern({ dispatch, commit }, { id, segments }) {
+      commit("updateKerningPattern", { id, segments });
       dispatch("updateKerning");
     },
 

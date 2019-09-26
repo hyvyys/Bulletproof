@@ -22,7 +22,7 @@
                 class="ui-select__label"
                 ref="label"
 
-                :tabindex="disabled ? null : (tabindex || '0')"
+                :tabindex="disabled || isAutocomplete ? null : (tabindex || '0')"
 
                 @focus="onFocus"
                 @keydown.enter.prevent="openDropdown"
@@ -40,14 +40,30 @@
                 </div>
 
                 <div class="ui-select__display">
-                    <div
+                    <input v-if="isAutocomplete"
+                        ref="input"
+                        class="ui-select__display-value"
+                        :class="{ 'is-placeholder': !hasDisplayText }"
+                        :placeholder="placeholder"
+                        :value="value"
+                        @input="e => setCustomValue(e.target.value)"
+                        @keydown.space.stop.prevent
+                        @keydown.down.prevent="highlightOption(highlightedIndex + 1)"
+                        @keydown.up.prevent="highlightOption(highlightedIndex - 1)"
+                        @keydown.enter.prevent.stop="onInputEnter"
+                        @keydown.esc.prevent="closeDropdown()"
+                        @keydown.tab="onBlur"
+                        @focus="onFocus"
+                        @blur="isFocused = false"
+                    />
+                    <div v-else
                         class="ui-select__display-value"
                         :class="{ 'is-placeholder': !hasDisplayText }"
                     >
                         {{ hasDisplayText ? displayText : (hasFloatingLabel && isLabelInline) ? null : placeholder }}
                     </div>
 
-                    <ui-icon class="ui-select__dropdown-button">
+                    <ui-icon ref="dropdownButton" class="ui-select__dropdown-button">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M6.984 9.984h10.03L12 15z"/></svg>
                     </ui-icon>
                 </div>
@@ -72,7 +88,7 @@
                         tabindex="-1"
 
                         @keydown.down.prevent="highlightOption(highlightedIndex + 1)"
-                        @keydown.enter.prevent.stop="selectHighlighted(highlightedIndex, $event)"
+                        @keydown.enter.prevent.stop="selectHighlighted($event)"
                         @keydown.esc.prevent="closeDropdown()"
                         @keydown.tab="onBlur"
                         @keydown.up.prevent="highlightOption(highlightedIndex - 1)"
@@ -127,7 +143,7 @@
                                 @click.native.stop="selectOption(option, index)"
                                 @mouseover.native.stop="highlightOption(index, { autoScroll: false })"
 
-                                v-for="(option, index) in filteredOptions"
+                                v-for="(option, index) in (isAutocomplete ? sortedOptions : filteredOptions)"
                             >
                                 <slot
                                     name="option"
@@ -257,23 +273,32 @@ export default {
           type: String,
           default: "bottom-start",
         },
+        autocomplete: {
+            type: Boolean,
+            default: false
+        },
     },
     data() {
         return {
             query: '',
             isActive: false,
             isTouched: false,
+            isFocused: false,
             selectedIndex: -1,
             highlightedIndex: -1,
             initialValue: JSON.stringify(this.value)
         };
     },
     computed: {
+        isAutocomplete() {
+          return this.autocomplete && !this.multiple;
+        },
         classes() {
             return [
                 `ui-select--type-${this.type}`,
                 `ui-select--icon-position-${this.iconPosition}`,
                 { 'is-active': this.isActive },
+                { 'is-focused': this.isFocused },
                 { 'is-invalid': this.invalid },
                 { 'is-touched': this.isTouched },
                 { 'is-disabled': this.disabled },
@@ -320,6 +345,43 @@ export default {
                 options.sort(this.sort.bind(this));
             }
             return options;
+        },
+        sortedOptions() {
+          let options = this.options;
+          if (this.isAutocomplete) {
+            const getOption = (o) => o[this.keys.label] || o;
+
+            options = [
+              ...this.options.filter(o => getOption(o).startsWith(this.value)),
+            ];
+
+            const match = this.options.filter(
+              o => options.indexOf(o) == -1
+              && ~getOption(o).indexOf(this.value)
+            );
+            options = [
+              ...options,
+              ...match,
+            ];
+
+            const insensitiveMatch = this.options.filter(
+              o => options.indexOf(o) == -1
+              && ~getOption(o).toLowerCase().indexOf(this.value.toLowerCase())
+            );
+            options = [
+              ...options,
+              ...match,
+            ];
+
+            const other = this.options.filter(
+              o => options.indexOf(o) == -1
+            );
+            options = [
+              ...options,
+              ...other,
+            ];
+          }
+          return options;
         },
         displayText() {
             if (this.multiple) {
@@ -369,7 +431,7 @@ export default {
             } else {
                 this.removeExternalClickListener();
             }
-        }
+        },
     },
     created() {
         if (!this.value || this.value === '') {
@@ -396,6 +458,14 @@ export default {
             this.$emit('input', value);
             this.$emit('change', value);
         },
+        setCustomValue(value) {
+            if (value) {
+                this.setValue(value);
+            }
+            else {
+                this.selectOption(this.options[0], 0, { autoClose: false });
+            }
+        },
         highlightOption(index, options = { autoScroll: true }) {
             if (this.highlightedIndex === index || this.$refs.options.length === 0) {
                 return;
@@ -403,19 +473,23 @@ export default {
             const firstIndex = 0;
             const lastIndex = this.$refs.options.length - 1;
             if (index < firstIndex) {
-                index = lastIndex;
+              index = lastIndex;
             } else if (index > lastIndex) {
-                index = firstIndex;
+              index = firstIndex;
+            }
+            if (!this.$refs.options[index]) {
+              index = 0;
             }
             this.highlightedIndex = index;
             if (options.autoScroll) {
                 this.scrollOptionIntoView(this.$refs.options[index].$el);
             }
         },
-        selectHighlighted(index, e) {
-            if (this.$refs.options.length > 0) {
-                e.preventDefault();
-                this.selectOption(this.$refs.options[index].option, index);
+        selectHighlighted(e) {
+            const options = this.$refs.options;
+            if (options[this.highlightedIndex]) {
+                if (e) e.preventDefault();
+                this.selectOption(options[this.highlightedIndex].option, this.highlightedIndex);
             }
         },
         selectOption(option, index, options = { autoClose: true }) {
@@ -473,7 +547,8 @@ export default {
             this.query = '';
         },
         focus() {
-            this.$refs.label.focus();
+          if (this.isAutocomplete) this.$refs.input.focus();
+          else this.$refs.label.focus();
         },
         toggleDropdown() {
             this.$refs.dropdown.toggle();
@@ -493,12 +568,16 @@ export default {
             if (options.blurAfterClose) {
                 this.isActive = false;
             } else {
-                this.$refs.label.focus();
+                this.focus();
             }
         },
         onFocus(e) {
+            if (this.isAutocomplete) {
+              this.$refs.input.focus();
+              this.isFocused = true;
+            }
             if (this.isActive) {
-                return;
+              return;
             }
             this.isActive = true;
             this.$emit('focus', e);
@@ -519,7 +598,14 @@ export default {
             this.$emit('dropdown-open');
         },
         onReveal() {
-            this.$refs[this.hasSearch ? 'searchInput' : 'dropdownContent'].focus();
+            if (!this.autocomplete) {
+              this.$refs[this.hasSearch ? 'searchInput' : 'dropdownContent'].focus();
+            }
+            else {
+              this.$nextTick(() => {
+                this.focus();
+              })
+            }
         },
         onClose() {
             this.highlightedIndex = this.multiple ? -1 : this.selectedIndex;
@@ -547,7 +633,17 @@ export default {
         },
         resetTouched(options = { touched: false }) {
             this.isTouched = options.touched;
-        }
+        },
+        onInputEnter() {
+          if (this.$refs.dropdown.isOpen()
+            && this.$refs.options[this.highlightedIndex]
+          ) {
+            this.selectHighlighted();
+          }
+          else {
+            this.toggleDropdown();
+          }
+        },
     },
     components: {
         UiIcon,
@@ -582,6 +678,8 @@ export default {
         }
     }
     &.is-active:not(.is-disabled) {
+      &.is-focused,
+      .ui-select__label:focus,
       .ui-select__label.has-dropdown-open {
         .ui-select__label-text,
         .ui-select__icon-wrapper .ui-icon {
@@ -714,7 +812,15 @@ export default {
     flex-grow: 1;
     &.is-placeholder {
         color: $hint-text-color;
+        opacity: 1;
     }
+
+    /* input (autocomplete) rules */
+    background: transparent;
+    border: 0;
+    font-family: inherit;
+    font-size: inherit;
+    outline: none;
 }
 .ui-select__dropdown-button {
     color: $ui-input-button-color;

@@ -1,5 +1,5 @@
 <template>
-  <div :class="`site-header ${!footerVisible && sticky ? 'sticky' : ''}`">
+  <div :class="`site-header ${sticky ? 'sticky' : ''}`">
     <transition-group tag="div" class="above-sidebar slide-left-wrapper" :name="aboveHeaderTransition">
       <div key="button" v-if="!!textKind" class="settings-aside-wrap">
         <SigmoidContainer id="settings-trigger" class="settings-aside light" sides="right top">
@@ -95,7 +95,6 @@ export default {
       stickyShowDelta: 200, // px
       stickyHideDelta: 300, // px
       lastTop: 0,
-      lastHash: "",
     };
   },
   computed: {
@@ -144,28 +143,25 @@ export default {
     },
 
     hasScrolled() {
-      if (this.lastHash === window.location.hash) {
-        const el = this.scrolledParent === window ? document.documentElement : this.scrolledParent;
-        const top = el.scrollTop;
-        const delta = top - this.lastTop;
-        if (-delta > this.stickyShowDelta || top < 100) {
-          this.sticky = true;
-          this.lastTop = top;
-        }
-        else if (delta > this.stickyHideDelta) {
-          this.sticky = false;
-          this.lastTop = top;
-        }
+      const el = this.scrolledParent === window ? document.documentElement : this.scrolledParent;
+      const top = el.scrollTop;
+      const delta = top - this.lastTop;
+      if (-delta > this.stickyShowDelta || top < 100) {
+        this.sticky = true;
+        this.lastTop = top;
       }
-      this.lastHash = window.location.hash;
+      else if (delta > this.stickyHideDelta) {
+        this.sticky = false;
+        this.lastTop = top;
+      }
     },
 
     initStickyHeader() {
       let didScroll = false;
 
-      this.scrolledParent.addEventListener(
-        "scroll",
-        function () { didScroll = true; }
+      this.scrolledParent.addEventListener("wheel", function () {
+          didScroll = true;
+        }
       );
       setInterval(() => {
         if (didScroll) {

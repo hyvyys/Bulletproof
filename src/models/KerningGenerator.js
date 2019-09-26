@@ -65,12 +65,15 @@ export default class KerningGenerator {
   }
 
   static kerningString(pattern) {
-    const sets = JSON.parse(JSON.stringify(pattern.sets));
+    let sets = pattern.sets.filter(s => s.length);
+    // clone
+    sets = JSON.parse(JSON.stringify(sets));
+
     let product = cartesianProduct(...sets);
     //            [ ['A', 'A'], ['A', 'B'], ['A', 'C'], ... ]
 
     let lines = [];
-    let current = product[0][0];
+    let current = product[0][0] || "";
     let line = "";
 
     function commitLine(line) {
@@ -83,7 +86,7 @@ export default class KerningGenerator {
       lines.push(line);
     }
 
-    product.forEach(sub => {
+    product.filter(sub => sub.length).forEach(sub => {
       // new character on first position, finalize line
       if (sub[0] !== current) {
         commitLine(line);

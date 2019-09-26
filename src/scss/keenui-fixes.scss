@@ -63,6 +63,15 @@
 [x-placement="top-start"] {
   transform: translateY(8px);
 }
+
+.ui-checkbox:hover,
+.ui-checkbox__input:focus ~ {
+  .ui-checkbox__label-text {
+    border-bottom: 2px solid $brand-primary-color;
+    margin-bottom: -2px;
+  }
+}
+
 .ui-checkbox__label-text,
 .ui-radio__label-text {
   margin-left: 0.25rem !important;

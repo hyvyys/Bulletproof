@@ -94,7 +94,7 @@ export default {
     },
     navElementTitle() {
       if (this.navElement === LanguageNav) return "Languages";
-      else if (this.navElement === KerningNav) return "Kerning editor";
+      else if (this.navElement === KerningNav) return "Kerning";
       else return "Playground";
     },
   },

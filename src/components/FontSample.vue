@@ -109,15 +109,6 @@ export default {
       });
 
       const headingNodes = this.$refs.content.querySelectorAll(headingSelector);
-      headingNodes.forEach(h => {
-        if (!h.id) {
-          const isCurrent = window.location.hash === `#${h.id}`;
-          h.id = getId(h.innerText);
-          if (isCurrent) {
-            window.location.hash = `#${h.id}`;
-          }
-        }
-      });
       const headings = Array.from(headingNodes)
         .map(({ id, innerText }) => ({ id, text: innerText }));
 

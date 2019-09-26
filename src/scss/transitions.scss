@@ -1,16 +1,25 @@
 @import "@/scss/variables";
 
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .3s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
-.fade-move {
-  transition: transform .3s;
-}
-.fade-leave-active {
-  position: absolute;
+.fade {
+  &-enter-active, &-leave-active {
+    transition: all .3s;
+  }
+  &-enter, &-leave-to {
+    opacity: 0 !important;
+  }
+  &-move {
+    transition: all .3s;
+  }
+  &-enter-active {
+    // position: absolute;
+  }
+  &-transition-group {
+    position: relative;
+  }
+  &-transition-group > &-leave-active {
+    position: absolute;
+    width: 100%;
+  }
 }
 
 $fade-slow-delay: 0.45s;
@@ -23,7 +32,7 @@ $fade-slow-delay: 0.45s;
   &-leave-active {
     transition: opacity 1.5s $fade-slow-delay;
   }
-  &-enter, &-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  &-enter, &-leave-to {
     opacity: 0;
   }
 }
@@ -52,12 +61,9 @@ $fade-slow-delay: 0.45s;
   height: 100%;
   width: 100%;
 
-  .swap-enter-active {
+  > .fade-leave-active,
+  > .swap-enter-active {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
   }
 }
 

@@ -24,7 +24,8 @@
   $radius: 8px;
   .btn-group,
   &.btn-group {
-    .ui-icon-button {
+    .ui-icon-button,
+    .ui-button {
       border: 2px solid $ui-input-border-color;
       height: 1.75rem;
       border-radius: $radius;
@@ -36,7 +37,8 @@
     }
 
     margin: 0 2px;
-    .ui-icon-button {
+    .ui-icon-button,
+    .ui-button {
       border-radius: 0;
       margin: 0 -1px;
       &:hover {

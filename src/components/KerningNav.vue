@@ -2,87 +2,72 @@
   <div class="kerning-nav contextual-sidebar u-flex-v">
     <div v-bar="{
           preventParentScroll: true,
-        }"
-        ref="vb"
-      >
+        }" ref="vb">
       <div class="scrolled">
-        <div class="editor panel">
-          <div class="row">
-            <h3>
-              Kerning string editor
-            </h3>
-            <a target="_blank" href="/help#kerning" class="help-link">[ ? ]</a>
-          </div>
 
-          <transition-group name="fade">
-            <div class="row" v-for="(segment, i) in segments" :key="segment.key">
-              <UiTextbox
-                v-model="segments[i].characters"
-                autofocus
-                spellcheck="false"
-              />
-              <UiIconButton @click="removeKerningSegment(i)" color="default">
-                <img svg-inline src="@/assets/icons/remove.svg" />
-              </UiIconButton>
+        <div class="editor panel" key="pattern-editor" v-if="selectedPatternId != null">
+          <transition-group name="fade" class="fade-transition-group" tag="div">
+            <div class="row" key="title">
+              <h3>Pattern segments</h3>
+              <a target="_blank" href="/help#kerning" class="help-link">[ ? ]</a>
             </div>
 
-            <div class="row" key="select">
+            <div class="row segment-row" v-for="(segment, i) in segments" :key="`segment-${segment.key}`">
               <UiSelect
-                v-model="selectedSegment"
-                :options="builtInSegments"
+                ref="segmentSelects"
+                v-model="segments[i].characters"
+                :options="builtInSegmentCharacters"
                 dropdownClass="kerning-segment-select"
                 dropdownPosition="bottom-end"
-                placeholder="empty segment"
+                placeholder="type or choose"
+                :autocomplete="true"
+                @input="updateKerningPattern"
               >
                 <template v-slot:option="props">
-                  <kbd>
-                    {{ props.option || "\xa0" }}
-                  </kbd>
+                  <kbd>{{ props.option || "\xa0" }}</kbd>
                 </template>
               </UiSelect>
-              <UiIconButton @click="addKerningSegment" color="primary">
+
+              <UiIconButton key="btnAdd"
+                v-if="i === segments.length - 1"
+                @click="addKerningSegment"
+                color="primary"
+              >
                 <img svg-inline src="@/assets/icons/add.svg" />
+              </UiIconButton>
+
+              <UiIconButton key="btnRemove" v-else @click="removeKerningSegment(i)" color="default">
+                <img svg-inline src="@/assets/icons/remove.svg" />
               </UiIconButton>
             </div>
           </transition-group>
-
-          <div class="row">
-            <span id="add-pattern-btn-wrapper">
-              <UiButton
-                @click="addKerningPattern"
-                color="default"
-                :disabled="inputInvalid"
-              >
-                Add pattern
-              </UiButton>
-              <UiTooltip v-if="inputInvalid" trigger="#add-pattern-btn-wrapper">
-                {{ noSegments ? "Add at least two segments." : "Segments cannot be empty." }}
-              </UiTooltip>
-            </span>
-          </div>
         </div>
 
-        <div class="nav panel">
-          <h3>Kerning patterns</h3>
+        <div class="nav panel" key="pattern-list">
+          <transition-group name="fade" class="fade-transition-group" tag="div">
 
-          <transition-group name="fade">
-            <div class="kerning-pattern" v-for="pattern in kerningPatterns" :key="pattern.id">
+            <h3 key="heading">Patterns</h3>
+
+            <div class="btn-group" key="buttons">
+              <UiButton @click="resetKerningPatterns" color="default">Revert</UiButton>
+              <UiButton @click="addKerningPattern" color="default">Add</UiButton>
+            </div>
+
+            <div
+              :class="`kerning-pattern ${selectedPatternId === pattern.id ? 'selected' : ''}`"
+              v-for="pattern in kerningPatterns"
+              :key="`pattern-${pattern.id}`"
+            >
               <UiCheckbox
                 :value="pattern.isVisible"
                 @input="v => toggleKerningPattern(pattern.id, v)"
-              >
-              </UiCheckbox>
-              <a :href="`#${pattern.id}`">
-                <kbd v-html="formatPatternId(pattern.id)">
-                </kbd>
-              </a>
+              ></UiCheckbox>
+              <div class="link" :href="`#${pattern.id}`" @click="selectPattern(pattern.id)">
+                <kbd v-html="formatPatternId(pattern.name || 'new pattern')"></kbd>
+              </div>
               <UiIconButton @click="removeKerningPattern(pattern.id)" color="default">
                 <img svg-inline src="@/assets/icons/remove.svg" />
               </UiIconButton>
-            </div>
-
-            <div class="row" key="button">
-              <UiButton @click="resetKerningPatterns" color="default">Revert</UiButton>
             </div>
           </transition-group>
         </div>
@@ -92,33 +77,34 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapState, mapGetters } from "vuex";
+import scrollToHash from "@/utils/scrollToHash";
 import kerningSegments from "@/models/kerningSegments";
 import UiIconButton from "keen-ui/src/UiIconButton.vue";
 import UiButton from "keen-ui/src/UiButton.vue";
-import UiTextbox from "keen-ui/src/UiTextbox.vue";
 import UiCheckbox from "keen-ui/src/UiCheckbox.vue";
 import UiSelect from "@/components/UiSelect.vue";
-import UiTooltip from "keen-ui/src/UiTooltip.vue";
 
 export default {
   components: {
     UiIconButton,
     UiButton,
-    UiTextbox,
     UiSelect,
     UiCheckbox,
-    UiTooltip,
   },
   data() {
     return {
+      builtInSegmentCharacters: ["", ...kerningSegments],
       segments: [],
-      builtInSegments: ["", ...kerningSegments],
-      selectedSegment: "",
-      key: 0,
+      key: 0, // last used incremental unique key
+      selectedPatternId: null,
+      activeElement: null,
     };
   },
   computed: {
+    ...mapState({
+      scrolledParentSelector: state => state.layout.scrolledParentSelector,
+    }),
     ...mapGetters(["kerningPatterns"]),
     inputInvalid() {
       return this.segments.length < 2 || this.segments.some(s => !s.characters);
@@ -130,46 +116,65 @@ export default {
       return this.segments.length < 2;
     },
   },
-  watch: {
-    kerningPatterns(val, oldVal) {
-      const newPatterns = val.filter(x => !oldVal.includes(x));
-      if (newPatterns.length === 1) {
-        window.location.hash = "#" + newPatterns[0].id;
-      }
-      else {
-        const hash = decodeURI(window.location.hash);
-        const current = val.find(p => "#" + decodeURI(p.id) === hash);
-        if (hash && val.length) {
-          if (!current) {
-            window.location.hash = "#" + val[0].id;
-          }
-          else {
-            window.location = "";
-            window.location = hash;
-          }
-        }
-      }
-    },
-  },
-  mounted() {
-    setTimeout(() => this.$vuebar.refreshScrollbar(this.$refs.vb), 100);
+  updated() {
+    if (this.activeElement) {
+      this.activeElement.focus();
+      this.activeElement = null;
+    }
   },
   methods: {
-    getKey() {
-      return this.key++;
+    selectPattern(id) {
+      this.selectedPatternId = id;
+      const pattern = this.kerningPatterns.find(p => p.id === id);
+
+      // replace segment content in-place to avoid unnecessary transitions
+      this.segments.forEach((s, i) => {
+        const segment = this.segments[i];
+        segment.characters = pattern.segments[i];
+        this.$set(this.segments, i, segment);
+      });
+      pattern.segments.slice(this.segments.length).forEach(s => {
+        this.addKerningSegment(null, s);
+      });
+      this.segments.splice(pattern.segments.length);
+
+      const scrolled = document.querySelector(this.scrolledParentSelector);
+      scrollToHash(null, scrolled, "#" + id);
     },
-    addKerningSegment() {
-      this.segments.push({ key: this.getKey(), characters: this.selectedSegment });
-      this.selectedSegment = this.builtInSegments[0];
+    getKey() {
+      return ++this.key;
+    },
+    addKerningSegment(event, characters = "") {
+      this.segments.push({ key: this.getKey(), characters });
     },
     removeKerningSegment(i) {
-      this.segments.splice(i, 1);
+      this.requestVuebarFreeze(() => this.segments.splice(i, 1));
     },
     addKerningPattern() {
-      this.$store.dispatch("addKerningPattern", { segments: this.segments.map(s => s.characters) });
+      this.$store.dispatch("addKerningPattern", {
+        segments: [ "", "" ],
+      });
+      this.$nextTick(() => {
+        // const newPattern = this.kerningPatterns[this.kerningPatterns.length - 1];
+        const newPattern = this.kerningPatterns[0];
+        this.selectPattern(newPattern.id);
+        const select = this.$refs.segmentSelects && this.$refs.segmentSelects[0];
+        select && select.focus();
+      })
+    },
+    updateKerningPattern() {
+      if (this.selectedPatternId != null) {
+        this.activeElement = document.activeElement;
+        this.$store.dispatch("updateKerningPattern", {
+          id: this.selectedPatternId,
+          segments: this.segments.map(s => s.characters),
+        });
+      }
     },
     removeKerningPattern(id) {
-      this.$store.dispatch("removeKerningPattern", { id });
+      this.requestVuebarFreeze(() =>
+        this.$store.dispatch("removeKerningPattern", { id })
+      );
     },
     toggleKerningPattern(id, v) {
       this.$store.dispatch("toggleKerningPattern", { id, on: v });
@@ -178,9 +183,14 @@ export default {
       this.$store.dispatch("resetKerningPatterns");
     },
     formatPatternId(id) {
-      return id
-        .replace(/×/g, '<wbr>×')
-        .replace(/-/g, '&#x2011;');
+      return id.replace(/×/g, "<wbr>×").replace(/-/g, "&#x2011;");
+    },
+    requestVuebarFreeze(callback) {
+      this.$vuebar.freezeScrollbar(this.$refs.vb);
+      this.$nextTick(() => {
+        callback();
+      });
+      setTimeout(() => this.$vuebar.unfreezeScrollbar(this.$refs.vb), 250);
     },
   },
 };
@@ -189,6 +199,11 @@ export default {
 <style lang="scss" scoped>
 @import "@/scss/mixins";
 @import "keen-ui/src/styles/imports";
+
+
+.scrolled {
+  padding-bottom: 2em;
+}
 
 .row {
   .ui-icon-button {
@@ -211,18 +226,47 @@ export default {
   }
 }
 
+.contextual-sidebar {
+  .ui-icon-button {
+    &:focus:not(:hover) {
+      border-color: $brand-primary-color;
+    }
+    &--color-primary:focus:not(:hover) {
+      background: mix($brand-primary-color, white, 60%);
+      border: 2px solid $brand-primary-color;
+    }
+  }
+}
+
 .kerning-pattern {
+  &:hover {
+    background: rgba(#aaa, 0.2);
+  }
+  &:focus {
+    border-bottom: 2px solid $brand-primary-color;
+  }
+  &.selected {
+    font-weight: bold;
+    background: rgba($brand-primary-color, 0.2);
+    border-radius: 4px;
+  }
+
   flex: 1;
   display: flex;
-  align-items: center;
+
   > .ui-checkbox {
     margin: 0 0.5rem 0 0;
   }
-  > a {
+  > .link {
+    color: $light-link;
+    &:hover {
+      color: $light-link-hover;
+      cursor: pointer;
+    }
     flex: 1;
-    width: 100%;
-    height: 100%;
-    display: block;
+    display: flex;
+    align-items: center;
+
     text-decoration: none;
     min-width: 0;
     text-overflow: ellipsis;
@@ -240,7 +284,8 @@ export default {
 
 .ui-icon-button.small {
   border: none;
-  &, & svg {
+  &,
+  & svg {
     height: 1rem;
     width: 1rem;
   }
