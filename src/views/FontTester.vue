@@ -18,7 +18,6 @@
         <FontSample
           class="main"
           :html="texts[selectedSampleKey]"
-          :wordBreak="wordBreak"
           @update="e => modifyText(e)"
         />
 
@@ -97,9 +96,6 @@ export default {
       if (this.navElement === LanguageNav) return "Languages";
       else if (this.navElement === KerningNav) return "Kerning editor";
       else return "Playground";
-    },
-    wordBreak() {
-      return this.selectedTextKind === 'kerning' ? 'break-all' : 'normal';
     },
   },
   watch: {

@@ -11,7 +11,6 @@
         text-transform: ${settings.textTransform};
         font-feature-settings: ${ fontFeatureSettings };
         font-variation-settings: ${ fontVariationSettings };
-        word-break: ${wordBreak};
     `"
   >
     <div
@@ -37,10 +36,6 @@ export default {
     html: {
       type: String,
       default: "",
-    },
-    wordBreak: {
-      type: String,
-      default: 'normal',
     },
   },
   data() {
