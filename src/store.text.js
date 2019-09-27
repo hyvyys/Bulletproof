@@ -99,16 +99,20 @@ export default {
 
     initKerningPatterns(state) {
       state.defaultKerningPatterns.forEach(({ segments, isVisible = true }) => {
-        this.commit("addKerningPattern", { segments, isVisible });
+        this.commit("addKerningPattern", { segments, isVisible, toEnd: true });
       });
     },
 
-    addKerningPattern(state, { segments, isVisible }) {
+    addKerningPattern(state, { segments, isVisible, toEnd }) {
       const { sets, closures } = KerningGenerator.sets(segments);
       const name = kerningPatternName(segments);
       const id = getId('kerning-pattern-' + name);
       const copy = state.kerningPatterns.slice();
-      copy.unshift({ id, name, segments, sets, closures, isVisible });
+      if (toEnd) {
+        copy.push({ id, name, segments, sets, closures, isVisible });
+      } else {
+        copy.unshift({ id, name, segments, sets, closures, isVisible });
+      }
       state.kerningPatterns = copy;
     },
 
@@ -248,8 +252,8 @@ export default {
       commit("setText", { sampleKey: "kerning", html });
     },
 
-    addKerningPattern({ dispatch, commit }, { segments }) {
-      commit("addKerningPattern", { segments, isVisible: true });
+    addKerningPattern({ dispatch, commit }, { segments, toEnd }) {
+      commit("addKerningPattern", { segments, isVisible: true, toEnd });
       dispatch("updateKerning");
     },
 
