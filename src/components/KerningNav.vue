@@ -148,7 +148,10 @@ export default {
       this.segments.push({ key: this.getKey(), characters });
     },
     removeKerningSegment(i) {
-      this.requestVuebarFreeze(() => this.segments.splice(i, 1));
+      this.requestVuebarFreeze(() => {
+        this.segments.splice(i, 1);
+        this.updateKerningPattern();
+      });
     },
     addKerningPattern() {
       this.$store.dispatch("addKerningPattern", {
