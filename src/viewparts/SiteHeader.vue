@@ -1,5 +1,5 @@
 <template>
-  <div :class="`site-header ${sticky ? 'sticky' : ''}`">
+  <div :class="`site-header ${!footerVisible && sticky ? 'sticky' : ''}`">
     <transition-group tag="div" class="above-sidebar slide-left-wrapper" :name="aboveHeaderTransition">
       <div key="button" v-if="!!textKind" class="settings-aside-wrap">
         <SigmoidContainer id="settings-trigger" class="settings-aside light" sides="right top">

@@ -4,73 +4,81 @@
           preventParentScroll: true,
         }" ref="vb">
       <div class="scrolled">
+        <transition-group name="fade" class="fade-transition-group" tag="div">
+          <div class="editor panel" key="pattern-editor">
+            <transition-group name="fade" class="fade-transition-group" tag="div">
+              <div class="row" key="title">
+                <h3>
+                  Pattern segments
+                  <a target="_blank" href="/help#kerning" class="help-link">[ ? ]</a>
+                </h3>
 
-        <div class="editor panel" key="pattern-editor" v-if="selectedPatternId != null">
-          <transition-group name="fade" class="fade-transition-group" tag="div">
-            <div class="row" key="title">
-              <h3>Pattern segments</h3>
-              <a target="_blank" href="/help#kerning" class="help-link">[ ? ]</a>
-            </div>
-
-            <div class="row segment-row" v-for="(segment, i) in segments" :key="`segment-${segment.key}`">
-              <UiSelect
-                ref="segmentSelects"
-                v-model="segments[i].characters"
-                :options="builtInSegmentCharacters"
-                dropdownClass="kerning-segment-select"
-                dropdownPosition="bottom-end"
-                placeholder="type or choose"
-                :autocomplete="true"
-                @input="updateKerningPattern"
-              >
-                <template v-slot:option="props">
-                  <kbd>{{ props.option || "\xa0" }}</kbd>
-                </template>
-              </UiSelect>
-
-              <UiIconButton key="btnAdd"
-                v-if="i === segments.length - 1"
-                @click="addKerningSegment"
-                color="primary"
-              >
-                <img svg-inline src="@/assets/icons/add.svg" />
-              </UiIconButton>
-
-              <UiIconButton key="btnRemove" v-else @click="removeKerningSegment(i)" color="default">
-                <img svg-inline src="@/assets/icons/remove.svg" />
-              </UiIconButton>
-            </div>
-          </transition-group>
-        </div>
-
-        <div class="nav panel" key="pattern-list">
-          <transition-group name="fade" class="fade-transition-group" tag="div">
-
-            <h3 key="heading">Patterns</h3>
-
-            <div class="btn-group" key="buttons">
-              <UiButton @click="resetKerningPatterns" color="default">Revert</UiButton>
-              <UiButton @click="addKerningPattern" color="default">Add</UiButton>
-            </div>
-
-            <div
-              :class="`kerning-pattern ${selectedPatternId === pattern.id ? 'selected' : ''}`"
-              v-for="pattern in kerningPatterns"
-              :key="`pattern-${pattern.id}`"
-            >
-              <UiCheckbox
-                :value="pattern.isVisible"
-                @input="v => toggleKerningPattern(pattern.id, v)"
-              ></UiCheckbox>
-              <div class="link" :href="`#${pattern.id}`" @click="selectPattern(pattern.id)">
-                <kbd v-html="formatPatternId(pattern.name || 'new pattern')"></kbd>
+                <UiIconButton key="btnAdd" @click="addKerningSegment" color="primary">
+                  <img svg-inline src="@/assets/icons/add.svg" />
+                </UiIconButton>
               </div>
-              <UiIconButton @click="removeKerningPattern(pattern.id)" color="default">
-                <img svg-inline src="@/assets/icons/remove.svg" />
-              </UiIconButton>
-            </div>
-          </transition-group>
-        </div>
+
+              <div class="row segment-row" v-for="(segment, i) in segments" :key="`segment-${segment.key}`">
+                <UiSelect
+                  ref="segmentSelects"
+                  v-model="segments[i].characters"
+                  :options="builtInSegmentCharacters"
+                  dropdownClass="kerning-segment-select"
+                  dropdownPosition="bottom-end"
+                  placeholder="type or choose"
+                  :autocomplete="true"
+                  @input="updateKerningPattern"
+                >
+                  <template v-slot:option="props">
+                    <kbd>{{ props.option || "\xa0" }}</kbd>
+                  </template>
+                </UiSelect>
+
+                <UiIconButton key="btnRemove" @click="removeKerningSegment(i)" color="default">
+                  <img svg-inline src="@/assets/icons/remove.svg" />
+                </UiIconButton>
+              </div>
+            </transition-group>
+          </div>
+
+          <div class="nav panel" key="pattern-list">
+            <transition-group name="fade" class="fade-transition-group" tag="div">
+
+              <div class="row" key="heading">
+                <h3>Patterns</h3>
+                <UiIconButton @click="addKerningPattern" color="primary">
+                  <img svg-inline src="@/assets/icons/add.svg" />
+                </UiIconButton>
+              </div>
+
+              <div
+                :class="`kerning-pattern ${selectedPatternId === pattern.id ? 'selected' : ''}`"
+                v-for="(pattern, i) in kerningPatterns"
+                :key="`pattern-${pattern.id}`"
+              >
+                <UiCheckbox
+                  :value="pattern.isVisible"
+                  @input="v => toggleKerningPattern(pattern.id, v)"
+                ></UiCheckbox>
+
+                <div class="link" :href="`#${pattern.id}`" @click="selectPattern(pattern.id)">
+                  <kbd :title="pattern.id"
+                  v-html="formatPatternId(pattern.name || 'new pattern')"></kbd>
+                </div>
+
+                <UiIconButton @click="removeKerningPattern(pattern.id)" color="default">
+                  <img svg-inline src="@/assets/icons/remove.svg" />
+                </UiIconButton>
+              </div>
+
+              <div class="btn-group" key="revertBtn">
+                <UiButton @click="revertKerningPatterns" color="default">Revert</UiButton>
+                <UiButton @click="clearKerningPatterns" color="default" :disabled="kerningPatterns.length === 0">Clear</UiButton>
+              </div>
+
+            </transition-group>
+          </div>
+        </transition-group>
       </div>
     </div>
   </div>
@@ -122,6 +130,11 @@ export default {
       this.activeElement = null;
     }
   },
+  mounted() {
+    if (this.kerningPatterns.length && this.selectedPatternId == null) {
+      this.selectPattern(this.kerningPatterns[0].id);
+    }
+  },
   methods: {
     selectPattern(id) {
       this.selectedPatternId = id;
@@ -146,6 +159,11 @@ export default {
     },
     addKerningSegment(event, characters = "") {
       this.segments.push({ key: this.getKey(), characters });
+      this.$nextTick(() => {
+        if (this.$refs.segmentSelects.length) {
+          this.$refs.segmentSelects[this.$refs.segmentSelects.length - 1].focus();
+        }
+      });
     },
     removeKerningSegment(i) {
       this.requestVuebarFreeze(() => {
@@ -158,12 +176,12 @@ export default {
         segments: [ "", "" ],
       });
       this.$nextTick(() => {
-        // const newPattern = this.kerningPatterns[this.kerningPatterns.length - 1];
         const newPattern = this.kerningPatterns[0];
         this.selectPattern(newPattern.id);
-        const select = this.$refs.segmentSelects && this.$refs.segmentSelects[0];
-        select && select.focus();
-      })
+        if (this.$refs.segmentSelects.length) {
+          this.$refs.segmentSelects[0].focus();
+        }
+      });
     },
     updateKerningPattern() {
       if (this.selectedPatternId != null) {
@@ -182,8 +200,14 @@ export default {
     toggleKerningPattern(id, v) {
       this.$store.dispatch("toggleKerningPattern", { id, on: v });
     },
-    resetKerningPatterns() {
-      this.$store.dispatch("resetKerningPatterns");
+    clearKerningPatterns() {
+      this.requestVuebarFreeze(() => {
+        this.$store.dispatch("clearKerningPatterns");
+        document.querySelector(this.scrolledParentSelector).scrollTop = 0;
+      });
+    },
+    revertKerningPatterns() {
+      this.$store.dispatch("revertKerningPatterns");
     },
     formatPatternId(id) {
       return id.replace(/×/g, "<wbr>×").replace(/-/g, "&#x2011;");
@@ -208,12 +232,33 @@ export default {
   padding-bottom: 2em;
 }
 
-.row {
-  .ui-icon-button {
-    align-self: center;
+$btn-size: 24px;
+.ui-icon-button {
+  align-self: center;
+  width: $btn-size;
+  height: $btn-size;
+  margin: 2px 0;
+
+  &--color-default {
+    color: rgba($light-text, 0.8);
   }
+  &--color-primary {
+    color: $light;
+  }
+  svg {
+    width: $btn-size;
+    height: $btn-size;
+  }
+}
+
+.row {
+  align-items: center;
   .ui-button {
     margin: 5px 0;
+  }
+  h3 {
+    align-self: center;
+    margin: 2px 0;
   }
 }
 
@@ -272,16 +317,13 @@ export default {
 
     text-decoration: none;
     min-width: 0;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    > * {
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
   }
-  > * {
+  > :not(:last-child) {
     margin-right: 0.5rem;
-  }
-  > .ui-icon-button {
-    height: 1.75rem;
-    width: 1.75rem;
-    margin: 2px 0;
   }
 }
 

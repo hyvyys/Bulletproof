@@ -56,11 +56,12 @@ a {
 }
 
 .help-link {
+  margin: 0 4px;
   text-decoration: none;
   flex: unset !important;
   font-size: 0.9em;
   font-weight: 700;
-  transform: translateY(-2px);
+  transform: translateY(1px);
 }
 
 

@@ -36,7 +36,7 @@
       }
     }
 
-    margin: 0 2px;
+    margin: 4px 0;
     .ui-icon-button,
     .ui-button {
       border-radius: 0;
@@ -47,10 +47,12 @@
       }
       $radius: 8px;
       &:first-child {
-        border-radius: $radius 0 0 $radius;
+        border-top-left-radius: $radius;
+        border-bottom-left-radius: $radius;
       }
       &:last-child {
-        border-radius: 0 $radius $radius 0;
+        border-top-right-radius: $radius;
+        border-bottom-right-radius: $radius;
       }
     }
   }

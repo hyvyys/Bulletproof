@@ -105,25 +105,34 @@ export default {
 
     addKerningPattern(state, { segments, isVisible, toEnd }) {
       const { sets, closures } = KerningGenerator.sets(segments);
-      const name = kerningPatternName(segments);
-      const id = getId('kerning-pattern-' + name);
       const copy = state.kerningPatterns.slice();
+      const pattern = { segments, sets, closures, isVisible };
+      pattern.lines = KerningGenerator.kerningString(pattern);
+      pattern.name = kerningPatternName(pattern);
+      pattern.id = getId('kerning-pattern-' + pattern.name);
       if (toEnd) {
-        copy.push({ id, name, segments, sets, closures, isVisible });
+        copy.push(pattern);
       } else {
-        copy.unshift({ id, name, segments, sets, closures, isVisible });
+        copy.unshift(pattern);
       }
       state.kerningPatterns = copy;
     },
 
     updateKerningPattern(state, { id, segments }) {
       const { sets, closures } = KerningGenerator.sets(segments);
-      const copy = state.kerningPatterns.slice();
-      const match = copy.find(kp => kp.id === id);
-      match.segments = segments;
-      match.sets = sets;
-      match.closures = closures;
-      match.name = kerningPatternName(segments);
+      let copy = state.kerningPatterns.slice();
+      let pattern = copy.find(kp => kp.id === id);
+      if (!pattern) {
+        this.commit("addKerningPattern", { segments, isVisible: true });
+        copy = state.kerningPatterns.slice();
+        pattern = copy[0];
+        pattern.id = id;
+      }
+      pattern.segments = segments;
+      pattern.sets = sets;
+      pattern.closures = closures;
+      pattern.lines = KerningGenerator.kerningString(pattern);
+      pattern.name = kerningPatternName(pattern);
       state.kerningPatterns = copy;
     },
 
@@ -137,6 +146,21 @@ export default {
       state.kerningPatterns[index].isVisible = on;
     },
 
+    updateKerning(state) {
+      let patterns = state.kerningPatterns
+        .filter(pattern => pattern.isVisible);
+      let html = patterns
+        .map(pattern => {
+          const lines = pattern.lines;
+          const text = lines[0].length > 50
+            ? lines.join("\n")
+            : lines.join(" ").replace(/ +/g, " ");
+          return `<h6 id="${escapeHtmlId(pattern.id)}"></h6>`
+            + `<p>${escapeHtml(text)}</p>`;
+        })
+        .join("");
+      this.commit("setText", { sampleKey: "kerning", html });
+    },
   },
 
   actions: {
@@ -148,21 +172,22 @@ export default {
       }
     },
 
-    selectSample({ commit, dispatch }, { kind, id }) {
+    selectSample({ state, commit, dispatch }, { kind, id }) {
       commit("selectSample", { kind, id });
+      if (kind === "kerning") {
+        if (state.kerningPatterns.length === 0) {
+          this.commit("initKerningPatterns");
+        }
+      }
       dispatch("updateText");
     },
 
-    updateText({ state, commit, getters, dispatch }) {
-      if (state.selectedSampleKey === "kerning") {
-        if (state.kerningPatterns.length === 0) {
-          commit("initKerningPatterns");
-        }
-        dispatch("updateKerning");
-        return;
-      }
+    updateText({ state, commit, getters }) {
       const fieldKey = getters.selectedSampleTextKey;
       if (!fieldKey) {
+        if (state.selectedSampleKey === "kerning") {
+          commit("updateKerning");
+        }
         return;
       }
       const data = getters.selectedLanguages
@@ -175,7 +200,6 @@ export default {
         }));
 
       function squish(str) { return str.replace(/\s\s+/g, "") }
-
       const html = data
         .map(({ language, languageTag, id, texts, script }) => {
           let header, fragments;
@@ -233,50 +257,41 @@ export default {
           return header + fragments.join("");
         })
         .join("");
-      commit("setText", { sampleKey: state.selectedSampleKey, html });
+
+        commit("setText", { sampleKey: state.selectedSampleKey, html });
     },
 
-    updateKerning({ state, commit }) {
-      let patterns = state.kerningPatterns
-        .filter(pattern => pattern.isVisible);
-      let html = patterns
-        .map(pattern => {
-          const lines = KerningGenerator.kerningString(pattern);
-          const text = lines[0].length > 50
-            ? lines.join("\n")
-            : lines.join(" ").replace(/ +/g, " ");
-          return `<h6 id="${escapeHtmlId(pattern.id)}"></h6>`
-            + `<p>${escapeHtml(text)}</p>`;
-        })
-        .join("");
-      commit("setText", { sampleKey: "kerning", html });
-    },
-
-    addKerningPattern({ dispatch, commit }, { segments, toEnd }) {
+    addKerningPattern({ commit }, { segments, toEnd }) {
       commit("addKerningPattern", { segments, isVisible: true, toEnd });
-      dispatch("updateKerning");
+      commit("updateKerning");
     },
 
-    updateKerningPattern({ dispatch, commit }, { id, segments }) {
+    updateKerningPattern({ commit }, { id, segments }) {
       commit("updateKerningPattern", { id, segments });
-      dispatch("updateKerning");
+      commit("updateKerning");
     },
 
-    removeKerningPattern({ dispatch, commit }, { id }) {
+    removeKerningPattern({ commit }, { id }) {
       commit("removeKerningPattern", { id });
-      dispatch("updateKerning");
+      commit("updateKerning");
     },
 
-    toggleKerningPattern({ dispatch, commit }, { id, on }) {
+    toggleKerningPattern({ commit }, { id, on }) {
       commit("toggleKerningPattern", { id, on });
-      dispatch("updateKerning");
+      commit("updateKerning");
     },
 
-    resetKerningPatterns({ dispatch, commit }) {
+    clearKerningPatterns({ dispatch, commit }) {
       commit("clearKerningPatterns");
       setTimeout(() => {
         dispatch("updateText");
       }, 50);
+    },
+
+    revertKerningPatterns({ dispatch, commit }) {
+      commit("clearKerningPatterns");
+      commit("initKerningPatterns");
+      dispatch("updateText");
     },
   },
 
