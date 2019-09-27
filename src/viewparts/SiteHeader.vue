@@ -142,9 +142,14 @@ export default {
       this.$store.commit("toggleContextualPanel");
     },
 
-    hasScrolled() {
+    measureTop() {
       const el = this.scrolledParent === window ? document.documentElement : this.scrolledParent;
       const top = el.scrollTop;
+      return top;
+    },
+
+    hasScrolled() {
+      const top = this.measureTop();
       const delta = top - this.lastTop;
       if (-delta > this.stickyShowDelta || top < 100) {
         this.sticky = true;
@@ -159,10 +164,8 @@ export default {
     initStickyHeader() {
       let didScroll = false;
 
-      this.scrolledParent.addEventListener("wheel", function () {
-          didScroll = true;
-        }
-      );
+      this.scrolledParent.addEventListener("wheel", () => didScroll = true);
+      this.scrolledParent.addEventListener("click", () => this.lastTop = this.measureTop());
       setInterval(() => {
         if (didScroll) {
           this.hasScrolled();

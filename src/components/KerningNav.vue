@@ -248,6 +248,7 @@ $btn-size: 24px;
   svg {
     width: $btn-size;
     height: $btn-size;
+    margin: -10px; // align center bigger child in smaller flex parent
   }
 }
 
