@@ -291,7 +291,7 @@ export default {
     },
     computed: {
         isAutocomplete() {
-          return this.autocomplete && !this.multiple;
+          return this.autocomplete && !this.multiple && !(this.options.some(o => typeof o !== 'string'));
         },
         classes() {
             return [
