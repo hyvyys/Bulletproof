@@ -364,14 +364,19 @@ export default {
               ...match,
             ];
 
-            const insensitiveMatch = this.options.filter(
-              o => options.indexOf(o) == -1
-              && ~getOption(o).toLowerCase().indexOf(this.value.toLowerCase())
-            );
-            options = [
-              ...options,
-              ...match,
-            ];
+            if (options.length === 1) {
+              options = this.options;
+            }
+            else {
+              const insensitiveMatch = this.options.filter(
+                o => options.indexOf(o) == -1
+                && ~getOption(o).toLowerCase().indexOf(this.value.toLowerCase())
+              );
+              options = [
+                ...options,
+                ...match,
+              ];
+            }
 
             const other = this.options.filter(
               o => options.indexOf(o) == -1
