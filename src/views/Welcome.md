@@ -1,6 +1,10 @@
-[Bulletproof](https://hyvyys.github.io/Bulletproof/) is a visual font tester and proofing tool, loosely inspired by [Pablo Impallari's font testing page](https://github.com/impallari/Font-Testing-Page). The app can load selected local font files and detect their OpenType features and variation axes. Everything is processed locally in the browser, using [OpenType.js](https://github.com/opentypejs/opentype.js).
+Test your local fonts with this proofing tool developed for type designers by a type designer. Check out kerning, OpenType features, and language coverage. Explore and animate variation axes in variable fonts.
 
-Available formatting options:
+To begin, load selected local font files (you can drop them right here). Their OpenType features and variation axes will be automatically detected. Everything is processed locally in the browser, using [OpenType.js](https://github.com/opentypejs/opentype.js).
+
+If you don't have any font files handy, look around and test the included fonts: [Alegreya Sans](https://github.com/huertatipografica/Alegreya-Sans) by Juan Pablo del Peral, [Graduate](https://github.com/etunni/Graduate-Variable-Font) by Eduardo Tunni, and my own Rywalka (work-in-progress).
+
+## Available formatting options
   
   * Changing font size, line height, text alignment, text case transform, text and background colors.
   * Toggling OpenType features on and off.
