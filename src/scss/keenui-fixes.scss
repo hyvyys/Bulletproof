@@ -51,14 +51,6 @@
     }
   }
 
-  .ui-select-option {
-    kbd {
-      max-width: 100%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  }
-
   .ui-select:not(.is-multiple) .ui-select__content .ui-select__display {
     line-height: unset;
   }
@@ -151,5 +143,15 @@
     &.border {
       border: 2px solid $brand-primary-color;
     }
+  }
+}
+
+
+.ui-select-option {
+  kbd {
+    margin-right: 2px;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
