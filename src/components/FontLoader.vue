@@ -63,7 +63,7 @@
     <UiModal ref="modal" title="Error opening fonts.">
       <div>
         <div>{{ errorMessage }}</div>
-        <pre v-for="(log, i) in errorLogs" :key="i">{{ log }}</pre>
+        <code v-for="(log, i) in errorLogs" :key="i">{{ log }}</code>
       </div>
     </UiModal>
 
@@ -418,5 +418,11 @@ export default {
   box-shadow: inset 0 0 20vh $light;
 
   transition: opacity 0.5s;
+}
+
+.ui-modal .ui-focus-container.ui-modal__container {
+  top: 2em;
+  bottom: 2em;
+  max-height: calc(100vh - 4em);
 }
 </style>
