@@ -1,21 +1,33 @@
 <template>
   <div class="site-footer">
     <div class="sentinel" ref="sentinel"/>
-    <div class="main">
-      <div class="subtle">
+    <div class="main u-dark">
+      <div>
         <div>
-          Bulletproof Font Tester v{{version}}
+          Sample texts from
+          <a href="https://github.com/hyvyys/language-data" target="_blank">
+            Language-Data
+          </a>.
+          Visit link to contribute.
+        </div>
+        <div>
+          <a href="https://github.com/huertatipografica/Alegreya-Sans">Alegreya Sans</a> font by Juan Pablo del Peral.
+        </div>
+        <div>
+          <a href="https://github.com/etunni/Graduate-Variable-Font">Graduate</a> Variable Font by Eduardo Tunni.
+        </div>
+        <div>
+          Rywalka font by Adam Jagosz.
+        </div>
+      </div>
+
+      <div class="bulletproof-info">
+        <div>
+          Bulletproof Font Tester v {{version}}
         </div>
         <div>
           Copyright 2019 Adam Jagosz.
         </div>
-      </div>
-      <div>
-        Sample texts come from
-        <a href="https://github.com/hyvyys/language-data" target="_blank" class="github-link-dark">
-          Language-Data
-        </a>.
-        Visit link to contribute.
       </div>
     </div>
     <SigmoidContainer sides="left bottom" width="65" class="large light aside" idSeed="footer">
@@ -99,32 +111,26 @@ export default {
   }
 
   display: flex;
-  align-items: center;
   height: $footer-height;
   justify-items: space-between;
   padding-bottom: 8px;
   @include footer-background();
 
   .main {
-    color: $accent-text;
+    color: rgba($accent-text, 0.7);
+    font-size: 0.9rem;
     flex: 1;
-    padding: 0 20px;
+    padding: 15px 20px 10px;
     display: flex;
     align-items: center;
     > :not(:last-child) {
       margin-right: 2em;
     }
-
-    .github-link-dark {
-      text-decoration: none;
-      &:hover {
-        text-decoration: underline;
-      }
-    }
   }
 
-  .subtle {
-    opacity: 0.8;
+  .bulletproof-info {
+    flex: 1;
+    text-align: center;
   }
 
   .light {

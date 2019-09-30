@@ -56,17 +56,20 @@ a {
 }
 
 
-.github-icon-link, .github-link, .github-link-dark {
+.github-icon-link, .github-link, .u-dark a {
   color: mix(black, $brand-primary-color, 60%);
   transition: color .3s;
   &:hover {
     color: mix(black, $brand-primary-color, 20%);
   }
 }
-.github-link-dark {
+
+.u-dark a {
   color: $brand-primary-color;
+  text-decoration: none;
   &:hover {
     color: mix(white, $brand-primary-color, 45%);
+    text-decoration: underline;
   }
 }
 
