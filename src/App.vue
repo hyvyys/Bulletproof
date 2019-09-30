@@ -18,8 +18,11 @@
 <script>
 export default {
   watch: {
-    $route() {
-      this.$store.commit("scrollToTop");
+    $route(val, oldVal) {
+      const p = route => route.path;
+      if (p(val) !== p(oldVal)) {
+        this.$store.commit("scrollToTop");
+      }
     },
   },
   mounted() {
