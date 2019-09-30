@@ -1,6 +1,6 @@
 @import "./utils/font-face.scss";
 
-$fontDir: "/fonts";
+$fontDir: "~@/assets/fonts";
 
 @include font-face("Rywalka", $fontDir, ((Regular, 400, normal), ), (ttf), "Rywalka Bulletproof");
 
@@ -17,5 +17,5 @@ $fontDir: "/fonts";
   (eot, woff2, woff, ttf, svg),
   'Alegreya Bulletproof');
   
-@import "/fonts/iosevka-ss09/webfont.css";
+@import "~@/assets/fonts/iosevka-ss09/webfont.css";
 // @include font-face("Inconsolata", $fontDir + "/Inconsolata", ((Regular, 400, normal), (Bold, 700, normal)), (ttf));

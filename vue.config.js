@@ -1,5 +1,5 @@
 module.exports = {
-  publicPath: process.env.NODE_ENV === "production" ? "/" : "/",
+  publicPath: process.env.NODE_ENV === "production" ? "Bulletproof" : "/",
   devServer: {
     // writeToDisk: true, // https://webpack.js.org/configuration/dev-server/#devserverwritetodisk-
   },
@@ -10,9 +10,9 @@ module.exports = {
   css: {
     loaderOptions: {
       sass: {
-        data: `@import "~@/scss/variables.scss";`
-      }
-    }
+        data: `@import "~@/scss/variables.scss";`,
+      },
+    },
   },
 
   parallel: false,
@@ -51,7 +51,7 @@ module.exports = {
         raw: true,
         middleware(source) {
           return `<template><div>${md.render(source)}</div></template>`;
-        }
+        },
       });
 
     config.module
@@ -59,5 +59,5 @@ module.exports = {
       .use("vue-svg-inline-loader")
       .loader("vue-svg-inline-loader")
       .options({});
-  }
+  },
 };

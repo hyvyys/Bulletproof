@@ -155,11 +155,11 @@ export default {
 
     loadDefaultFonts() {
       this.defaultFontsLoaded = true;
-      const dir = "/fonts/";
+      const dir = (process.env.BASE_URL + "/fonts/").replace(/\/+/g, "/");
       const fonts = [
-        "alegreya-sans/alegreya-sans-v10-latin-ext_cyrillic_cyrillic-ext_latin_vietnamese_greek-ext_greek-regular.ttf",
-        "alegreya-sans/alegreya-sans-v10-latin-ext_cyrillic_cyrillic-ext_latin_vietnamese_greek-ext_greek-italic.ttf",
-        "alegreya-sans/alegreya-sans-v10-latin-ext_cyrillic_cyrillic-ext_latin_vietnamese_greek-ext_greek-700.ttf",
+        "Alegreya-Sans/alegreya-sans-v10-latin-ext_cyrillic_cyrillic-ext_latin_vietnamese_greek-ext_greek-regular.ttf",
+        "Alegreya-Sans/alegreya-sans-v10-latin-ext_cyrillic_cyrillic-ext_latin_vietnamese_greek-ext_greek-italic.ttf",
+        "Alegreya-Sans/alegreya-sans-v10-latin-ext_cyrillic_cyrillic-ext_latin_vietnamese_greek-ext_greek-700.ttf",
         "Rywalka-Regular.ttf",
         "Graduate.ttf",
       ];
