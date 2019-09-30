@@ -29,40 +29,5 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-@import "@/scss/variables";
-@import "@/scss/mixins";
-
-.banner {
-  font-size: 6rem;
-  text-align: center;
-  margin-bottom: 2rem;
-  .logo {
-    height: 4em;
-    margin: -1em 0 -0.6em;
-  }
-  h1 {
-    font-size: 1em;
-    margin: 0;
-    line-height: 1;
-  }
-  .subtitle {
-    font-style: italic;
-    font-size: 0.33em;
-    position: relative;
-    left: 4.75em;
-  }
-}
-
-.invitation {
-  text-align: center;
-  color: #aaa;
-}
-
-.fold {
-  padding-bottom: 3em;
-}
-
-.readme {
-  margin: 100px 0 360px;
-}
+@import "@/scss/welcome.scss";
 </style>

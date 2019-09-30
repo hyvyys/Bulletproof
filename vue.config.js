@@ -1,8 +1,10 @@
 module.exports = {
   publicPath: process.env.NODE_ENV === "production" ? "/Bulletproof/" : "/",
+
   devServer: {
     // writeToDisk: true, // https://webpack.js.org/configuration/dev-server/#devserverwritetodisk-
   },
+
   // transpileDependencies: [
   //   /\bkeen-ui\b/
   // ],
