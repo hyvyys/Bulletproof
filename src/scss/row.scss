@@ -24,7 +24,7 @@
     margin-right: 0.3em;
     min-width: 4em;
   }
-  > [class^="ui"]:not(.ui-icon-button), > h3 {
+  > [class^="ui"]:not(.ui-icon-button):not(.ui-checkbox), > h3 {
     flex: 1;
     min-width: 0;
   }
