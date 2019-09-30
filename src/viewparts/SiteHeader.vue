@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import viewport from "@/utils/viewport";
 
 import FontLoader from "@/components/FontLoader.vue";
@@ -89,7 +89,6 @@ export default {
   data() {
     return {
       textKinds,
-      sticky: true,
       aboveHeaderTransition: "slide-left",
       scrolledParent: null,
       stickyShowDelta: 200, // px
@@ -98,9 +97,10 @@ export default {
     };
   },
   computed: {
-    footerVisible() {
-      return this.$store.state.layout.footerVisible;
-    },
+    ...mapState({
+      sticky: state => state.layout.sticky,
+      footerVisible: state => state.layout.footerVisible,
+    }),
     ...mapGetters([
       "scrolledParentSelector",
       "customTextIds",
@@ -113,11 +113,6 @@ export default {
       return this.$route.params.text;
     },
   },
-  watch: {
-    sticky(value) {
-      this.$store.commit("sticky", { value });
-    },
-  },
   mounted() {
     // duct tape to avoid erroneous transition up/down when clicking a hash anchor
     window.addEventListener("resize", this.setAboveHeaderTransition);
@@ -126,6 +121,9 @@ export default {
     this.initStickyHeader();
   },
   methods: {
+    setSticky(value) {
+      this.$store.commit("sticky", { value });
+    },
     setAboveHeaderTransition() {
       this.aboveHeaderTransition = viewport.height < 500 ? "" : "slide-left";
     },
@@ -152,11 +150,11 @@ export default {
       const top = this.measureTop();
       const delta = top - this.lastTop;
       if (-delta > this.stickyShowDelta || top < 100) {
-        this.sticky = true;
+        this.setSticky(true);
         this.lastTop = top;
       }
       else if (delta > this.stickyHideDelta) {
-        this.sticky = false;
+        this.setSticky(false);
         this.lastTop = top;
       }
     },

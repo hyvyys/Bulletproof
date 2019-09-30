@@ -22,8 +22,8 @@ The selection of languages and texts is arbitrary and limited, but contributions
 
 ## Kerning tester
 
-The app is equipped with a [kerning string generator](/kerning), along with a couple of predefined kerning patterns. [See kerning generator help](/help#kerning).
+The app is equipped with a <router-link to="/kerning">kerning string generator</router-link>, along with a couple of predefined kerning patterns. <router-link to="/help/kerning">[See kerning generator help]</router-link>
 
 ## Playground
 
-Any open text sample can be edited. In the editor view some more options are available: setting bold and italic (with separately selectable fonts), as well as taking snapshots of the settings and using them as animation keyframes — can be useful for recording gifs or videos, or toggling multiple features on and off more quickly. [See animation editor help](/help#animation).
+Any open text sample can be edited. In the <router-link to="/editor">editor tab</router-link> some more options are available: setting bold and italic (with separately selectable fonts), as well as taking snapshots of the settings and using them as animation keyframes — can be useful for recording gifs or videos, or toggling multiple features on and off more quickly. <router-link to="/help/animation">[See animation editor help]</router-link>

@@ -17,6 +17,11 @@
 
 <script>
 export default {
+  watch: {
+    $route() {
+      this.$store.commit("scrollToTop");
+    },
+  },
   mounted() {
     window.addEventListener("beforeunload", this.someMethod);
   },

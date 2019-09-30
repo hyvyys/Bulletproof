@@ -99,19 +99,17 @@ a {
 .help-topic {
   display: flex;
   justify-content: flex-start;
-  flex-wrap: wrap;
   
   .help {
-    flex-grow: 1;
-    margin: 0;
-    margin-left: 6rem;
+    flex: 1 1 60%;
+    margin: 0 40px 0 6rem;
     .reading {
       margin-right: 0;
     }
   }
   .example {
     width: 300px;
-    flex: 0 0 auto;
+    flex: 0 1 30%;
     align-self: flex-start;
     margin: 0px 40px;
     padding: 20px 0;

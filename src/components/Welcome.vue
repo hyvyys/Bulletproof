@@ -21,6 +21,9 @@ export default {
   name: "Welcome",
   components: { Readme },
   props: {},
+  mounted() {
+    this.$store.commit("scrollToTop");
+  },
 };
 </script>
 
