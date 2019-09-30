@@ -47,7 +47,7 @@
                         :placeholder="placeholder"
                         :value="value"
                         @input="e => setCustomValue(e.target.value)"
-                        @keydown.space.stop.prevent
+                        @keydown.space.stop
                         @keydown.down.prevent="highlightOption(highlightedIndex + 1)"
                         @keydown.up.prevent="highlightOption(highlightedIndex - 1)"
                         @keydown.enter.prevent.stop="onInputEnter"
@@ -547,7 +547,7 @@ export default {
             this.query = '';
         },
         focus() {
-          if (this.isAutocomplete) this.$refs.input.focus();
+          if (this.isAutocomplete && this.$refs.input) this.$refs.input.focus();
           else this.$refs.label.focus();
         },
         toggleDropdown() {
@@ -573,7 +573,7 @@ export default {
         },
         onFocus(e) {
             if (this.isAutocomplete) {
-              this.$refs.input.focus();
+              this.$refs.input && this.$refs.input.focus();
               this.isFocused = true;
             }
             if (this.isActive) {

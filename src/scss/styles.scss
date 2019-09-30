@@ -55,15 +55,6 @@ a {
   }
 }
 
-.help-link {
-  margin: 0 4px;
-  text-decoration: none;
-  flex: unset !important;
-  font-size: 0.9em;
-  font-weight: 700;
-  transform: translateY(1px);
-}
-
 
 .github-icon-link, .github-link, .github-link-dark {
   color: mix(black, $brand-primary-color, 60%);
@@ -83,4 +74,65 @@ a {
   display: flex;
   flex-direction: column;
   height: 100%;
+}
+
+
+.help-link {
+  margin: 0 2px;
+  text-decoration: none;
+  font-size: 0.9em;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  
+  color: $light-link;
+  &:hover {
+    color: $light-link-hover;
+  }
+  > .help-icon {
+    flex: unset;
+    margin-right: .15em;
+  }
+}
+
+
+.help-topic {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  
+  .help {
+    flex-grow: 1;
+    margin: 0;
+    margin-left: 6rem;
+    .reading {
+      margin-right: 0;
+    }
+  }
+  .example {
+    width: 300px;
+    flex: 0 0 auto;
+    align-self: flex-start;
+    margin: 0px 40px;
+    padding: 20px 0;
+    position: sticky;
+    top: $header-height;
+    @media screen and (max-width: $mq-max-width) {
+      top: $header-height-mq;
+    }
+  }
+
+  .help-heading {
+    position: relative;
+    .router-link-active {
+      color: #bbb;
+      text-decoration: none;
+      position: absolute;
+      right: 100%;
+      white-space: pre;
+      &:hover {
+        color: $light-link;
+      }
+    }
+  }
 }

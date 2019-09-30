@@ -3,9 +3,10 @@ import Router from "vue-router";
 
 import SiteHeader from "@/viewparts/SiteHeader.vue";
 import SiteFooter from "@/viewparts/SiteFooter.vue";
-
 import Home from "@/views/Home.vue";
 import Help from "@/views/Help.vue";
+import KerningHelp from "@/views/KerningHelp.vue";
+import AnimationHelp from "@/views/AnimationHelp.vue";
 import FontTester from "@/views/FontTester.vue";
 
 import textKinds from "@/models/textKinds";
@@ -25,6 +26,7 @@ export default new Router({
         footer: SiteFooter,
       },
     },
+    { path: '/editor', redirect: '/custom' },
     {
       // parentheses enclose text kind RegExp
       path: `/:text(${textKinds.join("|")}|custom)/:id?`,
@@ -32,6 +34,24 @@ export default new Router({
       components: {
         header: SiteHeader,
         main: FontTester,
+        footer: SiteFooter,
+      },
+    },
+    {
+      path: "/help/kerning",
+      name: "KerningHelp",
+      components: {
+        header: SiteHeader,
+        main: KerningHelp,
+        footer: SiteFooter,
+      },
+    },
+    {
+      path: "/help/animation",
+      name: "AnimationHelp",
+      components: {
+        header: SiteHeader,
+        main: AnimationHelp,
         footer: SiteFooter,
       },
     },

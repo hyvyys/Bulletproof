@@ -401,4 +401,8 @@ export default {
   opacity: 0.7;
   font-size: 0.85rem !important;
 }
+.row {
+  align-items: baseline;
+}
+
 </style>

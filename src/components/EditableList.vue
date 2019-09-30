@@ -7,7 +7,7 @@
       </div>
 
       <div
-        class="row"
+        class="editable-list-item"
         v-for="(o, i) in options"
         :key="keys.key ? o[keys.key] : i"
       >
@@ -22,7 +22,7 @@
           {{ keys.label ? o[keys.label] : o }}
         </slot>
 
-        <UiIconButton @click="$emit('remove', keys.key ? o[keys.key] : o)" color="default">
+        <UiIconButton @click="$emit('remove', keys.key ? o[keys.key] : o)" color="default" size="small" class="border">
           <img svg-inline src="@/assets/icons/remove.svg" />
         </UiIconButton>
       </div>
@@ -63,3 +63,17 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.editable-list-item {
+  display: flex;
+  align-items: center;
+  .ui-button {
+    flex: 1;
+    margin: 2px 0;
+  }
+  > :last-child {
+    margin-left: 0.25em;
+  }
+}
+</style>

@@ -1,17 +1,18 @@
 <template>
-  <div class="help reading">
-    <Help />
+  <div class="help-topic">
+    <div class="help">
+      <div class="reading">
+        <h2>Help pages</h2>
+        <ol>
+          <li>
+            <router-link :to="`/help/animation`">Animation editor</router-link>
+          </li>
+          <li>
+            <router-link :to="`/help/kerning`">Kerning string editor</router-link>
+          </li>
+        </ol>
+      </div>
+    </div>
+    <div class="example"/>
   </div>
 </template>
-
-<script>
-import Help from "./Help.md";
-
-export default {
-  components: { Help },
-}
-</script>
-
-<style lang="scss" scoped>
-@import "keen-ui/src/styles/imports";
-</style>

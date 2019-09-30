@@ -62,7 +62,7 @@ $fade-slow-delay: 0.45s;
   width: 100%;
 
   > .fade-leave-active,
-  > .swap-enter-active {
+  > .swap-leave-active {
     position: absolute;
   }
 }

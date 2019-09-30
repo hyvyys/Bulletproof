@@ -5,55 +5,27 @@
         }" ref="vb">
       <div class="scrolled">
         <transition-group name="fade" class="fade-transition-group" tag="div">
-          <div class="editor panel" key="pattern-editor">
-            <transition-group name="fade" class="fade-transition-group" tag="div">
-              <div class="row" key="title">
-                <h3>
-                  Pattern segments
-                  <a target="_blank" href="/help#kerning" class="help-link">[ ? ]</a>
-                </h3>
 
-                <UiIconButton key="btnAdd" @click="addKerningSegment" color="primary">
-                  <img svg-inline src="@/assets/icons/add.svg" />
-                </UiIconButton>
-              </div>
-
-              <div class="row segment-row" v-for="(segment, i) in segments" :key="`segment-${segment.key}`">
-                <UiSelect
-                  ref="segmentSelects"
-                  v-model="segments[i].characters"
-                  :options="builtInSegmentCharacters"
-                  dropdownClass="kerning-segment-select"
-                  dropdownPosition="bottom-end"
-                  placeholder="type or choose"
-                  :autocomplete="true"
-                  @input="updateKerningPattern"
-                >
-                  <template v-slot:option="props">
-                    <kbd>{{ props.option || "\xa0" }}</kbd>
-                  </template>
-                </UiSelect>
-
-                <UiIconButton key="btnRemove" @click="removeKerningSegment(i)" color="default">
-                  <img svg-inline src="@/assets/icons/remove.svg" />
-                </UiIconButton>
-              </div>
-            </transition-group>
-          </div>
+          <KerningEditor key="pattern-editor"
+            :segments="segments"
+            @addKerningSegment="addKerningSegment"
+            @removeKerningSegment="i => removeKerningSegment(i)"
+            @updateKerningPattern="updateKerningPattern"
+          />
 
           <div class="nav panel" key="pattern-list">
             <transition-group name="fade" class="fade-transition-group" tag="div">
 
               <div class="row" key="heading">
                 <h3>Patterns</h3>
-                <UiIconButton @click="addKerningPattern" color="primary">
+                <UiIconButton @click="addKerningPattern" color="primary" size="small">
                   <img svg-inline src="@/assets/icons/add.svg" />
                 </UiIconButton>
               </div>
 
               <div
                 :class="`kerning-pattern ${selectedPatternId === pattern.id ? 'selected' : ''}`"
-                v-for="(pattern, i) in kerningPatterns"
+                v-for="pattern in kerningPatterns"
                 :key="`pattern-${pattern.id}`"
               >
                 <UiCheckbox
@@ -61,12 +33,12 @@
                   @input="v => toggleKerningPattern(pattern.id, v)"
                 ></UiCheckbox>
 
-                <div class="link" :href="`#${pattern.id}`" @click="selectPattern(pattern.id)">
+                <div class="link" :href="`#${pattern.id}`" @click="selectPattern(pattern.id)" tabindex="0">
                   <kbd :title="pattern.id"
                   v-html="formatPatternId(pattern.name || 'new pattern')"></kbd>
                 </div>
 
-                <UiIconButton @click="removeKerningPattern(pattern.id)" color="default">
+                <UiIconButton @click="removeKerningPattern(pattern.id)" color="default" class="border" size="small">
                   <img svg-inline src="@/assets/icons/remove.svg" />
                 </UiIconButton>
               </div>
@@ -78,6 +50,13 @@
 
             </transition-group>
           </div>
+
+          <a key="help" target="_blank" href="/help/kerning" class="help-link">
+            <img svg-inline src="@/assets/icons/info.svg" class="help-icon" />
+            <span>
+              Help
+            </span>
+          </a>
         </transition-group>
       </div>
     </div>
@@ -87,22 +66,20 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import scrollToHash from "@/utils/scrollToHash";
-import kerningSegments from "@/models/kerningSegments";
 import UiIconButton from "keen-ui/src/UiIconButton.vue";
 import UiButton from "keen-ui/src/UiButton.vue";
 import UiCheckbox from "keen-ui/src/UiCheckbox.vue";
-import UiSelect from "@/components/UiSelect.vue";
+import KerningEditor from "@/components/KerningEditor.vue";
 
 export default {
   components: {
     UiIconButton,
     UiButton,
-    UiSelect,
     UiCheckbox,
+    KerningEditor,
   },
   data() {
     return {
-      builtInSegmentCharacters: ["", ...kerningSegments],
       segments: [],
       key: 0, // last used incremental unique key
       selectedPatternId: null,
@@ -159,11 +136,6 @@ export default {
     },
     addKerningSegment(event, characters = "") {
       this.segments.push({ key: this.getKey(), characters });
-      this.$nextTick(() => {
-        if (this.$refs.segmentSelects.length) {
-          this.$refs.segmentSelects[this.$refs.segmentSelects.length - 1].focus();
-        }
-      });
     },
     removeKerningSegment(i) {
       this.requestVuebarFreeze(() => {
@@ -178,9 +150,6 @@ export default {
       this.$nextTick(() => {
         const newPattern = this.kerningPatterns[0];
         this.selectPattern(newPattern.id);
-        if (this.$refs.segmentSelects.length) {
-          this.$refs.segmentSelects[0].focus();
-        }
       });
     },
     updateKerningPattern() {
@@ -232,59 +201,9 @@ export default {
   padding-bottom: 2em;
 }
 
-$btn-size: 24px;
-.ui-icon-button {
-  align-self: center;
-  width: $btn-size;
-  height: $btn-size;
-  margin: 2px 0;
-
-  &--color-default {
-    color: rgba($light-text, 0.8);
-  }
-  &--color-primary {
-    color: $light;
-  }
-  svg {
-    width: $btn-size;
-    height: $btn-size;
-    margin: -10px; // align center bigger child in smaller flex parent
-  }
-}
-
-.row {
-  align-items: center;
-  .ui-button {
-    margin: 5px 0;
-  }
-  h3 {
-    align-self: center;
-    margin: 2px 0;
-  }
-}
-
 .right {
   flex: 0 0 auto;
   margin-left: auto;
-}
-.editor {
-  .ui-textbox,
-  .ui-select ::v-deep .ui-select__display-value:not(.is-placeholder) {
-    font-family: $monospaced;
-    font-size: $monospaced-font-size;
-  }
-}
-
-.contextual-sidebar {
-  .ui-icon-button {
-    &:focus:not(:hover) {
-      border-color: $brand-primary-color;
-    }
-    &--color-primary:focus:not(:hover) {
-      background: mix($brand-primary-color, white, 60%);
-      border: 2px solid $brand-primary-color;
-    }
-  }
 }
 
 .kerning-pattern {
@@ -319,6 +238,7 @@ $btn-size: 24px;
     text-decoration: none;
     min-width: 0;
     > * {
+      white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
     }
@@ -328,14 +248,6 @@ $btn-size: 24px;
   }
 }
 
-.ui-icon-button.small {
-  border: none;
-  &,
-  & svg {
-    height: 1rem;
-    width: 1rem;
-  }
-}
 #add-pattern-btn-wrapper {
   outline: none;
   display: flex;

@@ -2,7 +2,14 @@
 .row {
   display: flex;
   width: 100%;
-  align-items: baseline;
+  align-items: center;
+  .ui-button {
+    margin: 5px 0;
+  }
+  h3 {
+    align-self: center;
+    margin: 2px 0;
+  }
 
   > * {
     margin: 0 0.2em 2px;
@@ -17,15 +24,9 @@
     margin-right: 0.3em;
     min-width: 4em;
   }
-  > :not(label):not(.ui-icon-button) {
+  > [class^="ui"]:not(.ui-icon-button), > h3 {
     flex: 1;
     min-width: 0;
-  }
-  > .ui-icon-button {
-    align-self: center;
-    height: 1.75rem;
-    width: 1.75rem;
-    margin: 2px 0;
   }
   > .row-label,
   .ui-checkbox__label-text,

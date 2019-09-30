@@ -26,7 +26,6 @@
 
 <script>
 import scrollToHash from "@/utils/scrollToHash";
-import getId from "@/utils/id";
 import DomSelection from "@/utils/DomSelection";
 import { mapState, mapGetters } from "vuex";
 

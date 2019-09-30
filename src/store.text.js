@@ -160,7 +160,7 @@ export default {
         })
         .join("");
       this.commit("setText", { sampleKey: "kerning", html });
-    },
+      },
   },
 
   actions: {

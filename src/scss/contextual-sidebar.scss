@@ -34,6 +34,10 @@
         border-color: $ui-input-border-color--hover;
         z-index: 1;
       }
+      &:focus {
+        border-color: $brand-primary-color;
+        z-index: 1;
+      }
     }
 
     margin: 4px 0;
@@ -81,16 +85,5 @@
         transform: scale(1.1);
       }
     }
-  }
-
-  .ui-icon-button--type-primary.ui-icon-button--color-default:not(:hover),
-  .ui-icon-button--type-primary.ui-icon-button--color-default:not(.has-dropdown-open),
-  .ui-button--type-primary.ui-button--color-default:not(:hover),
-  .ui-button--type-primary.ui-button--color-default:not(.has-dropdown-open) {
-    border: 2px solid $md-grey-400;
-  }
-  .ui-icon-button--type-primary.ui-icon-button--color-default:hover,
-  .ui-icon-button--type-primary.ui-icon-button--color-default.has-dropdown-open {
-    // border: none;
   }
 }

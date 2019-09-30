@@ -24,6 +24,7 @@ export default {
     window.removeEventListener("beforeunload", this.someMethod);
   },
   methods: {
+    // eslint-disable-next-line no-unused-vars
     someMethod(event) {
       // event.returnValue = `Are you sure you want to leave?`;
     },

@@ -16,7 +16,7 @@
       <template v-slot:option="{option: k, index: i}">
         <UiButton
           @click="activateKeyframe({ id: k.id })"
-          :class="'keyframe' + (k.id === activeKeyframeId ? ' active' : '')"
+          :class="'keyframe border' + (k.id === activeKeyframeId ? ' active' : '')"
           :id="`keyframe-btn-${k.id}`"
         >
           <div class="label">
@@ -30,23 +30,26 @@
       </template>
 
       <template v-slot:footer >
-        <UiButton
-          @click="addAnimationKeyframe"
-          color="primary"
-        >
-          Add
-        </UiButton>
-        <UiButton
-          @click="play"
-          color="primary"
-          :loading="playing"
-          :disabled="!canAnimate"
-        >
-          Play
-        </UiButton>
+        <div class="btn-group">
+          <UiButton @click="addAnimationKeyframe">
+            Add
+          </UiButton>
+          <UiButton @click="play"
+            :loading="playing"
+            :disabled="!canAnimate"
+          >
+            Play
+          </UiButton>
+        </div>
       </template>
     </EditableList>
 
+    <a key="help" target="_blank" href="/help/animation" class="help-link">
+      <img svg-inline src="@/assets/icons/info.svg" class="help-icon" />
+      <span>
+        Help
+      </span>
+    </a>
   </div>
 </template>
 
@@ -216,6 +219,11 @@ export default {
   padding: 0;
   flex-direction: column;
   align-items: stretch;
+
+  &.ui-button {
+    flex: 1;
+    margin: 2px 0;
+  }
 
   /deep/ .ui-button__content {
     width: 100%;

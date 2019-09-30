@@ -32,6 +32,7 @@ module.exports = {
     const MarkdownIt = require("markdown-it");
     const md = new MarkdownIt({
       html: true,
+      breaks: true,
     });
     config.module
       .rule("md1")
