@@ -348,9 +348,11 @@ export default {
         },
         sortedOptions() {
           let options = this.options;
-          if (this.isAutocomplete) {
-            const getOption = (o) => o[this.keys.label] || o;
+          const getOption = (o) => o[this.keys.label] || o;
+          const exactMatch = this.options.find(o => getOption(o) === this.value);
 
+          // avoid displaying the selected option alone at top
+          if (this.isAutocomplete && !exactMatch) {
             options = [
               ...this.options.filter(o => getOption(o).startsWith(this.value)),
             ];
@@ -364,19 +366,14 @@ export default {
               ...match,
             ];
 
-            if (options.length === 1) {
-              options = this.options;
-            }
-            else {
-              const insensitiveMatch = this.options.filter(
-                o => options.indexOf(o) == -1
-                && ~getOption(o).toLowerCase().indexOf(this.value.toLowerCase())
-              );
-              options = [
-                ...options,
-                ...match,
-              ];
-            }
+            const insensitiveMatch = this.options.filter(
+              o => options.indexOf(o) == -1
+              && ~getOption(o).toLowerCase().indexOf(this.value.toLowerCase())
+            );
+            options = [
+              ...options,
+              ...match,
+            ];
 
             const other = this.options.filter(
               o => options.indexOf(o) == -1
