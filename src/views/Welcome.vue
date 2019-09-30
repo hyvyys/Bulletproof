@@ -10,16 +10,16 @@
         Drop font files anywhere to start
       </div>
     </div>
-    <Readme class="readme" />
+    <WelcomeText class="readme" />
   </div>
 </template>
 
 <script>
-import Readme from "../../README.md";
+import WelcomeText from "@/views/Welcome.md";
 
 export default {
   name: "Welcome",
-  components: { Readme },
+  components: { WelcomeText },
   props: {},
   mounted() {
     this.$store.commit("scrollToTop");
@@ -63,6 +63,6 @@ export default {
 }
 
 .readme {
-  margin-bottom: 360px;
+  margin: 100px 0 360px;
 }
 </style>

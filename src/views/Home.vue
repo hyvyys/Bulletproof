@@ -24,7 +24,7 @@ import { mapGetters } from "vuex";
 
 import shuffle from "@/models/shuffle";
 import LanguageData from "language-data";
-import Welcome from "@/components/Welcome.vue";
+import Welcome from "@/views/Welcome.vue";
 
 export default {
   name: "Home",

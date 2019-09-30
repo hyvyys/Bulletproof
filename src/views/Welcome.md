@@ -1,5 +1,3 @@
-# Bulletproof
-
 [Bulletproof](https://hyvyys.github.io/Bulletproof/) is a visual font testing app, loosely inspired by Pablo Impallari's font testing site.
 
 The app can load selected local font files and detect their OpenType features and variation axes. Everything is processed locally in the browser, using [OpenType.js](https://github.com/opentypejs/opentype.js).
@@ -24,8 +22,8 @@ The selection of languages and texts is arbitrary and limited, but contributions
 
 ## Kerning tester
 
-The app is equipped with a <router-link to="/kerning">kerning string generator</router-link>, along with a couple of predefined kerning patterns. [See kerning generator help](https://hyvyys.github.io/Bulletproof/help/kerning).
+The app is equipped with a <router-link to="/kerning">kerning string generator</router-link>, along with a couple of predefined kerning patterns. <router-link to="/help/kerning">[See kerning generator help]</router-link>
 
 ## Playground & Animation
 
-Any open text sample can be edited. In the <router-link to="/editor">editor tab</router-link> some more options are available: setting bold and italic (with separately selectable fonts), as well as taking snapshots of the settings and using them as animation keyframes — can be useful for recording gifs or videos, or toggling multiple features on and off more quickly. [See animation editor help](https://hyvyys.github.io/Bulletproof/help/animation).
+Any open text sample can be edited. In the <router-link to="/editor">editor tab</router-link> some more options are available: setting bold and italic (with separately selectable fonts), as well as taking snapshots of the settings and using them as animation keyframes — can be useful for recording gifs or videos, or toggling multiple features on and off more quickly. <router-link to="/help/animation">[See animation editor help]</router-link>
