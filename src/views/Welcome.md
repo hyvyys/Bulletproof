@@ -1,6 +1,4 @@
-[Bulletproof](https://hyvyys.github.io/Bulletproof/) is a visual font proofing app, loosely inspired by Pablo Impallari's font testing site.
-
-The app can load selected local font files and detect their OpenType features and variation axes. Everything is processed locally in the browser, using [OpenType.js](https://github.com/opentypejs/opentype.js).
+[Bulletproof](https://hyvyys.github.io/Bulletproof/) is a visual font tester and proofing tool, loosely inspired by [Pablo Impallari's font testing page](https://github.com/impallari/Font-Testing-Page). The app can load selected local font files and detect their OpenType features and variation axes. Everything is processed locally in the browser, using [OpenType.js](https://github.com/opentypejs/opentype.js).
 
 Available formatting options:
   
