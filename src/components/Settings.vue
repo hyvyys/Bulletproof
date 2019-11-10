@@ -41,6 +41,26 @@
     </div>
 
     <div class="row">
+      <label class="row-label">Tracking</label>
+      <UiNumber
+        ref="settingTracking"
+        :value="settings.tracking"
+        :min="settings.minTracking"
+        :max="settings.maxTracking"
+        :step="settings.trackingStep"
+        :clickStep="settings.trackingClickStep"
+        @input="v => updateSetting('updateSettings', { tracking: v })"
+        :disabled="settings.defaultTracking"
+      />
+      <UiCheckbox
+        ref="settingDefaultTracking"
+        class="checkbox-small"
+        :value="settings.defaultTracking"
+        @input="v => updateSetting('updateSettings', { defaultTracking: v })"
+      >default</UiCheckbox>
+    </div>
+
+    <div class="row">
       <label class="row-label">Text align</label>
       <UiSelect
         ref="settingTextAlign"

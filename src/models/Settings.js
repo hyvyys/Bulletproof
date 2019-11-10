@@ -51,6 +51,32 @@ export default class Settings {
         default: 0.01,
       },
 
+      defaultTracking: {
+        type: Boolean,
+        default: true,
+      },
+      tracking: {
+        type: Number,
+        default: 0,
+        validate: (value, settings) => value >= settings.minTracking && value <= settings.maxTracking,
+      },
+      minTracking: {
+        type: Number,
+        default: -0.5,
+      },
+      maxTracking: {
+        type: Number,
+        default: 2,
+      },
+      trackingStep: {
+        type: Number,
+        default: 0.001,
+      },
+      trackingClickStep: {
+        type: Number,
+        default: 0.01,
+      },
+
       textAlign: {
         type: String,
         default: "left",
