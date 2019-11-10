@@ -260,7 +260,7 @@ export default {
 
     selectFont(v) {
       const font = this.getFont(v);
-      styles.setProperty("--selectedFontFamily", font.family);
+      styles.setProperty("--selectedFontFamily", font.cssFamily);
       styles.setProperty("--selectedFontCssWeight", font.cssWeight);
       styles.setProperty("--selectedFontCssStyle", font.cssStyle);
       this.$store.commit("selectFont", { font });
@@ -295,7 +295,7 @@ export default {
 
     selectBoldFont(v) {
       const boldFont = this.getFont(v);
-      styles.setProperty("--selectedBoldFontFamily", boldFont.family);
+      styles.setProperty("--selectedBoldFontFamily", boldFont.cssFamily);
       styles.setProperty("--selectedBoldFontCssWeight", boldFont.cssWeight);
       styles.setProperty("--selectedBoldFontCssStyle", boldFont.cssStyle);
       this.$store.commit("selectFont", { boldFont });
@@ -303,7 +303,7 @@ export default {
 
     selectItalicFont(v) {
       const italicFont = this.getFont(v);
-      styles.setProperty("--selectedItalicFontFamily", italicFont.family);
+      styles.setProperty("--selectedItalicFontFamily", italicFont.cssFamily);
       styles.setProperty("--selectedItalicFontCssWeight", italicFont.cssWeight);
       styles.setProperty("--selectedItalicFontCssStyle", italicFont.cssStyle);
       this.$store.commit("selectFont", { italicFont });

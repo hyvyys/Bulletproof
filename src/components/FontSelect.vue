@@ -59,7 +59,7 @@ export default {
         key: "displayName",
       },
       optionSampleStyle: option => `
-        font-family: ${option.family};
+        font-family: ${option.cssFamily};
         font-style: ${option.cssStyle};
         font-weight: ${option.cssWeight};
         `,

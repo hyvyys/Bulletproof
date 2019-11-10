@@ -32,6 +32,7 @@ export default class Font {
     this.style =
       (names.preferredSubfamily && names.preferredSubfamily.en) || names.fontSubfamily.en;
 
+    this.cssFamily = this.family + '-' + this.style;
     this.cssStyle = /(italic|oblique)/gi.test(this.style) ? "italic" : "normal";
     this.cssWeight = font.tables.os2.usWeightClass;
 
@@ -106,7 +107,7 @@ export default class Font {
   generateFontFace({ family, style, weight } = {}) {
     this.fontFace = `
       @font-face {
-        font-family: "${family || this.family}";
+        font-family: "${family || this.cssFamily}";
         font-style: ${style || this.cssStyle};
         font-weight: ${weight || this.cssWeight};
         src: url('${this.url}');
