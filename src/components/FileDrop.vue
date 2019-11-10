@@ -89,12 +89,21 @@ export default {
       console.log('prevented scroll');
     },
 
+    disableScroll() {
+      this.scrolledParent.addEventListener("scroll", this.preventScroll);
+      setTimeout(this.enableScroll, 500);
+    },
+
+    enableScroll() {
+      this.scrolledParent.removeEventListener("scroll", this.preventScroll);
+    },
+
     toggleBodyScroll(on) {
       this.scrolledParentTop = this.scrolledParent.scrollTop;
       if (on) {
-        this.scrolledParent.removeEventListener("scroll", this.preventScroll);
+        this.enableScroll();
       } else {
-        this.scrolledParent.addEventListener("scroll", this.preventScroll);
+        this.disableScroll();
       }
     },
   },
