@@ -192,21 +192,25 @@ export default {
       }
       const data = getters.selectedLanguages
         .map(l => ({
-          languageTag: l.htmlTag,
-          language: l.language,
-          script: l.script,
+          ...l,
           id: `${l.language}-${l.id}`,
           texts: l[fieldKey],
         }));
 
       function squish(str) { return str.replace(/\s\s+/g, "") }
+      function fNum(n) { return n > 1000000 ? n/1000000 + 'M' : n/1000 + 'K'; }
       const html = data
-        .map(({ language, languageTag, id, texts, script }) => {
+        .map(l => {
           let header, fragments;
+          header = `<div class='header-flex'>
+            <h3 id="${l.id}">${l.language}</h3>
+            <div>${fNum(l.speakers)} speakers</div>
+            ${l.opentypeTag ? `<div>OT code: <code>${l.opentypeTag.padEnd(4, ' ')}</code></div>` : ''}
+          </div>`;
+
           switch (getters.selectedSampleKey) {
             case "gotchas":
-              header = `<h3 id="${id}">${language}</h3>`;
-              fragments = texts.map(({ topic, tags, tests, description }) =>
+              fragments = l.texts.map(({ topic, tags, tests, description }) =>
                 squish(
                   `<div class="header">
                     <h4>${topic}</h4>
@@ -215,7 +219,7 @@ export default {
                 ) +
                 `<div class="desc">${description || ''}</div>` +
                 squish(
-                  `<div lang="${languageTag}">
+                  `<div lang="${l.htmlTag}">
                     ${tests.map(t => `<p>${t}</p>`).join("")}
                   </div>`
                 )
@@ -224,13 +228,11 @@ export default {
             case "kerning":
               break;
             case "ABCs": {
-              const AaBbCc = texts;
+              const AaBbCc = l.texts;
               const ABC = CharacterFilter.filter(AaBbCc, g => g.toUpperCase() === g)
                 .replace(/ +/g, " ").trim();
               const abc = CharacterFilter.filter(AaBbCc, g => g.toLowerCase() === g)
                 .replace(/ +/g, " ").trim();
-
-              header = `<h3 id="${id}">${language}</h3>`;
               fragments = [
                 // AaBbCc,
                 // ABC,
@@ -239,7 +241,7 @@ export default {
                 ABC.replace(/ /g, ""),
                 abc.replace(/ /g, ""),
               ];
-              if (script == 'Latn') {
+              if (l.script == 'Latn') {
                 const accents = CharacterFilter.filter(abc, g => !/^[a-z ]$/.test(g));
                 fragments.push(accents);
               }
@@ -248,11 +250,10 @@ export default {
               break;
             }
             default:
-              header = `<h3 id="${id}">${language}</h3>`;
-              if (texts instanceof Array)
-                fragments = texts.map(t => `<p>${t}</p>`);
+              if (l.texts instanceof Array)
+                fragments = l.texts.map(t => `<p>${t}</p>`);
               else
-                fragments = [texts].map(t => `<p>${t}</p>`);
+                fragments = [l.texts].map(t => `<p>${t}</p>`);
           }
           return header + fragments.join("");
         })
