@@ -36,6 +36,7 @@ export default {
     html: {
       type: String,
       default: "",
+      isCustom: Boolean,
     },
   },
   data() {
@@ -79,20 +80,28 @@ export default {
     this.selection = new DomSelection(this.$refs.content);
     this.configureAnchors();
   },
+  beforeDestroy() {
+  },
   methods: {
+    saveSelection() {
+      this.selection.save();
+    },
     configureAnchors() {
-      const anchors = document.querySelectorAll("a[href^='#']");
-      const scrolled = document.querySelector(this.scrolledParentSelector);
-      anchors.forEach(a => {
-        a.addEventListener("click", function(e) {
-          e.preventDefault();
-          scrollToHash(a, scrolled);
-        });
-      });
+      return;
+      // doesn't work any more but... what problem this that fixed? body overscroll?
+      // const anchors = document.querySelectorAll("a[href^='#']");
+      // const scrolled = document.querySelector(this.scrolledParentSelector);
+      // anchors.forEach(a => {
+      //   a.addEventListener("click", function(e) {
+      //     e.preventDefault();
+      //     scrollToHash(a, scrolled);
+      //   });
+      // });
     },
     onInput(e) {
       this.notifyWindow();
-      this.selection.save();
+      if (!this.isCustom)
+        this.saveSelection();
 
       const headingSelector = 'h1, h2, h3, h4, h5, h6';
 
@@ -127,6 +136,7 @@ export default {
 
 <style lang="scss">
 @import "@/scss/mixins";
+@import "@/scss/dark";
 
 .font-sample {
   font-size: 100% / $font-scale;
@@ -162,6 +172,27 @@ export default {
       font-family: var(--selectedBoldFontFamily), var(--fallbackFontFamily);
       font-weight: var(--selectedBoldFontCssWeight);
       font-style: var(--selectedBoldFontCssStyle);
+      white-space: normal;
+    }
+
+    .header-flex {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid currentColor;
+      margin-top: 1rem;
+      font-family: $font-stack !important;
+      font-size: 1rem;
+
+      @include dark;
+      padding: 0 0.5em;
+      min-width: 10em;
+      > * {
+        margin: 0;
+        margin-right: 1rem;
+      }
+      h3, code {
+        user-select: all;
+      }
     }
 
     i, em {
@@ -183,7 +214,6 @@ export default {
   }
 }
 
-@import "@/scss/dark";
 
 .gotchas {
   h3, h4, .header, .desc, .desc > * {
@@ -197,11 +227,8 @@ export default {
     }
   }
   h3 {
-    @include dark;
     font-size: 1.2rem;
     // display: inline-block;
-    padding: 0 0.5em;
-    min-width: 10em;
   }
   h4 {
     font-weight: 500 !important;
