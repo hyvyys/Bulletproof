@@ -1,5 +1,5 @@
 module.exports = {
-  publicPath: process.env.NODE_ENV === "production" ? "/Bulletproof/" : "/",
+  publicPath: process.env.NODE_ENV === "production" ? "/" : "/",
 
   devServer: {
     // writeToDisk: true, // https://webpack.js.org/configuration/dev-server/#devserverwritetodisk-

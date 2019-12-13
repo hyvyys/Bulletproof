@@ -8,7 +8,13 @@ export default function scrollToHash(a, scrolled, hash = null) {
   const target = document.querySelector(selector);
 
   if (target) {
-    const top = target.offsetTop;
+    let top = target.offsetTop;
+    // let parent = target.parentElement;
+    // while (parent != scrolled) {
+    //   top += parent.offsetTop;
+    //   console.log(parent, parent.offsetTop)
+    //   parent = parent.parentElement;
+    // }
     scrolled.scrollTop = top;
   }
 }

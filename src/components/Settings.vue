@@ -98,6 +98,16 @@
       />
     </div>
 
+    <div class="row">
+      <label class="row-label">Case transform</label>
+      <UiSelect
+        ref="settingTextTransform"
+        :value="settings.textTransform"
+        :options="settings.textTransformOptions"
+        @input="v => updateSetting('updateSettings', { textTransform: v })"
+      />
+    </div>
+
     <h3 v-if="capFeatures.length > 0">Caps</h3>
     <div class="setting-group">
       <div class="row" v-for="(feature, key) in capFeatures" :key="key">

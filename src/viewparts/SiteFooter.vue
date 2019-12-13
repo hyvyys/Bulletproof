@@ -23,7 +23,7 @@
 
       <div class="bulletproof-info">
         <div>
-          Bulletproof Font Tester v {{version}}
+          Bulletproof Font Tester
         </div>
         <div>
           Copyright 2019 Adam Jagosz.
