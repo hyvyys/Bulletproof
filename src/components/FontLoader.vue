@@ -11,7 +11,7 @@
         @change="onFilesDropped"
       />
       <UiTooltip>
-        You can also drag and drop font files anywhere on the page.
+        Open fonts (you can also drag and drop font files anywhere on the page)
       </UiTooltip>
     </span>
 
@@ -24,8 +24,27 @@
       :loading="fontLoading"
     />
 
+
     <div v-if="gui" class="font-loader-item">
-      <UiButton class="dark bi-button" ref="button1">
+      <UiButton class="dark bi-button" @click="setLastFont" tooltip="Set last font">
+        <b>⮀</b>
+      </UiButton>
+    </div>
+
+    <div v-if="gui" class="font-loader-item">
+      <UiButton class="dark bi-button" @click="setPreviousFont" tooltip="Set previous font">
+        <b>⇐</b>
+      </UiButton>
+    </div>
+
+    <div v-if="gui" class="font-loader-item">
+      <UiButton class="dark bi-button" @click="setNextFont" tooltip="Set next font">
+        <b>⇒</b>
+      </UiButton>
+    </div>
+
+    <div v-if="gui" class="font-loader-item">
+      <UiButton class="dark bi-button" ref="button1" tooltip="Emphasis fonts">
         <b>B</b>
         <i>I</i>
       </UiButton>
@@ -135,6 +154,7 @@ export default {
       fontLoadingProgress: 0,
       openedWithoutFonts: true,
       defaultFontsLoaded: false,
+      previousFont: null,
     };
   },
   watch: {
@@ -253,13 +273,17 @@ export default {
     },
 
     getFont(fontOption) {
-      const font = this.fonts.find(f => f.displayName === fontOption.displayName);
+      const index = this.fonts.findIndex(f => f.displayName === fontOption.displayName);
+      const font = this.fonts[index];
       const serialized = font.serialize();
-      return serialized;
+      return { index, font: serialized };
     },
 
     selectFont(v) {
-      const font = this.getFont(v);
+      this.lastFont = this.selectedFont;
+
+      const { index, font } = this.getFont(v);
+      this.selectedFontIndex = index;
       styles.setProperty("--selectedFontFamily", font.cssFamily);
       styles.setProperty("--selectedFontCssWeight", font.cssWeight);
       styles.setProperty("--selectedFontCssStyle", font.cssStyle);
@@ -294,7 +318,7 @@ export default {
     },
 
     selectBoldFont(v) {
-      const boldFont = this.getFont(v);
+      const { font: boldFont } = this.getFont(v);
       styles.setProperty("--selectedBoldFontFamily", boldFont.cssFamily);
       styles.setProperty("--selectedBoldFontCssWeight", boldFont.cssWeight);
       styles.setProperty("--selectedBoldFontCssStyle", boldFont.cssStyle);
@@ -302,11 +326,21 @@ export default {
     },
 
     selectItalicFont(v) {
-      const italicFont = this.getFont(v);
+      const { font: italicFont } = this.getFont(v);
       styles.setProperty("--selectedItalicFontFamily", italicFont.cssFamily);
       styles.setProperty("--selectedItalicFontCssWeight", italicFont.cssWeight);
       styles.setProperty("--selectedItalicFontCssStyle", italicFont.cssStyle);
       this.$store.commit("selectFont", { italicFont });
+    },
+
+    setLastFont() {
+      this.selectFont(this.lastFont);
+    },
+    setPreviousFont() {
+      this.selectFont(this.fonts[Math.max(0, this.selectedFontIndex - 1)]);
+    },
+    setNextFont() {
+      this.selectFont(this.fonts[Math.min(this.fonts.length - 1, this.selectedFontIndex + 1)]);
     },
 
     /* ^^^ methods ^^^ */
@@ -325,7 +359,8 @@ export default {
   align-items: center;
 
   .font-select {
-    flex: 1;
+    // flex: 1;
+    width: 12em;
     .ui-select__display-value {
       white-space: nowrap;
     }
