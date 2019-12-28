@@ -17,7 +17,7 @@
 
         <FontSample
           class="main"
-          :html="fontSampleHtml"
+          :html="fontSampleTexts"
           :isCustom="selectedTextKind === 'custom'"
           @update="e => modifyText(e)"
         />
@@ -63,11 +63,6 @@ export default {
     KerningNav,
     FontSampleNav,
   },
-  data() {
-    return {
-      fontSampleHtml: '',
-    };
-  },
   computed: {
     ...mapState([
       "fontLoading",
@@ -96,6 +91,9 @@ export default {
       else if (this.navElement === KerningNav) return "Kerning";
       else return "Playground";
     },
+    fontSampleTexts() {
+      return this.texts[this.selectedSampleKey];
+    },
   },
   watch: {
     selectedTextKind() {
@@ -103,9 +101,6 @@ export default {
     },
     selectedCustomTextId() {
       this.selectSample();
-    },
-    selectedSampleKey() {
-      this.fontSampleHtml = this.texts[this.selectedSampleKey];
     },
   },
   beforeMount() {

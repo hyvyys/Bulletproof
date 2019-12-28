@@ -24,6 +24,7 @@ export default {
     formatRequested: false,
     kerningPatterns: [],
     defaultKerningPatterns: kerningPatterns,
+    fontCharacters: 'xyz'.split(),
   },
 
   mutations: {
@@ -160,6 +161,10 @@ export default {
         })
         .join("");
       this.commit("setText", { sampleKey: "kerning", html });
+    },
+
+      updateFontCharacters(state, { characters }) {
+        state.fontCharacters = characters;
       },
   },
 
@@ -182,14 +187,32 @@ export default {
       dispatch("updateText");
     },
 
+    updateFontCharacters({ dispatch }, { font }) {
+      const characters = font.characters;
+      this.commit("updateFontCharacters", { characters });
+      dispatch("updateText");
+    },
+
     updateText({ state, commit, getters }) {
       const fieldKey = getters.selectedSampleTextKey;
       if (!fieldKey) {
         if (state.selectedSampleKey === "kerning") {
           commit("updateKerning");
         }
+        else if (state.selectedSampleKey === "glyphs") {
+          let texts = `<p class="font-characters">${
+            state.fontCharacters.map(c => `<span title='U+${
+              String(c.charCodeAt(0)).padStart(4, '0')
+            }'>${c}</span>`).join('')
+          }<p>`;
+          commit("setText", {
+            sampleKey: state.selectedSampleKey,
+            html: texts,
+          });
+        }
         return;
       }
+
       const data = getters.selectedLanguages
         .map(l => ({
           ...l,

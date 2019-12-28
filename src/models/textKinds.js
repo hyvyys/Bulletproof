@@ -1,1 +1,1 @@
-export default ["lettering", "pangrams", "sentences", "gotchas", "ABCs", "kerning"];
+export default ["lettering", "pangrams", "sentences", "gotchas", "ABCs", "glyphs", "kerning"];

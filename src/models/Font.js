@@ -18,6 +18,7 @@ export default class Font {
   processFont() {
     this.getNames();
     this.getFeatures();
+    this.getGlyphs();
     this.generateFontFace();
   }
 
@@ -37,6 +38,11 @@ export default class Font {
     this.cssWeight = font.tables.os2.usWeightClass;
 
     this.displayName = `${this.originalFamily} ${this.style} ${this.version ? `(${this.version})` : ''}`;
+  }
+
+  getGlyphs() {
+    const font = this.font;
+    this.characters = Object.keys(font.tables.cmap.glyphIndexMap).map(unicode => String.fromCharCode(unicode));
   }
 
   getFeatures() {

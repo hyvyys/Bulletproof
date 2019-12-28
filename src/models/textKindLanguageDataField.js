@@ -4,5 +4,6 @@ export default {
   sentences: "paragraphs",
   gotchas: "gotchas",
   ABCs: "alphabet",
+  glyphs: null,
   kerning: null,
 };

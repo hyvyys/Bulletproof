@@ -7,6 +7,11 @@ export default function configureMediator (store) {
         if (state.animation.activeKeyframeId != null) {
           store.commit('updateKeyframe');
         }
+        break;
+      case 'selectFont':
+        if (payload.font) {
+          store.dispatch('updateFontCharacters', { font: payload.font });
+        }
     }
   })
 }
