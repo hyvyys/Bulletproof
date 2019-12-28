@@ -23,6 +23,14 @@
       </UiIconButton>
     </div>
 
+    <div class="row row-filter">
+      <UiCheckbox
+        :value="anySelected"
+        @input="v => selectDeselectAll(v)"
+      >
+      </UiCheckbox>
+    </div>
+
     <div class="language-list" v-bar="{
         preventParentScroll: true,
       }" ref="vb">
@@ -86,6 +94,9 @@ export default {
       return this.anchors.length && this.highlightedAnchorIndex != null
         ? this.anchors[this.highlightedAnchorIndex]
         : null;
+    },
+    anySelected() {
+      return this.visibleLanguages.some(l => l.isSelected);
     },
   },
   data() {
@@ -199,6 +210,10 @@ export default {
 
         // this.$refs.filterTextbox.focus();
       }
+    },
+
+    selectDeselectAll(checked) {
+      this.$store.commit("selectDeselectAllLanguages", { checked });
     },
   },
 };

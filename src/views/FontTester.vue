@@ -80,6 +80,7 @@ export default {
       "texts",
       "selectedSampleKey",
       "visibleLanguages",
+      "selectedLanguages",
     ]),
     navElement() {
       if (this.visibleLanguages.length > 0) return LanguageNav;

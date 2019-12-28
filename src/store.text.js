@@ -93,6 +93,10 @@ export default {
       state.languages.find(l => l.id === id).isSelected = checked;
     },
 
+    selectDeselectAllLanguages(state, { checked }) {
+      state.languages.forEach(l => l.isSelected = checked);
+    },
+
     clearKerningPatterns(state) {
       state.kerningPatterns.splice(0);
       this.commit("setText", { sampleKey: "kerning", html: "" });
