@@ -86,6 +86,9 @@ export default {
     SigmoidContainer,
     UiIconButton,
   },
+  props: {
+    hideHeaderOnScroll: { type: Boolean, default: false },
+  },
   data() {
     return {
       textKinds,
@@ -118,7 +121,8 @@ export default {
     window.addEventListener("resize", this.setAboveHeaderTransition);
     this.setAboveHeaderTransition();
     this.scrolledParent = document.querySelector(this.scrolledParentSelector);
-    this.initStickyHeader();
+    if (this.hideHeaderOnScroll)
+      this.initStickyHeader();
   },
   methods: {
     setSticky(value) {
