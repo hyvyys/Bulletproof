@@ -32,10 +32,11 @@
       margin: 0 2px;
       &:hover {
         border-color: $ui-input-border-color--hover;
-        z-index: 1;
       }
       &:focus {
         border-color: $brand-primary-color;
+      }
+      &:hover, &:focus, &.ui-icon-button--color-primary {
         z-index: 1;
       }
     }

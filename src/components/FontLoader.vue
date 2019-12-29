@@ -54,7 +54,7 @@
           :fonts="fontOptions"
           :value="selectedBoldFont"
           @input="selectBoldFont"
-          label="Headings & strong emphasis"
+          label="Bold (strong emphasis)"
           :loading="fontLoading"
         />
 
@@ -62,7 +62,23 @@
           :fonts="fontOptions"
           :value="selectedItalicFont"
           @input="selectItalicFont"
-          label="Emphasis"
+          label="Italic (emphasis)"
+          :loading="fontLoading"
+        />
+
+        <FontSelect
+          :fonts="fontOptions"
+          :value="selectedBoldItalicFont"
+          @input="selectBoldItalicFont"
+          label="Bold italic"
+          :loading="fontLoading"
+        />
+
+        <FontSelect
+          :fonts="fontOptions"
+          :value="selectedHeaderFont"
+          @input="selectHeaderFont"
+          label="Header"
           :loading="fontLoading"
         />
       </UiPopover>
@@ -108,6 +124,7 @@ import LoadFontWorker from 'worker-loader!@/models/loadFont.worker.js';
 import Font from "@/models/Font";
 
 import styles from "@/utils/styles";
+import DEFAULT_FONTS from "@/models/DEFAULT_FONTS.js";
 
 export default {
   name: "FontTester",
@@ -137,6 +154,8 @@ export default {
       "selectedFont",
       "selectedBoldFont",
       "selectedItalicFont",
+      "selectedBoldItalicFont",
+      "selectedHeaderFont",
       "selectedSampleKey",
     ]),
     fontOptions() {
@@ -176,13 +195,7 @@ export default {
     loadDefaultFonts() {
       this.defaultFontsLoaded = true;
       const dir = (process.env.BASE_URL + "/fonts/").replace(/\/+/g, "/");
-      const fonts = [
-        "Alegreya-Sans/alegreya-sans-v10-latin-ext_cyrillic_cyrillic-ext_latin_vietnamese_greek-ext_greek-regular.ttf",
-        "Alegreya-Sans/alegreya-sans-v10-latin-ext_cyrillic_cyrillic-ext_latin_vietnamese_greek-ext_greek-italic.ttf",
-        "Alegreya-Sans/alegreya-sans-v10-latin-ext_cyrillic_cyrillic-ext_latin_vietnamese_greek-ext_greek-700.ttf",
-        "Rywalka-Regular.ttf",
-        "Graduate.ttf",
-      ];
+      const fonts = DEFAULT_FONTS;
       this.loadFonts({ urls: fonts.map(f => dir + f) });
     },
 
@@ -312,25 +325,47 @@ export default {
         f => f.family === v.family && f.cssStyle === "italic",
         f => f.family === v.family && f.cssWeight <= v.cssWeight,
       )[0];
+      const matchingBoldItalic = waterfallFilter(this.fonts.slice(),
+        f => f.family === v.family && f.cssWeight - v.cssWeight === 300 && f.cssStyle === "italic",
+        f => f.family === v.family && f.cssWeight - v.cssWeight >= 200 && f.cssStyle === "italic",
+        f => f.family === v.family && f.cssWeight - v.cssWeight > 0 && f.cssStyle === "italic",
+        f => f.family === v.family && f.cssWeight - v.cssWeight === 0 && f.cssStyle === "italic",
+        f => f.family === v.family && f.cssStyle === "italic",
+        f => f.family === v.family && f.cssWeight <= v.cssWeight,
+      )[0];
 
       this.selectBoldFont(matchingBold);
+      this.selectHeaderFont(matchingBold);
       this.selectItalicFont(matchingItalic);
+      this.selectBoldItalicFont(matchingBoldItalic);
     },
 
     selectBoldFont(v) {
       const { font: boldFont } = this.getFont(v);
       styles.setProperty("--selectedBoldFontFamily", boldFont.cssFamily);
-      styles.setProperty("--selectedBoldFontCssWeight", boldFont.cssWeight);
-      styles.setProperty("--selectedBoldFontCssStyle", boldFont.cssStyle);
+      // styles.setProperty("--selectedBoldFontCssWeight", boldFont.cssWeight);
+      // styles.setProperty("--selectedBoldFontCssStyle", boldFont.cssStyle);
       this.$store.commit("selectFont", { boldFont });
     },
 
     selectItalicFont(v) {
       const { font: italicFont } = this.getFont(v);
       styles.setProperty("--selectedItalicFontFamily", italicFont.cssFamily);
-      styles.setProperty("--selectedItalicFontCssWeight", italicFont.cssWeight);
-      styles.setProperty("--selectedItalicFontCssStyle", italicFont.cssStyle);
+      // styles.setProperty("--selectedItalicFontCssWeight", italicFont.cssWeight);
+      // styles.setProperty("--selectedItalicFontCssStyle", italicFont.cssStyle);
       this.$store.commit("selectFont", { italicFont });
+    },
+
+    selectBoldItalicFont(v) {
+      const { font: boldItalicFont } = this.getFont(v);
+      styles.setProperty("--selectedBoldItalicFontFamily", boldItalicFont.cssFamily);
+      this.$store.commit("selectFont", { boldItalicFont });
+    },
+
+    selectHeaderFont(v) {
+      const { font: headerFont } = this.getFont(v);
+      styles.setProperty("--selectedHeaderFontFamily", headerFont.cssFamily);
+      this.$store.commit("selectFont", { headerFont });
     },
 
     setLastFont() {

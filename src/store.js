@@ -23,6 +23,8 @@ const store = new Vuex.Store({
     selectedFont: { family: "" },
     selectedBoldFont: { family: "" },
     selectedItalicFont: { family: "" },
+    selectedBoldItalicFont: { family: "" },
+    selectedHeaderFont: { family: "" },
     settings: Settings.getDefaults(),
     animating: false,
     displayedSettings: {},
@@ -34,11 +36,17 @@ const store = new Vuex.Store({
     selectedFont: state => {
       return state.selectedFont;
     },
+    selectedHeaderFont: state => {
+      return state.selectedHeaderFont;
+    },
     selectedBoldFont: state => {
       return state.selectedBoldFont;
     },
     selectedItalicFont: state => {
       return state.selectedItalicFont;
+    },
+    selectedBoldItalicFont: state => {
+      return state.selectedBoldItalicFont;
     },
     settings: state => {
       return state.settings;
@@ -81,7 +89,7 @@ const store = new Vuex.Store({
       state.fontLoading = false;
     },
 
-    selectFont(state, { font, boldFont, italicFont }) {
+    selectFont(state, { font, boldFont, italicFont, boldItalicFont, headerFont }) {
       if (font) {
         state.selectedFont = font;
         this.commit("mapFontFeatureSettings");
@@ -92,6 +100,12 @@ const store = new Vuex.Store({
       }
       if (italicFont) {
         state.selectedItalicFont = italicFont;
+      }
+      if (boldItalicFont) {
+        state.selectedBoldItalicFont = boldItalicFont;
+      }
+      if (headerFont) {
+        state.selectedHeaderFont = headerFont;
       }
     },
 

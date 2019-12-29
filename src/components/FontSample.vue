@@ -105,6 +105,7 @@ export default {
       "selectedFont",
       "selectedBoldFont",
       "selectedItalicFont",
+      "selectedBoldItalicFont",
       "formatRequested",
       "fontFeatureSettings",
       "fontVariationSettings",
@@ -119,8 +120,17 @@ export default {
   watch: {
     formatRequested(tag) {
       if (tag) {
-        this.selection.wrap(tag);
-        this.$store.commit("format", { tag: "" });
+        try {
+          this.selection.wrap(tag);
+          this.saveText(this.selection.container);
+        }
+        finally {
+          // clear tag after applying
+          this.$store.commit("format", { tag: "" });
+        }
+      }
+      else {
+        this.selection.container.focus();
       }
     },
   },
@@ -146,7 +156,7 @@ export default {
       // });
     },
     onInput(e) {
-      this.saveText(e);
+      this.saveText(e.target);
     },
     onFocus(e) {
       this.selection = new DomSelection(e.target);
@@ -163,9 +173,9 @@ export default {
         }
       }
     },
-    saveText(e) {
+    saveText(target) {
       if (this.isCustom) {
-        const customText = e.target.innerHTML;
+        const customText = target.innerHTML;
         this.$emit("update", { html: customText, headings: [] });
       }
     },
@@ -232,17 +242,37 @@ export default {
       }
     }
 
-    h1, h2, h3, h4, h5, h6, b, strong {
-      font-family: var(--selectedBoldFontFamily), var(--fallbackFontFamily);
-      font-weight: var(--selectedBoldFontCssWeight);
-      font-style: var(--selectedBoldFontCssStyle);
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--selectedHeaderFontFamily), var(--fallbackFontFamily);
+      // font-weight: var(--selectedBoldFontCssWeight);
+      // font-style: var(--selectedBoldFontCssStyle);
+      font-weight: normal;
+      font-style: normal;
       white-space: normal;
+    }
+
+    b, strong {
+      font-family: var(--selectedBoldFontFamily), var(--fallbackFontFamily);
+      // font-weight: var(--selectedBoldFontCssWeight);
+      // font-style: var(--selectedBoldFontCssStyle);
+      font-weight: normal;
+      font-style: normal;
+      white-space: normal;
+
+      em {
+        font-family: var(--selectedBoldItalicFontFamily), var(--fallbackFontFamily);
+      }
     }
 
     i, em {
       font-family: var(--selectedItalicFontFamily), var(--fallbackFontFamily);
-      font-weight: var(--selectedItalicFontCssWeight);
-      font-style: var(--selectedItalicFontCssStyle);
+      // font-weight: var(--selectedItalicFontCssWeight);
+      // font-style: var(--selectedItalicFontCssStyle);
+      font-weight: normal;
+      font-style: normal;
+      b, strong {
+        font-family: var(--selectedBoldItalicFontFamily), var(--fallbackFontFamily);
+      }
     }
   }
 

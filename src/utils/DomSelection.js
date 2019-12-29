@@ -103,51 +103,134 @@ export default class DomSelection {
     this.selection = null;
   }
 
-  wrap(tag) {
-    const isParagraph = /^h[1-6]$/.test(tag);
-
+  ancestor() {
     const range = getSelectionRange(this.container);
-
     let ancestor = range.commonAncestorContainer;
     if (ancestor.nodeType === Node.TEXT_NODE) {
       ancestor = ancestor.parentNode;
     }
+    return ancestor;
+  }
 
-    // if selection is outside editor
+  existentTags(tag) {
+    const range = getSelectionRange(this.container);
+    const fragment = range.cloneContents();
+    let existentTags = fragment.querySelectorAll(tag);
+    // existentTags = Array.from(existentTags).filter(t => t.innerText);
+    return existentTags;
+  }
+
+  closestTag(tag) {
+    let closestTag = this.ancestor().closest(tag);
+    return closestTag;
+  }
+
+  containsTag(tag) {
+    return this.existentTags(tag).length > 0 || this.closestTag(tag) != null;
+  }
+
+  wrap(tag) {
+    const isParagraph = /^h[1-6]$/.test(tag);
+
+    let ancestor = this.ancestor();
+    // if selection is outside editor; not probable though
     if (!this.container.contains(ancestor)) {
+      console.log("not contained")
       return;
     }
+    // if (ancestor.tagName === tag.toUpperCase()) {
+      //   existentTag = ancestor;
+      // }
+    const range = getSelectionRange(this.container);
+    let fragment = range.cloneContents();
+    let existentTags = fragment.querySelectorAll(tag);
+    const closestTag = this.closestTag(tag);
 
-    const fragment = range.cloneContents();
-    let existentTag = fragment.querySelector(tag);
-
-    if (ancestor.tagName === tag.toUpperCase()) {
-      existentTag = ancestor;
+    if (closestTag) {
+      // console.log('closest');
+      const parent = ancestor === closestTag ? ancestor.parentNode : ancestor;
+      const tmp = document.createElement('tmp');
+      range.surroundContents(tmp);
+      const newContent = document.createDocumentFragment();
+      Array.from(closestTag.childNodes).forEach(c => {
+        try {
+          if (c === tmp) {
+            newContent.appendChild(c.childNodes[0]);
+          }
+          else if (c.nodeValue || c.innerText) {
+            const newEl = document.createElement(tag);
+            newEl.appendChild(c.cloneNode());
+            newContent.appendChild(newEl);
+          }
+        }
+        catch (e) {
+          console.log(e);
+        }
+      });
+      parent.replaceChild(newContent, closestTag);
     }
-
-    if (!existentTag) {
+    else if (existentTags.length) {
+      // console.log(existentTags.length + ' existent ' + tag + 's')
+      existentTags.forEach(c => {
+        try {
+          const fr = document.createDocumentFragment();
+          Array.from(c.childNodes).forEach(cc => fr.appendChild(cc));
+          c.parentNode.replaceChild(fr, c);
+        }
+        catch (e) {
+          console.log(e);
+        }
+      });
+      range.deleteContents();
+      range.insertNode(fragment);
+    }
+    else
+    try {
       const empty = isParagraph && range.toString() === "";
       if (empty) {
         range.insertNode(document.createElement("br"));
       }
-      const newParent = document.createElement(tag);
 
-      try {
-        range.surroundContents(newParent);
-        if (empty) {
-          range.selectNodeContents(newParent);
-        }
-      }
-      catch {
-        // probably selection is partial
+      const newParent = document.createElement(tag);
+      newParent.appendChild(range.extractContents());
+      range.insertNode(newParent);
+
+      if (empty) {
+        range.selectNodeContents(newParent);
       }
     }
-    else {
-      const contents = document.createDocumentFragment();
-      existentTag.childNodes.forEach(n => contents.appendChild(n));
-      existentTag.parentNode.replaceChild(contents, existentTag);
-      range.deleteContents();
-      range.insertNode(fragment);
+    catch (e) {
+      console.log(e);
+      console.log(ancestor)
+      // probably selection is partial
+    }
+
+    clean(this.container);
+  }
+}
+
+function clean(node)
+{
+  for(var n = 0; n < node.childNodes.length; n ++)
+  {
+    var child = node.childNodes[n];
+    if
+    (
+      child.nodeType === 8
+      ||
+      (child.nodeType === 3 && !/\S/.test(child.nodeValue))
+      || child.innerText === ""
+    )
+    {
+      // console.log('removing node')
+      // console.log(node.toString())
+      // console.log(child.toString())
+      node.removeChild(child);
+      n --;
+    }
+    else if(child.nodeType === 1)
+    {
+      clean(child);
     }
   }
 }
