@@ -233,8 +233,8 @@ export default {
       outline: none;
     }
     font-family: var(--selectedFontFamily), var(--fallbackFontFamily);
-    font-weight: var(--selectedFontCssWeight);
-    font-style: var(--selectedFontCssStyle);
+    // font-weight: var(--selectedFontCssWeight);
+    // font-style: var(--selectedFontCssStyle);
 
     .font-sample-content-inner {
       &::after {
@@ -277,6 +277,8 @@ export default {
   }
 
   .header-flex {
+    font-weight: normal;
+    font-style: normal;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
