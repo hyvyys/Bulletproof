@@ -17,7 +17,7 @@
 
         <FontSample
           class="main"
-          :html="fontSampleTexts"
+          :texts="fontSampleTexts"
           :isCustom="selectedTextKind === 'custom'"
           @update="e => modifyText(e)"
         />

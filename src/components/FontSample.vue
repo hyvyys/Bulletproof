@@ -5,7 +5,6 @@
     :style="`
         color: ${settings.textColor};
         background: ${settings.backgroundColor};
-        font-size: ${settings.fontSize}${settings.fontSizeUnit};
         line-height: ${settings.defaultLineHeight ? '' : settings.lineHeight};
         letter-spacing: ${settings.defaultTracking ? '0' : settings.tracking}em;
         text-align: ${settings.textAlign};
@@ -14,29 +13,80 @@
         font-variation-settings: ${ fontVariationSettings };
     `"
   >
+
     <div
-      ref="content"
       class="font-sample-content"
-      contenteditable
-      spellcheck="false"
-      @input="onInput"
-      v-html="html"
-    />
+      :style="{
+        'word-break': settings.wrapLines ? 'break-all' : 'normal',
+      }"
+    >
+
+      <div v-if="!isCustom">
+        <div v-for="(item, i) in texts" :key="i" >
+
+          <GotchaHeader
+            v-if="selectedSampleKey === 'gotchas'"
+            :header="item.header"
+          />
+          <SampleHeader v-else-if="item.header.language" :header="item.header" />
+
+          <div v-for="(text, j) in item.texts" :key="j">
+            <div v-for="(size, k) in fontSizes" :key="k" class="sample-paragraph">
+              <div v-if="fontSizes.length > 1"  class="font-size-label">{{size}}</div>
+              <div
+                v-html="text"
+                :style="{ 'font-size': `${size}${settings.fontSizeUnit}` }"
+                contenteditable
+                spellcheck="false"
+              />
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div v-else>
+        <div v-for="(size, k) in fontSizes" :key="k" class="sample-paragraph">
+          <div v-if="fontSizes.length > 1"  class="font-size-label">{{size}}</div>
+          <div
+            class="font-sample-content-inner"
+            :style="{ 'font-size': `${size}${settings.fontSizeUnit}` }"
+            contenteditable
+            spellcheck="false"
+            @input="onInput"
+            @focus="onFocus"
+            ref="content"
+          />
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
 <script>
+import UiTooltip from "keen-ui/src/UiTooltip";
 import scrollToHash from "@/utils/scrollToHash";
 import DomSelection from "@/utils/DomSelection";
+import SampleHeader from "@/components/SampleHeader";
+import GotchaHeader from "@/components/GotchaHeader";
 import { mapState, mapGetters } from "vuex";
 
 export default {
   name: "FontSample",
+  components: {
+    SampleHeader,
+    GotchaHeader,
+    UiTooltip,
+  },
   props: {
-    html: {
-      type: String,
-      default: "",
-      isCustom: Boolean,
+    texts: {
+      type: Array,
+      default: () => [],
+    },
+    isCustom: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -60,32 +110,29 @@ export default {
       "fontVariationSettings",
     ]),
     isGotchas() { return this.selectedSampleKey === "gotchas"; },
+    fontSizes() {
+      return this.settings.enableWaterfall
+        ? this.settings.waterfallSizes.split(',')
+        : [ this.settings.fontSize ]
+    },
   },
   watch: {
-    async html() {
-      // wait for html to get rendered
-      await this.$nextTick();
-      this.selection.restore();
-      this.configureAnchors();
-    },
     formatRequested(tag) {
       if (tag) {
         this.selection.wrap(tag);
         this.$store.commit("format", { tag: "" });
-        this.$refs.content.focus();
       }
     },
   },
   mounted() {
-    this.selection = new DomSelection(this.$refs.content);
-    this.configureAnchors();
+    // this.configureAnchors();
+    this.syncSamples();
+    this.$watch('texts', this.syncSamples, { deep:true });
+    this.$watch('fontSizes', this.syncSamples, { deep:true });
   },
   beforeDestroy() {
   },
   methods: {
-    saveSelection() {
-      this.selection.save();
-    },
     configureAnchors() {
       return;
       // doesn't work any more but... what problem this that fixed? body overscroll?
@@ -99,32 +146,28 @@ export default {
       // });
     },
     onInput(e) {
-      this.notifyWindow();
-      if (!this.isCustom)
-        this.saveSelection();
-
-      const headingSelector = 'h1, h2, h3, h4, h5, h6';
-
-      this.$refs.content.querySelectorAll("h3 h3").forEach(h3 => {
-        const text = h3.innerText;
-        h3.parentNode.replaceChild(document.createTextNode(text), h3);
-      });
-
-      this.$refs.content.querySelectorAll(headingSelector).forEach(h => {
-        const text = h.innerText.trim();
-        if (!text) {
-          h.parentNode.removeChild(h);
+      this.saveText(e);
+    },
+    onFocus(e) {
+      this.selection = new DomSelection(e.target);
+    },
+    syncSamples() {
+      if (this.isCustom) {
+        const customText = this.texts[0].html;
+        const c = this.$refs.content;
+        if (c) {
+          const elements = c instanceof Array ? this.$refs.content : [ this.$refs.content ];
+          elements
+            .filter(sample => sample !== document.activeElement)
+            .forEach(sample => sample.innerHTML = customText);
         }
-      });
-
-      const headingNodes = this.$refs.content.querySelectorAll(headingSelector);
-      const headings = Array.from(headingNodes)
-        .map(({ id, innerText }) => ({ id, text: innerText }));
-
-      this.$refs.content.querySelectorAll("[style]").forEach(e => e.removeAttribute("style"));
-
-      const html = e.target.innerHTML;
-      this.$emit("update", { html, headings });
+      }
+    },
+    saveText(e) {
+      if (this.isCustom) {
+        const customText = e.target.innerHTML;
+        this.$emit("update", { html: customText, headings: [] });
+      }
     },
     notifyWindow() {
       // trigger resize event so that Fitter can be positioned
@@ -152,6 +195,21 @@ export default {
     margin: 0.4rem 0;
   }
 
+  .sample-paragraph {
+    position: relative;
+  }
+  .font-size-label {
+    font-size: 8px;
+    font-family: Arial;
+    position: absolute;
+    right: 100%;
+    padding: 0 2px;
+    top: 0;
+    width: 2em;
+    text-align: right;
+  }
+
+
   overflow: auto hidden;
   position: relative;
 
@@ -168,6 +226,12 @@ export default {
     font-weight: var(--selectedFontCssWeight);
     font-style: var(--selectedFontCssStyle);
 
+    .font-sample-content-inner {
+      &::after {
+        content: '\A0';
+      }
+    }
+
     h1, h2, h3, h4, h5, h6, b, strong {
       font-family: var(--selectedBoldFontFamily), var(--fallbackFontFamily);
       font-weight: var(--selectedBoldFontCssWeight);
@@ -175,50 +239,45 @@ export default {
       white-space: normal;
     }
 
-    .header-flex {
-      display: flex;
-      align-items: center;
-      border-bottom: 1px solid currentColor;
-      margin-top: 1rem;
-      font-family: $font-stack !important;
-      font-size: 1rem;
-
-      @include dark;
-      padding: 0 0.5em;
-      min-width: 10em;
-      > * {
-        margin: 0;
-        margin-right: 1rem;
-      }
-      h3, code {
-        user-select: all;
-      }
-    }
-
     i, em {
       font-family: var(--selectedItalicFontFamily), var(--fallbackFontFamily);
       font-weight: var(--selectedItalicFontCssWeight);
       font-style: var(--selectedItalicFontCssStyle);
     }
+  }
 
-    .gotcha-heading {
-      @include pseudo();
-      margin-bottom: 0.8rem;
-      &::after {
-        top: 100%;
-        width: 4rem;
-        height: 4px;
-        background: linear-gradient(to right, lighten($accent, 10%), $brand-primary-color);
-      }
+  .header-flex {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    border-bottom: 1px solid currentColor;
+    margin-top: 1rem;
+    font-family: $font-stack !important;
+    font-size: 1rem;
+
+    @include dark;
+    padding: 0 0.5em;
+    min-width: 10em;
+    h3, code {
+      user-select: all;
+    }
+    > * {
+      margin: 0;
+      margin-right: 1rem;
+    }
+
+    .light {
+      font-size: 0.9em;
+      opacity: 0.5;
     }
   }
 }
 
 
+
 .gotchas {
   h3, h4, .header, .desc, .desc > * {
     font-family: $font-stack !important;
-    font-size: 1rem;
     em {
       font-style: italic;
     }
@@ -226,31 +285,17 @@ export default {
       font-weight: 700;
     }
   }
-  h3 {
-    font-size: 1.2rem;
-    // display: inline-block;
-  }
-  h4 {
-    font-weight: 500 !important;
-  }
+}
 
-  .header {
-    display: flex;
-    align-items: baseline;
-    > * {
-      margin-right: .4rem;
-    }
-    h4 {
-      font-size: 1.2rem;
-    }
-  }
-  .desc {
-  }
-  .tags {
-    span {
-      @include dark;
-      padding: 2px 4px;
-      margin: 0 2px;
+.font-characters {
+  display: flex;
+  flex-wrap: wrap;
+
+  > * {
+    flex: 0 0 1em;
+    text-align: center;
+    &:hover {
+      background: #ffffff66;
     }
   }
 }

@@ -24,6 +24,15 @@ export default class Settings {
         type: Array,
         default: () => ["pt", "px", "em", "vw", "vh"],
       },
+      enableWaterfall: {
+        type: Boolean,
+        default: false,
+      },
+      waterfallSizes: {
+        type: String,
+        // default: '10,12,16,24,26,36,45',
+        default: '10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,32,34,36,38,44,64',
+      },
 
       defaultLineHeight: {
         type: Boolean,
@@ -104,6 +113,10 @@ export default class Settings {
       textTransformOptions: {
         type: Array,
         default: () => ["none", "uppercase", "capitalize", "lowercase"],
+      },
+      wrapLines: {
+        type: Boolean,
+        default: false,
       },
 
       gposFeatures: {

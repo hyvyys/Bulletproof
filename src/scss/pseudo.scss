@@ -1,4 +1,7 @@
 @mixin pseudo() {
+
+  // watch out for pointer events!
+
   position: relative;
   &::before,
   &::after {

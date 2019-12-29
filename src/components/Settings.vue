@@ -21,6 +21,22 @@
     </div>
 
     <div class="row">
+      <!-- <label class="row-label">Waterfall</label> -->
+      <UiTextbox
+        ref="settingWaterfallSizes"
+        :value="settings.waterfallSizes"
+        @input="v => updateSetting('updateSettings', { waterfallSizes: v })"
+        :disabled="!settings.enableWaterfall"
+      />
+      <UiCheckbox
+        ref="settingEnableWaterfall"
+        class="checkbox-small"
+        :value="settings.enableWaterfall"
+        @input="v => updateSetting('updateSettings', { enableWaterfall: v })"
+      >waterfall</UiCheckbox>
+    </div>
+
+    <div class="row">
       <label class="row-label">Line height</label>
       <UiNumber
         ref="settingLineHeight"
@@ -98,13 +114,13 @@
       />
     </div>
 
-    <div class="row">
-      <label class="row-label">Case transform</label>
-      <UiSelect
-        ref="settingTextTransform"
-        :value="settings.textTransform"
-        :options="settings.textTransformOptions"
-        @input="v => updateSetting('updateSettings', { textTransform: v })"
+    <div class="row row-check">
+      <!-- <label class="row-label">Wrap lines</label> -->
+      <UiCheckbox
+        ref="settingWrapLines"
+        label="Wrap lines"
+        :value="settings.wrapLines"
+        @input="v => updateSetting('updateSettings', { wrapLines: v })"
       />
     </div>
 
@@ -231,6 +247,7 @@ import UiRadioGroup from "keen-ui/src/UiRadioGroup.vue";
 import UiSlider from "keen-ui/src/UiSlider.vue";
 import UiSelect from "@/components/UiSelect.vue";
 import UiNumber from "@/components/UiNumber.vue";
+import UiTextbox from "keen-ui/src//UiTextbox.vue";
 import UiColorPicker from "@/components/UiColorPicker.vue";
 
 export default {
@@ -241,6 +258,7 @@ export default {
     UiSlider,
     UiRadioGroup,
     UiNumber,
+    UiTextbox,
     UiColorPicker,
   },
   props: {
@@ -268,7 +286,7 @@ export default {
       numberTags: ["sups", "subs", "numr", "dnom", "frac", "zero"],
       stylisticSetTags: Array(20)
         .fill(0)
-        .map((_, i) => `ss${i.toString().padStart(2, "0")}`),
+        .map((_, i) => `ss${(i + 1).toString().padStart(2, "0")}`),
       loclTags: ["locl"],
       loclSelectKeys: {
         class: "class",
@@ -391,6 +409,15 @@ export default {
 .settings {
   padding: $sidebar-padding;
 }
+
+.row-check {
+  min-height: 2rem;
+  align-items: center !important;
+  .ui-checkbox {
+    margin: 0.1rem 0;
+  }
+}
+
 
 .checkbox-small.ui-checkbox {
   margin: 0;
