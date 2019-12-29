@@ -17,6 +17,8 @@ import App from "@/App.vue";
 import router from "@/router";
 import store from '@/store';
 
+import 'keen-ui/src/bootstrap';
+
 new Vue({
   router,
   store,
