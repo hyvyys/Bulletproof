@@ -98,11 +98,13 @@ export default class Settings {
 
       textColor: {
         type: String,
-        default: "#222",
+        // default: "#222",
+        default: "#000",
       },
       backgroundColor: {
         type: String,
-        default: "#ddd",
+        // default: "#ddd",
+        default: "#fff",
       },
 
       textTransform: {
