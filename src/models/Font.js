@@ -2,9 +2,10 @@ import opentypeLanguageTags from "./opentypeLanguageTags";
 import { getOpenTypeFeatureName } from "./opentypeFeatureNames";
 
 export default class Font {
-  constructor(font, url) {
+  constructor(font, url, fileName) {
     this.version = 0;
     this.url = url;
+    this.fileName = fileName;
     this.font = font;
     this.processFont();
   }

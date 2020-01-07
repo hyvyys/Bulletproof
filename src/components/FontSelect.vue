@@ -31,17 +31,22 @@
           }}
         </div>
       </div>
+      <UiTooltip position="left" :appendToBody="false" :openDelay="380">
+        {{ shortFileName(props.option.fileName) }}
+      </UiTooltip>
     </div>
   </UiSelect>
 </template>
 
 <script>
 import UiSelect from "@/components/UiSelect.vue";
+import UiTooltip from "@/components/UiTooltip";
 import FitMe from "@/components/layout/FitMe.vue";
 
 export default {
   components: {
     UiSelect,
+    UiTooltip,
     FitMe,
   },
   props: {
@@ -66,6 +71,13 @@ export default {
       sampleText: "Abg",
     };
   },
+  methods: {
+    shortFileName(str) {
+      return (
+        str.length > 22 ? str.slice(0, 8) + '...' + str.slice(-10) : str
+      ).replace(/\.(ttf|otf)$/, v => v.toUpperCase());
+    },
+  }
 }
 </script>
 

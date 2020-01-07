@@ -10,7 +10,7 @@
         size="small"
         @change="onFilesDropped"
       />
-      <UiTooltip>
+      <UiTooltip :openDelay="500">
         Open fonts (you can also drag and drop font files anywhere on the page)
       </UiTooltip>
     </span>
@@ -210,6 +210,10 @@ export default {
     },
 
     loadFonts({ files = [], urls = [] } = {}) {
+      let items = files.map(f => ({
+        ...f,
+      }));
+
       if (!urls.length) {
         urls = files.map(file => URL.createObjectURL(file));
       }
@@ -229,8 +233,8 @@ export default {
       worker.onmessage = (e) => {
         i++;
         if (e.data.font) {
-          const { font: opentypeFont, url } = e.data;
-          const font = new Font(opentypeFont, url);
+          const { font: opentypeFont, url, fileName } = e.data;
+          const font = new Font(opentypeFont, url, fileName);
           const duplicates = this.fonts.concat(fonts).filter(f =>
             f.originalFamily === font.originalFamily &&
             f.style === font.style
