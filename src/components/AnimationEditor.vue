@@ -44,7 +44,7 @@
       </template>
     </EditableList>
 
-    <a key="help" target="_blank" href="/help/animation" class="help-link">
+    <a key="help" target="_blank" rel="noopener noreferrer" href="/help/animation" class="help-link">
       <img svg-inline src="@/assets/icons/info.svg" class="help-icon" />
       <span>
         Help

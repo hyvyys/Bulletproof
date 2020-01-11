@@ -125,12 +125,16 @@ export default {
 
   methods: {
     init() {
-      this.getTriggerElement().addEventListener("mouseenter", this.onTriggerMouseEnter);
-      this.getTriggerElement().addEventListener("mouseleave", this.onTriggerMouseLeave);
+      if (this.trigger) {
+        this.getTriggerElement().addEventListener("mouseenter", this.onTriggerMouseEnter);
+        this.getTriggerElement().addEventListener("mouseleave", this.onTriggerMouseLeave);
+      }
     },
     cleanup() {
-      this.getTriggerElement().removeEventListener("mouseenter", this.onTriggerMouseEnter);
-      this.getTriggerElement().removeEventListener("mouseleave", this.onTriggerMouseLeave);
+      if (this.trigger) {
+        this.getTriggerElement().removeEventListener("mouseenter", this.onTriggerMouseEnter);
+        this.getTriggerElement().removeEventListener("mouseleave", this.onTriggerMouseLeave);
+      }
     },
     onTriggerMouseEnter() {
       this.triggerHover = true;

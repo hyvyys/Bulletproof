@@ -809,6 +809,9 @@ export default {
     transition: border 0.1s ease;
     user-select: none;
     width: 100%;
+    &::after {
+      content: '\a0';
+    }
 }
 .ui-select__display-value {
     flex-grow: 1;

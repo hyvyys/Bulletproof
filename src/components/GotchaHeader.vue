@@ -10,10 +10,10 @@
     </div>
     <h3 :id="header.langId">{{ header.language }}</h3>
     <div v-if="header.opentypeTag">
-      <span class="light">OT code: </span><code>{{ header.opentypeTag.padEnd(4, ' ') }}</code>
-      <span class="light">HTML code: </span><code>{{ header.htmlTag.padEnd(4, ' ') }}</code>
+      <span class="light">OT code: </span><code>{{ header.opentypeTag.padEnd(4, ' ') }} </code>
+      <span class="light">HTML code: </span><code>{{ header.htmlTag }}</code>
     </div>
-    <div>{{ fNum(header.speakers) }} speakers</div>
+    <div>{{ printNumber(header.speakers) }} speakers</div>
   </div>
 </template>
 
@@ -21,6 +21,7 @@
 // import UiTooltip from "keen-ui/src/UiTooltip";
 import UiTooltip from "@/components/UiTooltip";
 import UiButton from "keen-ui/src/UiButton";
+import printNumber from "@/utils/printNumber.js";
 
 export default {
   components: {
@@ -34,7 +35,7 @@ export default {
     },
   },
   methods: {
-    fNum(n) { return n > 1000000 ? n/1000000 + 'M' : n/1000 + 'K'; },
+    printNumber,
   },
 }
 </script>

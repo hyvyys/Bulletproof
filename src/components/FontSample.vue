@@ -14,6 +14,10 @@
     `"
   >
 
+    <!-- <LanguageSupportSummary v-if="selectedSampleKey === 'languages'" languageSupport="languageSupport" /> -->
+
+    <div v-if="selectedSampleKey === 'glyphs'">This page only lists encoded glyphs.</div>
+
     <div
       class="font-sample-content"
       :style="{
@@ -53,6 +57,7 @@
             :style="{ 'font-size': `${size}${settings.fontSizeUnit}` }"
             contenteditable
             spellcheck="false"
+            @paste="onPaste"
             @input="onInput"
             @focus="onFocus"
             ref="content"
@@ -65,8 +70,6 @@
 </template>
 
 <script>
-import UiTooltip from "keen-ui/src/UiTooltip";
-import scrollToHash from "@/utils/scrollToHash";
 import DomSelection from "@/utils/DomSelection";
 import SampleHeader from "@/components/SampleHeader";
 import GotchaHeader from "@/components/GotchaHeader";
@@ -77,7 +80,6 @@ export default {
   components: {
     SampleHeader,
     GotchaHeader,
-    UiTooltip,
   },
   props: {
     texts: {
@@ -109,6 +111,7 @@ export default {
       "formatRequested",
       "fontFeatureSettings",
       "fontVariationSettings",
+      "languageSupport",
     ]),
     isGotchas() { return this.selectedSampleKey === "gotchas"; },
     fontSizes() {
@@ -154,6 +157,16 @@ export default {
       //     scrollToHash(a, scrolled);
       //   });
       // });
+    },
+    onPaste(event) {
+      let paste = (event.clipboardData || window.clipboardData).getData('text');
+      // paste = paste.replace(/font-family:[^;]+;?/g, '');
+      const selection = window.getSelection();
+      if (!selection.rangeCount) return false;
+      selection.deleteFromDocument();
+      selection.getRangeAt(0).insertNode(document.createTextNode(paste));
+      this.saveText(event.target);
+      event.preventDefault();
     },
     onInput(e) {
       this.saveText(e.target);

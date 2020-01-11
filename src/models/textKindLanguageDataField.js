@@ -6,4 +6,5 @@ export default {
   ABCs: "alphabet",
   glyphs: null,
   kerning: null,
+  languages: null,
 };

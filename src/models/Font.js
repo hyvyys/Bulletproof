@@ -43,7 +43,12 @@ export default class Font {
 
   getGlyphs() {
     const font = this.font;
-    this.characters = Object.keys(font.tables.cmap.glyphIndexMap).map(unicode => String.fromCharCode(unicode));
+    // this.characters = Object.keys(font.tables.cmap.glyphIndexMap).map(unicode => String.fromCharCode(unicode));
+    const glyphs = Object.keys(font.glyphs.glyphs)
+      .map(k => font.glyphs.glyphs[k])
+      .filter(g => g.unicode)
+      .map(g => String.fromCharCode(g.unicode));
+    this.characters = glyphs;
   }
 
   getFeatures() {

@@ -24,11 +24,24 @@
     </div>
 
     <div class="row row-filter">
+      <label class="row-label" style="min-width: 0;">Scripts</label>
+      <UiSelect
+        :multiple="true"
+        :options="scripts"
+        :keys="{
+          class: 'class', image: 'image', label: 'script'
+        }"
+        :value="scripts.filter(s => s.isSelected)"
+        @input="values => selectScripts({ values })"
+      />
+    </div>
+
+    <div class="row row-filter">
       <UiCheckbox
         :value="anySelected"
-        @input="v => selectDeselectAll(v)"
-      >
-      </UiCheckbox>
+        @input="checked => selectDeselectAllLanguages({ checked })"
+        :label="anySelected ? 'clear all' : 'select all'"
+      />
     </div>
 
     <div class="language-list" v-bar="{
@@ -39,7 +52,7 @@
         @keydown.up.capture.prevent
         tabindex="-1"
       >
-        <div v-for="(language, i) in languages" :key="i" class="language-item">
+        <div v-for="(language, i) in filteredLanguages" :key="i" :class="{ 'has-text': language.hasText }" class="language-item" >
           <UiCheckbox
             :value="language.isSelected"
             @input="v => toggleLanguage(language.id, v)"
@@ -63,8 +76,9 @@
 <script>
 // import scrollIntoView from "scroll-into-view-if-needed";
 import fireEvent from "@/utils/fireEvent";
-import { mapGetters } from "vuex";
+import { mapGetters, mapMutations, mapActions } from "vuex";
 
+import UiSelect from "@/components/UiSelect";
 import UiCheckbox from "keen-ui/src/UiCheckbox";
 import UiTextbox from "keen-ui/src/UiTextbox";
 import UiIconButton from "keen-ui/src/UiIconButton";
@@ -72,18 +86,22 @@ import UiIconButton from "keen-ui/src/UiIconButton";
 export default {
   components: {
     UiCheckbox,
+    UiSelect,
     UiTextbox,
     UiIconButton,
   },
   props: {},
   computed: {
-    ...mapGetters(["visibleLanguages"]),
-    languages() {
+    ...mapGetters([
+      "languages",
+      "scripts",
+    ]),
+    filteredLanguages() {
       const search = this.languageFilter.toLowerCase();
-      const exactStartMatches = this.visibleLanguages.filter(l =>
+      const exactStartMatches = this.languages.filter(l =>
         l.language.toLowerCase().startsWith(search)
       );
-      const otherMatches = this.visibleLanguages.filter(
+      const otherMatches = this.languages.filter(
         l =>
           ~l.language.toLowerCase().indexOf(search) &&
           !exactStartMatches.includes(l)
@@ -96,7 +114,7 @@ export default {
         : null;
     },
     anySelected() {
-      return this.visibleLanguages.some(l => l.isSelected);
+      return this.languages.some(l => l.isSelected);
     },
   },
   data() {
@@ -104,6 +122,7 @@ export default {
       languageFilter: "",
       highlightedAnchorIndex: null,
       anchors: [],
+      selectedScripts: [],
     };
   },
   watch: {
@@ -212,9 +231,12 @@ export default {
       }
     },
 
-    selectDeselectAll(checked) {
-      this.$store.commit("selectDeselectAllLanguages", { checked });
-    },
+    ...mapMutations([
+      "selectDeselectAllLanguages",
+    ]),
+    ...mapActions([
+      "selectScripts",
+    ]),
   },
 };
 </script>
@@ -242,6 +264,12 @@ export default {
     }
     &:focus {
       color: $brand-primary-color;
+    }
+  }
+  &:not(.has-text) {
+    .language-link {
+      color: #999;
+      cursor: not-allowed;
     }
   }
 }

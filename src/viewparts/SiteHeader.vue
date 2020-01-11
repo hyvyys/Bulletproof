@@ -44,7 +44,7 @@
               <a
                 class="github-icon-link"
                 href="https://github.com/hyvyys/Bulletproof"
-                target="_blank"
+                target="_blank" rel="noopener noreferrer"
               >
                 <img svg-inline alt="Github" src="@/assets/icons/github.svg" />
               </a>

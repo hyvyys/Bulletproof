@@ -1,17 +1,18 @@
 @import "@/scss/pseudo";
 
 @mixin scroll-veil($height: 1em) {
+  $bg: var(--backgroundColor, #{$light});
   @include pseudo;
   &::before, &::after {
     height: $height;
     width: 100%;
-    background: linear-gradient($light, #0000);
+    background: linear-gradient($bg, #0000);
     z-index: 4;
     pointer-events: none;
   }
   &::after {
     top: unset;
-    background: linear-gradient(0deg, $light, #0000);
+    background: linear-gradient(0deg, $bg, #0000);
   }
 
   &.vb > .vb-content {

@@ -14,12 +14,24 @@ import KerningGenerator from "./models/KerningGenerator";
 let id = 0;
 let customTextId = 1;
 
+const SCRIPTS = {
+  Latn: { name: 'Latin' },
+  Cyrl: { name: 'Cyrillic' },
+  Armn: { name: 'Armenian' },
+  Grek: { name: 'Greek' },
+  IPA:  { name: 'IPA', isSelected: false },
+};
+
+const SCRIPT_TAGS = LanguageData.map(l => l.script).filter((v, i, a) => a.indexOf(v) === i);
+const LANGUAGES = LanguageData.sort((a,b) => a.language.localeCompare(b.language));
+
 export default {
   state: {
     selectedSampleKey: "",
     texts: [],
     customTextIds: [],
-    languages: LanguageData.map(l => ({ ...l, id: id++, isSelected: true })),
+    languages: LANGUAGES.map(l => ({ ...l, id: id++, isSelected: true })),
+    scripts: SCRIPT_TAGS.map(s => ({ script: s, id: id++, isSelected: true, ...SCRIPTS[s] })),
     textHeadings: [],
     formatRequested: false,
     kerningPatterns: [],
@@ -95,6 +107,17 @@ export default {
 
     selectDeselectAllLanguages(state, { checked }) {
       state.languages.forEach(l => l.isSelected = checked);
+    },
+
+    selectScripts(state, { values }) {
+      state.scripts.forEach(s => {
+        if (values.indexOf(s) > -1) {
+          s.isSelected = true;
+        }
+        else {
+          s.isSelected = false;
+        }
+      });
     },
 
     clearKerningPatterns(state) {
@@ -174,6 +197,11 @@ export default {
   },
 
   actions: {
+    selectScripts({ state, commit, dispatch }, { values }) {
+      commit("selectScripts", { values });
+      dispatch("updateText");
+    },
+
     selectLanguage({ state, commit, dispatch }, { id, checked }) {
       const matching = state.languages.find(l => l.id === id);
       if (matching.isSelected !== checked) {
@@ -209,11 +237,13 @@ export default {
           commit("updateKerning");
         }
         else if (state.selectedSampleKey === "glyphs") {
-          let texts = [ `<p class="font-characters">${
-            state.fontCharacters.map(c => `<span title='U+${
-              String(c.charCodeAt(0)).padStart(4, '0')
-            }'>${c}</span>`).join('')
-          }<p>` ];
+          let texts = [
+            `<p class="font-characters">${
+              state.fontCharacters.map(c => `<span title='U+${
+                String(c.charCodeAt(0)).padStart(4, '0')
+              }'>${c}</span>`).join('')
+            }<p>`,
+          ];
           commit("setText", {
             sampleKey: state.selectedSampleKey,
             html: [{ header: '', texts }],
@@ -343,32 +373,20 @@ export default {
 
 
   getters: {
-    texts: state => {
-      return state.texts;
-    },
-    textHeadings: state => {
-      return state.textHeadings;
-    },
-    formatRequested: state => {
-      return state.formatRequested;
-    },
-    customTextIds: state => {
-      return state.customTextIds;
-    },
-    selectedSampleKey: state => {
-      return state.selectedSampleKey;
-    },
-    selectedSampleTextKey: state => {
-      return languageDataFields[state.selectedSampleKey];
-    },
-    languages: state => {
-      return state.languages;
-    },
-    filteredLanguages: state => {
-      return state.languages.filter(l => l);
-    },
+    texts: state => state.texts,
+    textHeadings: state => state.textHeadings,
+    formatRequested: state => state.formatRequested,
+    customTextIds: state => state.customTextIds,
+    selectedSampleKey: state => state.selectedSampleKey,
+    selectedSampleTextKey: state => languageDataFields[state.selectedSampleKey],
+    scripts: state => state.scripts,
+    selectedScripts: state => state.scripts.filter(s => s.isSelected),
+    filteredLanguages: (state, getters) => state.languages.filter(l => getters.selectedScripts.find(s => s.script === l.script)),
     visibleLanguages: (state, getters) => {
-      if (getters.selectedSampleTextKey) {
+      if (getters.selectedSampleKey === 'languages') {
+        return getters.filteredLanguages.filter(l => l.alphabet);
+      }
+      else if (getters.selectedSampleTextKey) {
         return getters.filteredLanguages
           .filter(l => l[getters.selectedSampleTextKey].length);
       }
@@ -376,11 +394,91 @@ export default {
         return [];
       }
     },
-    selectedLanguages: (state, getters) => {
-      return getters.visibleLanguages.filter(l => l.isSelected);
+    otherLanguages: (state, getters) => {
+      return getters.filteredLanguages.filter(l => getters.visibleLanguages.find(ll => ll.id === l.id) == null);
     },
-    kerningPatterns: (state) => {
-      return state.kerningPatterns;
+    selectedLanguages: (state, getters) => getters.visibleLanguages.filter(l => l.isSelected),
+    languages: (state, getters) => [
+      ...getters.visibleLanguages.map(l => ({ ...l, hasText: true })),
+      ...getters.otherLanguages.map(l => ({ ...l, hasText: false })),
+    ],
+    kerningPatterns: (state) => state.kerningPatterns,
+
+    languageSupport: (state, getters) => {
+      const testableLanguages = getters.selectedLanguages; //.filter(l => l.specialCharacters);
+
+      const details = testableLanguages.map(l => {
+        const requiredCharacters = (l.specialCharacters || l.alphabet).split(' ').filter((e, i, a) => a.indexOf(e) === i && e);
+        const includedCharacters = requiredCharacters.filter(g => g.split('').every(c => state.fontCharacters.indexOf(c) > -1));
+        const missingCharacters = requiredCharacters.filter(g => includedCharacters.indexOf(g) === -1);
+        return {
+          ...l,
+          requiredCharacters,
+          includedCharacters,
+          missingCharacters,
+        };
+      });
+
+      const supportedLanguages = details
+        .filter(l => l.requiredCharacters.length === l.includedCharacters.length);
+      const unsupportedLanguages = details.filter(l => supportedLanguages.indexOf(l) === -1);
+
+      const missingCharactersByScript = groupCharactersByScriptAndSpeakers(unsupportedLanguages, "missingCharacters");
+      const includedCharactersByScript = groupCharactersByScriptAndSpeakers(supportedLanguages, "includedCharacters");
+
+      const includedCharacters = state.fontCharacters.map(c => ({
+          character: c,
+          unicode: c.charCodeAt(0),
+          obligatoryLanguages: LANGUAGES.filter(l => l.alphabet.indexOf(c) > -1),
+          optionalLanguages: LANGUAGES.filter(l => l.optionalCharacters.indexOf(c) > -1),
+        }))
+        .map(ch => ({
+          ...ch,
+          speakers: [... ch.obligatoryLanguages, ...ch.optionalLanguages ].reduce((acc, cur) => acc + cur.speakers, 0),
+        }));
+
+      return {
+        supportedLanguages,
+        unsupportedLanguages,
+        allLanguages: details,
+        missingCharactersByScript,
+        includedCharactersByScript,
+        includedCharacters,
+      };
     },
   },
+}
+
+
+function groupCharactersByScriptAndSpeakers(languages, fieldKey, targetKey = "characters") {
+  const charactersByScript = {};
+  languages.forEach(language => {
+    let script = charactersByScript[language.script];
+    if (!script) {
+      script = { script: language.script, [targetKey]: [] }
+      charactersByScript[language.script] = script;
+    }
+
+    language[fieldKey].forEach(lc => {
+      let character = script[targetKey].find(c => c.character === lc);
+      if (!character) {
+        character = { character: lc, languages: [], speakers: 0 };
+        script[targetKey].push(character);
+      }
+      character.languages.push(language.language);
+      character.speakers += language.speakers;
+    });
+  });
+
+  Object.keys(charactersByScript).forEach(k => {
+    charactersByScript[k][targetKey]
+    .sort((a, b) => a.character.localeCompare(b.character, 'en', { caseFirst: 'upper' }));
+    charactersByScript[k][targetKey]
+      .forEach(c => {
+        c.obligatoryLanguages = LANGUAGES.filter(l => l.alphabet.indexOf(c.character) > -1);
+        c.optionalLanguages = LANGUAGES.filter(l => l.optionalCharacters.indexOf(c.character) > -1);
+      });
+  });
+
+  return charactersByScript;
 }

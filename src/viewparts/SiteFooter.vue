@@ -5,7 +5,7 @@
       <div>
         <div>
           Sample texts from
-          <a href="https://github.com/hyvyys/language-data" target="_blank">
+          <a href="https://github.com/hyvyys/language-data" target="_blank" rel="noopener noreferrer">
             Language-Data
           </a>.
           Visit link to contribute.
@@ -31,7 +31,7 @@
       </div>
     </div>
     <SigmoidContainer sides="left bottom" width="65" class="large light aside" idSeed="footer">
-      <a class="github-link" href="https://github.com/hyvyys/Bulletproof" target="_blank">
+      <a class="github-link" href="https://github.com/hyvyys/Bulletproof" target="_blank" rel="noopener noreferrer">
         <div>
           Bulletproof
           <br />

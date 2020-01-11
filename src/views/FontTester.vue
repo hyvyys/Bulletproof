@@ -15,7 +15,10 @@
           <Settings />
         </Pinnable>
 
+        <LanguageSupportSummary v-if="selectedSampleKey === 'languages'" languageSupport="languageSupport" />
+
         <FontSample
+          v-else
           class="main"
           :texts="fontSampleTexts"
           :isCustom="selectedTextKind === 'custom'"
@@ -51,6 +54,7 @@ import Settings from "@/components/Settings.vue";
 import FontSample from "@/components/FontSample.vue";
 import LanguageNav from "@/components/LanguageNav.vue";
 import KerningNav from "@/components/KerningNav.vue";
+import LanguageSupportSummary from "@/components/LanguageSupportSummary";
 import FontSampleNav from "@/components/FontSampleNav.vue";
 
 export default {
@@ -62,12 +66,14 @@ export default {
     LanguageNav,
     KerningNav,
     FontSampleNav,
+    LanguageSupportSummary,
   },
   computed: {
     ...mapState([
       "fontLoading",
       "settingsPanelVisible",
       "contextualPanelVisible",
+      "languageSupport",
     ]),
     selectedTextKind() {
       return this.$route.params.text;
@@ -79,13 +85,11 @@ export default {
       "scrolledParentSelector",
       "texts",
       "selectedSampleKey",
-      "visibleLanguages",
-      "selectedLanguages",
     ]),
     navElement() {
-      if (this.visibleLanguages.length > 0) return LanguageNav;
-      else if (this.selectedTextKind === 'kerning') return KerningNav;
-      else return FontSampleNav;
+      if (this.selectedTextKind === 'kerning') return KerningNav;
+      else if (this.selectedTextKind === 'custom') return FontSampleNav;
+      else return LanguageNav;
     },
     navElementTitle() {
       if (this.navElement === LanguageNav) return "Languages";
