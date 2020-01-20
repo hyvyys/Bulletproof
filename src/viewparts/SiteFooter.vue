@@ -26,7 +26,7 @@
           Bulletproof Font Tester
         </div>
         <div>
-          Copyright 2019 Adam Jagosz.
+          Copyright 2020 Adam Jagosz.
         </div>
       </div>
     </div>

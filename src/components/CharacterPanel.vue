@@ -53,6 +53,7 @@ export default {
 
 <style lang="scss" scoped>
 .character-panel {
+  padding-top: 1rem; /* avoid covering accent by scroll-veil */
   h4 {
     margin: 0.7em 0 0.3em;
     &:after {

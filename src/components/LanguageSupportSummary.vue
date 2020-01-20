@@ -1,5 +1,12 @@
 <template>
   <div class="language-support-summary">
+
+    <v-style>
+      .glyph {
+        font-size: {{ settings.fontSize }}{{ settings.fontSizeUnit }};
+      }
+    </v-style>
+
     <div class="main-column">
       <div>
         <p>
@@ -44,7 +51,6 @@
         <h2>
           Unsupported languages
           <UiSelect class="inline" :options="unsupportedLanguagesSortingOptions" v-model="unsupportedLanguagesSorting" />
-          (click for details)
         </h2>
 
         <div>
@@ -68,78 +74,103 @@
               <p><strong>{{ printNumber(l.speakers) }} speakers</strong></p>
               <div>
                 <div>missing:</div>
-                <code class="glyph support-4" v-for="(c, j) in l.missingCharacters" :key="j"
+                <button class="glyph support-4" v-for="(c, j) in l.missingCharacters" :key="j"
                   @click="selectCharacter(languageSupport.missingCharactersByScript[l.script].characters.find(cc => cc.character === c))"
                 >{{ c }}
-                </code>
+                </button>
               </div>
               <div>
                 <div>supported:</div>
-                <code class="glyph support-0" v-for="(c, j) in l.includedCharacters" :key="j"
+                <button class="glyph support-0" v-for="(c, j) in l.includedCharacters" :key="j"
                   @click="selectCharacter(c)"
                 >{{ c }}
-                </code>
+                </button>
               </div>
             </UiTooltip>
           </span>
         </div>
 
         <h2>
-          Missing characters by script (click for list of languages)
+          Missing characters by script
         </h2>
 
         <div>
           <div v-for="(script, i) in languageSupport.missingCharactersByScript" :key="i">
-            <div>{{ script.script }}</div>
-            <code :class="`glyph support-${Math.ceil(Math.min(c.speakers, 4000000) / 1000000)}`"
+            <h3>{{ script.script }}</h3>
+            <button :class="`glyph support-${
+                5 - [ 0, 20000, 600000, 2000000, 8000000 ].filter(limit => c.speakers > limit).length
+              }`"
               v-for="(c, j) in script.characters.filter(c => c.character.length === 1)" :key="j"
               @click="selectCharacter(c)"
             >{{ c.character }}
-            </code>
+            </button>
           </div>
         </div>
 
         <h2>
-          Missing character combinations by script (click for list of languages)
+          Missing character combinations by script
         </h2>
 
         <div>
           <div v-for="(script, i) in languageSupport.missingCharactersByScript" :key="i">
-            <div>{{ script.script }}</div>
-            <code :class="`glyph support-${Math.ceil(Math.min(c.speakers, 4000000) / 1000000)}`"
-              v-for="(c, j) in script.characters.filter(c => c.character.length > 1)" :key="j"
+            <h3>{{ script.script }}</h3>
+            <button :class="`glyph support-${
+                5 - [ 0, 20000, 600000, 2000000, 8000000 ].filter(limit => c.speakers > limit).length
+              }`"
+              v-for="(c, j) in script.characters.filter(c => c.character.length > 1 && isAccent(c, 1))" :key="j"
               @click="selectCharacter(c)"
             >{{ c.character }}
-            </code>
+            </button>
           </div>
         </div>
 
         <h2>
-          Included characters by script (click for list of languages)
+          Included characters by script
         </h2>
 
         <div>
           <div v-for="(script, i) in languageSupport.includedCharactersByScript" :key="i">
-            <div>{{ script.script }}</div>
-            <code :class="`glyph support-${c.speakers > 500000 ? 0 : c.speakers > 200000 ? 1 : c.speakers ? 2 : 3}`"
-              v-for="(c, j) in script.characters" :key="j"
+            <h3>{{ script.script }}</h3>
+            <button :class="`glyph support-${
+                5 - [ 0, 20000, 600000, 2000000, 8000000 ].filter(limit => c.speakers > limit).length
+                }`"
+              v-for="(c, j) in script.characters.filter(c => c.character.length === 1)" :key="j"
               @click="selectCharacter(c)"
             >{{ c.character }}
-            </code>
+            </button>
           </div>
         </div>
 
         <h2>
-          All included characters (click for list of supported languages)
+          Included character combinations by script
         </h2>
 
         <div>
-          <code
+          <div v-for="(script, i) in languageSupport.includedCharactersByScript" :key="i">
+            <h3>{{ script.script }}</h3>
+            <button :class="`glyph support-${
+                5 - [ 0, 20000, 600000, 2000000, 8000000 ].filter(limit => c.speakers > limit).length
+                }`"
+              v-for="(c, j) in script.characters.filter(c => c.character.length > 1 && isAccent(c, 1))" :key="j"
+              @click="selectCharacter(c)"
+            >{{ c.character }}
+            </button>
+          </div>
+        </div>
+
+        <h2>
+          All included characters
+        </h2>
+
+        <div>
+          <button
             v-for="(c, j) in languageSupport.includedCharacters" :key="j"
-            :class="`glyph support-${c.speakers > 500000 ? 0 : c.speakers > 200000 ? 1 : c.speakers ? 2 : 3}`"
+            :class="`glyph support-${
+                5 - [ 0, 20000, 600000, 2000000, 8000000 ].filter(limit => c.speakers > limit).length
+              }`"
             @click="selectCharacter(c)"
           >{{ c.character }}
-          </code>
+          </button>
         </div>
 
       </div>
@@ -167,6 +198,14 @@ import UiButton from "keen-ui/src/UiButton";
 import UiSelect from "keen-ui/src/UiSelect";
 import printNumber from "@/utils/printNumber.js";
 
+import Vue from 'vue';
+
+Vue.component('v-style', {
+  render: function (createElement) {
+    return createElement('style', this.$slots.default)
+  }
+});
+
 const unsupportedLanguagesSortingOptions = [
   'alphabetically',
   'by number of speakers',
@@ -192,6 +231,7 @@ export default {
     ...mapGetters([
       "selectedSampleKey",
       "languageSupport",
+      "settings",
     ]),
     unsupportedLanguages() {
       let langs = this.languageSupport.unsupportedLanguages.slice();
@@ -211,6 +251,9 @@ export default {
     selectCharacter(c) {
       this.selectedCharacter = c;
     },
+    isAccent(c, i) {
+      return c.character.charCodeAt(i) > 0x0300 && c.character.charCodeAt(i) < 0x037E;
+    },
   },
 }
 </script>
@@ -218,7 +261,6 @@ export default {
 <style lang="scss">
 .language-support-summary {
   margin-bottom: 1.5rem;
-  max-width: 1200px;
 
   display: flex;
 
@@ -254,20 +296,43 @@ export default {
   }
 
   .glyph {
+    border: 0;
     display: inline-block;
     min-width: 1.5em;
     background: #ddd;
     text-align: center;
     margin: 1px;
-    font-size: 1.4rem;
 
-    line-height: 32px;
+    line-height: 1.5em;
     font-family: var(--selectedFontFamily), var(--fallbackFontFamily);
     // &:hover {
-    //   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      //   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     // }
+
+    &:hover, &:focus {
+      cursor: default;
+      background-image: linear-gradient(#{rgba(white, 0.5), rgba(white, 0.5)});
+    }
+
+    &, &:active {
+      // padding: 0;
+    }
   }
 
+  h2, h3 {
+    margin: 1.5em 0 0.5em !important;
+  }
+  h3 {
+    margin: 0.5em 0 !important;
+  }
+
+  .ui-select.inline {
+    display: inline-flex;
+    margin: 0 0.25em;
+    .ui-select__display, ui-select__display-value {
+      font-size: 1em;
+    }
+  }
 
   .support-0 {
     background: #bbffc7;
@@ -285,29 +350,45 @@ export default {
     background: #ffb1b1;
   }
 
+  $a: lighten($brand-primary-color, 10);
+  $b: lighten($brand-secondary-color, 5);
+  $a: #ffbcd2;
+  $b: #b0bcff;
 
-  h2 {
-    margin: 1.5em 0 1.2em !important;
-  }
+  $a: #f1bfb6;
+  $b: #ffa806;
+  $aText: #d87b12;
 
-  .ui-select.inline {
-    display: inline-flex;
-    margin: 0 0.25em;
-    .ui-select__display, ui-select__display-value {
-      font-size: 1em;
+  $a: #f0e3e3;
+  $b: #44e4d6;
+  $aText: #6db9b6;
+
+  $a: #f0e3e3;
+  $b: #92beff;
+  $aText: #2e78b4;
+
+  @for $i from 0 through 5 {
+    .support-#{$i} {
+      $shade: mix($a, $b, $i * 20);
+      background: mix(white, $shade, 0);
+      color: mix($aText, black, $i * 20);
+      // color: white;
+      font-weight: 500;
+      text-transform: none;
     }
   }
-}
 
-.gotcha-warning-icon {
-  margin-left: 0.4em;
-  margin-right: -0.4em;
-  border-radius: 50%;
-  background: #aa2222;
-  color: white;
-  font-weight: bold;
-  width: 1.2em;
-  height: 1.2em;
-  line-height: 1.2;
+  .gotcha-warning-icon {
+    margin-left: 0.4em;
+    margin-right: -0.4em;
+    border-radius: 50%;
+    color: $b;
+    background: $a;
+    opacity: 0.5;
+    font-weight: bold;
+    width: 1.2em;
+    height: 1.2em;
+    line-height: 1.2;
+  }
 }
 </style>
