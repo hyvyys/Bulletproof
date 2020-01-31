@@ -408,7 +408,7 @@ export default {
       const testableLanguages = getters.selectedLanguages; //.filter(l => l.specialCharacters);
 
       const details = testableLanguages.map(l => {
-        const requiredCharacters = (l.specialCharacters || l.alphabet).split(' ').filter((e, i, a) => a.indexOf(e) === i && e);
+        const requiredCharacters = (l.script === 'Latn' ? l.specialCharacters : l.alphabet).split(' ').filter((e, i, a) => a.indexOf(e) === i && e);
         const includedCharacters = requiredCharacters.filter(g => g.split('').every(c => state.fontCharacters.indexOf(c) > -1));
         const missingCharacters = requiredCharacters.filter(g => includedCharacters.indexOf(g) === -1);
         return {

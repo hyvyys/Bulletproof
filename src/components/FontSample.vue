@@ -40,8 +40,10 @@
               <div
                 v-html="text"
                 :style="{ 'font-size': `${size}${settings.fontSizeUnit}` }"
-                contenteditable
+                :contenteditable="isContentEditable"
                 spellcheck="false"
+                @selectstart="onSelectStart"
+                @click="onSelectEnd"
               />
             </div>
           </div>
@@ -94,6 +96,7 @@ export default {
   data() {
     return {
       selection: null,
+      isContentEditable: true,
     };
   },
   computed: {
@@ -146,6 +149,14 @@ export default {
   beforeDestroy() {
   },
   methods: {
+    onSelectStart() {
+      console.log(this.isContentEditable);
+      this.isContentEditable = false;
+    },
+    onSelectEnd() {
+      console.log(this.isContentEditable);
+      this.isContentEditable = true;
+    },
     configureAnchors() {
       return;
       // doesn't work any more but... what problem this that fixed? body overscroll?

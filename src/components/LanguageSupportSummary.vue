@@ -309,6 +309,8 @@ export default {
       //   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     // }
 
+    user-select: text;
+
     &:hover, &:focus {
       cursor: default;
       background-image: linear-gradient(#{rgba(white, 0.5), rgba(white, 0.5)});
