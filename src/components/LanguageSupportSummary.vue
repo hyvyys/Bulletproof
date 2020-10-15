@@ -15,6 +15,7 @@
 
         <h2>
           Supported languages
+          <UiSelect class="inline" :options="supportedLanguagesSortingOptions" v-model="supportedLanguagesSorting" />
         </h2>
 
         <div>
@@ -28,7 +29,7 @@
           </div>
 
           <span
-            v-for="(l, i) in languageSupport.supportedLanguages"
+            v-for="(l, i) in supportedLanguages"
             :key="i"
             :lang="l.htmlCode"
           >
@@ -41,7 +42,7 @@
 
             <UiTooltip :appendToBody="false" :interactive="true" openOn="click">
               <LanguageInfo :lang="l.htmlTag" :languageInfo="l" @characterClicked="c =>
-                selectCharacter(languageSupport.includedCharactersByScript[l.script].characters
+                selectCharacter(languageSupport.includedCharactersByScript.find(s=>s.script===l.script).characters
                   .find(cc => cc.character === c))"
               />
             </UiTooltip>
@@ -75,14 +76,14 @@
               <div>
                 <div>missing:</div>
                 <button class="glyph support-4" v-for="(c, j) in l.missingCharacters" :key="j"
-                  @click="selectCharacter(languageSupport.missingCharactersByScript[l.script].characters.find(cc => cc.character === c))"
+                  @click="selectCharacter(languageSupport.missingCharactersByScript.find(s=>s.script===l.script).characters.find(cc => cc.character === c))"
                 >{{ c }}
                 </button>
               </div>
               <div>
                 <div>supported:</div>
                 <button class="glyph support-0" v-for="(c, j) in l.includedCharacters" :key="j"
-                  @click="selectCharacter(c)"
+                  @click="selectCharacter(languageSupport.includedCharacters.find(cc => cc.character === c))"
                 >{{ c }}
                 </button>
               </div>
@@ -91,11 +92,12 @@
         </div>
 
         <h2>
-          Missing characters by script
+          Missing characters
+          <UiSelect class="inline" :options="missingCharacterSortingOptions" v-model="missingCharacterSorting" />
         </h2>
 
         <div>
-          <div v-for="(script, i) in languageSupport.missingCharactersByScript" :key="i">
+          <div v-for="(script, i) in missingCharacters" :key="i">
             <h3>{{ script.script }}</h3>
             <button :class="`glyph support-${
                 5 - [ 0, 20000, 600000, 2000000, 8000000 ].filter(limit => c.speakers > limit).length
@@ -208,7 +210,16 @@ Vue.component('v-style', {
 
 const unsupportedLanguagesSortingOptions = [
   'alphabetically',
-  'by number of speakers',
+  'by speakers',
+  'by included chars',
+  'by missing chars',
+  'by missing chars/speakers',
+];
+const supportedLanguagesSortingOptions = unsupportedLanguagesSortingOptions;
+const missingCharacterSortingOptions = [
+  'alphabetically',
+  'by speakers',
+  'by language count'
 ];
 
 export default {
@@ -223,7 +234,11 @@ export default {
   data() {
     return {
       unsupportedLanguagesSortingOptions,
+      supportedLanguagesSortingOptions,
+      missingCharacterSortingOptions,
       unsupportedLanguagesSorting: unsupportedLanguagesSortingOptions[0],
+      supportedLanguagesSorting: supportedLanguagesSortingOptions[1],
+      missingCharacterSorting: missingCharacterSortingOptions[2],
       selectedCharacter: null,
     }
   },
@@ -233,15 +248,36 @@ export default {
       "languageSupport",
       "settings",
     ]),
+    supportedLanguages() {
+      let langs = this.languageSupport.supportedLanguages.slice();
+      this.sortLanguages(langs, this.supportedLanguagesSorting);
+      return langs;
+    },
     unsupportedLanguages() {
       let langs = this.languageSupport.unsupportedLanguages.slice();
-      if (this.unsupportedLanguagesSorting === this.unsupportedLanguagesSortingOptions[1]) {
-        langs.sort((a, b) => b.speakers - a.speakers);
-      }
+      this.sortLanguages(langs, this.unsupportedLanguagesSorting);
       return langs;
+    },
+    missingCharacters() {
+      let chars = this.languageSupport.missingCharactersByScript.map(script => ({ ...script, characters: script.characters.slice() }));
+      switch (this.missingCharacterSortingOptions.indexOf(this.missingCharacterSorting)) {
+        case 1: chars.forEach(s => s.characters.sort((a, b) => b.speakers - a.speakers)); break;
+        case 2: chars.forEach(s => s.characters.sort((a, b) => b.obligatoryLanguages.length - a.obligatoryLanguages.length)); break;
+      }
+      return chars;
     },
   },
   methods: {
+    sortLanguages (langs, sorting) {
+      switch (this.supportedLanguagesSortingOptions.indexOf(sorting)) {
+        case 1: langs.sort((a, b) => b.speakers - a.speakers); break;
+        case 2: langs.sort((a, b) => b.includedCharacters.length - a.includedCharacters.length); break;
+        case 3: langs.sort((a, b) => b.missingCharacters.length - a.missingCharacters.length); break;
+        case 4: langs.sort((a, b) => -b.missingCharacters.length / b.speakers + a.missingCharacters.length / a.speakers); break;
+      }
+      return langs;
+    },
+
     printNumber,
     copySupportedLanguages() {
       this.$refs.supportedLanguages.select();
@@ -298,11 +334,12 @@ export default {
   .glyph {
     border: 0;
     display: inline-block;
-    min-width: 1.5em;
     background: #ddd;
     text-align: center;
     margin: 1px;
 
+    font-size: 1.5em;
+    min-width: 1.5em;
     line-height: 1.5em;
     font-family: var(--selectedFontFamily), var(--fallbackFontFamily);
     // &:hover {
@@ -333,6 +370,7 @@ export default {
     margin: 0 0.25em;
     .ui-select__display, ui-select__display-value {
       font-size: 1em;
+      min-width: 10em;
     }
   }
 

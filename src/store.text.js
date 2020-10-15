@@ -451,12 +451,12 @@ export default {
 
 
 function groupCharactersByScriptAndSpeakers(languages, fieldKey, targetKey = "characters") {
-  const charactersByScript = {};
+  const charactersByScript = [];
   languages.forEach(language => {
-    let script = charactersByScript[language.script];
+    let script = charactersByScript.find(s => s.script === language.script);
     if (!script) {
       script = { script: language.script, [targetKey]: [] }
-      charactersByScript[language.script] = script;
+      charactersByScript.push(script);
     }
 
     language[fieldKey].forEach(lc => {
@@ -470,10 +470,10 @@ function groupCharactersByScriptAndSpeakers(languages, fieldKey, targetKey = "ch
     });
   });
 
-  Object.keys(charactersByScript).forEach(k => {
-    charactersByScript[k][targetKey]
+  charactersByScript.forEach(script => {
+    script[targetKey]
     .sort((a, b) => a.character.localeCompare(b.character, 'en', { caseFirst: 'upper' }));
-    charactersByScript[k][targetKey]
+    script[targetKey]
       .forEach(c => {
         c.obligatoryLanguages = LANGUAGES.filter(l => l.alphabet.indexOf(c.character) > -1);
         c.optionalLanguages = LANGUAGES.filter(l => l.optionalCharacters.indexOf(c.character) > -1);
