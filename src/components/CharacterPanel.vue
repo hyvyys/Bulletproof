@@ -15,8 +15,8 @@
       </div>
       <br>
 
-      <div v-if="characterInfo.obligatoryLanguages.length === 1">
-        <a :href="`https://wordfinder.italicharacterInfo.space/search?i=${characterInfo.character}&l=${characterInfo.obligatoryLanguages[0].htmlTag}`"
+      <div>
+        <a :href="wordFinderUrl"
           target="_blank" rel="noopener noreferrer"
         >find words</a>
       </div>
@@ -46,6 +46,13 @@ export default {
     characterInfo: {
       type: Object,
       required: true,
+    },
+  },
+  computed: {
+    wordFinderUrl() {
+      return `https://wordfinder.italic.space/search` +
+        `?i=${ this.characterInfo.character }` +
+        `&l=${ this.characterInfo.obligatoryLanguages.map(l => l.htmlTag).join(',') }`
     },
   },
   methods: {

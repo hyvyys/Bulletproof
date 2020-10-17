@@ -1,9 +1,10 @@
 <template>
 <div class="character-info">
-  <div class="character-font-preview">{{ character  }} </div>
+  <div class="character-font-preview">{{ character }} </div>
   <div class="info-bar">
-    <div style="font-size: 2.5rem">{{ character  }} </div>
-    <div>{{ codepoints }}</div>
+    <div style="font-size: 2.5rem">{{ characterRepresentation  }} </div>
+    <div>{{ unicodes }}</div>
+    <div>{{ glyphnames }}</div>
     <a
       :href="`https://en.wikipedia.org/wiki/${ character }`"
       target="_blank" rel="noopener noreferrer"
@@ -21,26 +22,39 @@ export default {
     },
   },
   computed: {
+    characterRepresentation() {
+      let c = this.character.charCodeAt(0);
+      return (c > 0x2FF && c < 0x327 ? '\u25CC' : '') + this.character;
+    },
     codepoints() {
-      return this.character.split('').map(c => 'uni' + c.charCodeAt(0).toString(16).toUpperCase().padStart(4, "0")).join(' + ');
+      return this.character.split('').map(c => c.charCodeAt(0).toString(16).toUpperCase().padStart(4, "0"));
+    },
+    glyphnames() {
+      return this.codepoints.map(c => 'uni' + c).join(' + ');
+    },
+    unicodes() {
+      return this.codepoints.map(c => 'U+' + c).join(' ');
     },
   },
 }
 </script>
 
 <style lang="scss" scoped>
-.character-font-preview {
-  font-size: 6rem;
-  text-align: center;
-  font-family: var(--selectedFontFamily);
-}
-.info-bar {
-  display: flex;
-  justify-content:
-  space-between;
-  align-items: center;
-  :not(:first-child) {
-    margin-left: 1rem;
+.character-info {
+  .character-font-preview {
+    font-size: 6rem;
+    text-align: center;
+    font-family: var(--selectedFontFamily);
+  }
+  .info-bar {
+    display: flex;
+    align-items: center;
+    > * {
+      margin-right: 1rem;
+    }
+    :last-child {
+      margin-left: auto;
+    }
   }
 }
 </style>

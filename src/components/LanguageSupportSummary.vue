@@ -275,7 +275,7 @@ export default {
     --backgroundColor: transparent;
     padding: 1rem;
     flex-shrink: 0;
-    width: 30%;
+    width: 40%;
     height: 100%;
     // align-self: flex-start;
     // position: sticky;
@@ -298,6 +298,11 @@ export default {
         justify-content: center;
         background: white !important;
         padding: 1em;
+        padding-right: 0.1em;
+
+        .character-panel, .language-panel {
+          margin-right: 1em;
+        }
 
         >:not(.placeholder-info) {
           height: 100%;

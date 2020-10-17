@@ -11,7 +11,7 @@
 
   <p><strong>{{ printNumber(languageInfo.speakers) }} speakers</strong></p>
 
-  <header v-if="languageInfo.missingCharacters && languageInfo.missingCharacters.length">missing characters</header>
+  <header v-if="languageInfo.missingCharacters.length">missing characters</header>
   <div class='glyphs'>
     <button class="glyph support-4" v-for="(c, j) in languageInfo.missingCharacters" :key="j"
       @click="$emit('character-clicked', c)"
@@ -19,12 +19,22 @@
     </button>
   </div>
 
-  <header v-if="languageInfo.includedCharacters && languageInfo.includedCharacters.length">supported characters</header>
+  <header v-if="languageInfo.includedCharacters.length">supported characters</header>
   <div class='glyphs'>
     <button class="glyph support-0" v-for="(c, j) in languageInfo.includedCharacters" :key="j"
       @click="$emit('character-clicked', c)"
     >{{ c }}
     </button>
+  </div>
+
+  <div v-if="languageInfo.specialLetters.length != languageInfo.requiredCharacters.length">
+    <header>letter units</header>
+    <div class='glyphs'>
+      <button class="glyph" v-for="(c, j) in languageInfo.specialLetters" :key="j"
+        @click="$emit('character-clicked', c)"
+      >{{ c }}
+      </button>
+    </div>
   </div>
 
   <div v-if="languageInfo.gotchas.length">

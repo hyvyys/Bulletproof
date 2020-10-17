@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="scroll-panel">
     <div v-bar="{ preventParentScroll: true }">
-      <div>
+      <div class="content">
         <slot />
       </div>
     </div>
