@@ -18,6 +18,10 @@ html {
   overflow: hidden;
 }
 
+* {
+  font-variant-numeric: lining-nums;
+}
+
 code, pre, samp, kbd {
   font-family: $monospaced;
   font-size: 13px;

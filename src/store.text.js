@@ -8,7 +8,6 @@ import languageDataFields from "@/models/textKindLanguageDataField";
 import LanguageData from "language-data";
 import escapeHtmlId from "./utils/escapeHtmlId";
 import escapeHtml from "./utils/escapeHtml";
-import CharacterFilter from "./models/CharacterFilter";
 import KerningGenerator from "./models/KerningGenerator";
 
 let id = 0;
@@ -301,21 +300,18 @@ export default {
           switch (getters.selectedSampleKey) {
             case "ABCs": {
               const AaBbCc = texts;
-              const ABC = CharacterFilter.filter(AaBbCc, g => g.toUpperCase() === g)
-                .replace(/ +/g, " ").trim();
-              const abc = CharacterFilter.filter(AaBbCc, g => g.toLowerCase() === g)
-                .replace(/ +/g, " ").trim();
+              const ABC = AaBbCc.split(' ').filter(l => l.split('').every(g=> g.toUpperCase() === g));
+              const abc = AaBbCc.split(' ').filter(l => l.split('').every(g=> g.toLowerCase() === g));
               fragments = [
-                // AaBbCc,
-                // ABC,
-                // abc,
-                AaBbCc.replace(/ /g, ""),
-                ABC.replace(/ /g, ""),
-                abc.replace(/ /g, ""),
+                AaBbCc,
+                ABC.join(' '),
+                abc.join(' '),
               ];
               if (script == 'Latn') {
-                const accents = CharacterFilter.filter(abc, g => !/^[a-z ]$/.test(g));
-                fragments.push(accents);
+                const Accents = ABC.filter(g => !/^[A-Z ]+$/.test(g));
+                const accents = abc.filter(g => !/^[a-z ]+$/.test(g));
+                fragments.push(Accents.join(''));
+                fragments.push(accents.join(''));
               }
 
               fragments = fragments.map(t => `<p>${t}</p>`);
@@ -405,17 +401,27 @@ export default {
     kerningPatterns: (state) => state.kerningPatterns,
 
     languageSupport: (state, getters) => {
+      function uniqueCharacterFilter(c,i, a) {
+        return !/^[A-Za-z ]+$/.test(c) && a.indexOf(c) === i;
+      }
+
       const testableLanguages = getters.selectedLanguages; //.filter(l => l.specialCharacters);
 
       const languages = testableLanguages.map(l => {
-        const requiredCharacters = (l.script === 'Latn' ? l.specialCharacters : l.alphabet).split(' ')
+        const specialLetters = (l.script === 'Latn' ? l.specialCharacters : l.alphabet).split(' ')
           .filter((e, i, a) => a.indexOf(e) === i && e)
-          .filter((c) => c.length < 2 || Array(c.length - 1).fill(0).every((_,i) => isAccent(c, i + 1)));
+          // .filter((c) => c.length < 2 || Array(c.length - 1).fill(0).every((_,i) => isAccent(c, i + 1)));
+          // .filter((c) => !/^[A-Za-z ]+$/.test(c));
+
+        const requiredCharacters = specialLetters.join('').split('')
+          .filter(uniqueCharacterFilter);
+
         const includedCharacters = requiredCharacters.filter(g => g.split('').every(c => state.fontCharacters.indexOf(c) > -1));
         const missingCharacters = requiredCharacters.filter(g => includedCharacters.indexOf(g) === -1);
 
         return {
           ...l,
+          specialLetters,
           requiredCharacters,
           includedCharacters,
           missingCharacters,
@@ -428,8 +434,10 @@ export default {
       const missingCharacters = languages
         .reduce((acc, cur) => [...cur.missingCharacters, ...acc], []);
 
-      const characters = languages
-        .reduce((acc, cur) => [...cur.requiredCharacters, ...acc], [])
+      const characters = [
+          ...languages.reduce((acc, cur) => [...cur.specialLetters, ...acc], []),
+          ...languages.reduce((acc, cur) => [...cur.requiredCharacters, ...acc], [])
+        ]
         .filter((v, i, a) => a.indexOf(v) === i)
         .map(c => ({
           character: c,

@@ -4,17 +4,17 @@ $fontDir: "~@/assets/fonts";
 
 @include font-face("Rywalka", $fontDir, ((Regular, 400, normal), ), (ttf), "Rywalka Bulletproof");
 
-@include font-face("alegreya-sans-v10-latin-ext_cyrillic_cyrillic-ext_latin_vietnamese_greek-ext_greek",
+@include font-face("AlegreyaSans",
   $fontDir + "/Alegreya-Sans",
   (
     // (100, 100, normal),
-    (regular, 400, normal),
-    (italic, 400, italic),
-    (500, 500, normal),
-    (700, bold, normal),
-    (800, 800, normal),
+    (Regular, 400, normal),
+    (Italic, 400, italic),
+    (Medium, 500, normal),
+    (Bold, bold, normal),
+    (ExtraBold, 800, normal),
   ),
-  (eot, woff2, woff, ttf, svg),
+  (eot, woff2, woff, ttf),
   'Alegreya Bulletproof');
   
 @import "~@/assets/fonts/iosevka-ss09/webfont.css";
