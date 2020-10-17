@@ -30,16 +30,19 @@
   }
 
   .ui-textbox__input {
-    height: unset !important;
+/* dunno what this does */
+    // height: unset !important;
+    max-height: 2.5em;
   }
   .ui-textbox__label {
-    // height: $ui-input-height !important;
+    height: $ui-input-height !important;
   }
 
-  .ui-textbox__label,
-  .ui-select__display {
-    align-items: flex-end !important;
-  }
+/* dunno what this does */
+//   .ui-textbox__label,
+//   .ui-select__display {
+//     align-items: flex-end !important;
+//   }
 
   .ui-select {
     .ui-icon {
