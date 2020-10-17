@@ -10,7 +10,7 @@
     <div class="main-column">
       <div>
         <p>
-            Font supports <strong>{{ languageSupport.supportedLanguages.length }}</strong> out of <strong>{{ languageSupport.allLanguages.length }}</strong> listed languages.
+            Font supports <strong>{{ languageSupport.supportedLanguages.length }}</strong> out of <strong>{{ languageSupport.languages.length }}</strong> listed languages.
         </p>
 
         <h2>
@@ -18,36 +18,7 @@
           <UiSelect class="inline" :options="supportedLanguagesSortingOptions" v-model="supportedLanguagesSorting" />
         </h2>
 
-        <div>
-          <div>
-            <UiButton @click="copySupportedLanguages">copy list</UiButton>
-            <textarea
-              style="position: absolute;left:-9999px"
-              ref="supportedLanguages"
-              :value="languageSupport.supportedLanguages.map(l => l.language).join(', ')"
-            />
-          </div>
-
-          <span
-            v-for="(l, i) in supportedLanguages"
-            :key="i"
-            :lang="l.htmlCode"
-          >
-            <UiButton :class="`support-${Math.min(4, Math.ceil(l.missingCharacters.length / 5))}`">
-              {{ l.language }}
-              <div class="gotcha-warning-icon" v-if="l.gotchas.length">
-                !
-              </div>
-            </UiButton>
-
-            <UiTooltip :appendToBody="false" :interactive="true" openOn="click">
-              <LanguageInfo :lang="l.htmlTag" :languageInfo="l" @characterClicked="c =>
-                selectCharacter(languageSupport.includedCharactersByScript.find(s=>s.script===l.script).characters
-                  .find(cc => cc.character === c))"
-              />
-            </UiTooltip>
-          </span>
-        </div>
+        <LanguageList :languages="supportedLanguages" @select-language="l => selectLanguage(l)" />
 
         <h2>
           Unsupported languages
@@ -59,35 +30,11 @@
             v-for="(l, i) in unsupportedLanguages"
             :key="i"
           >
-            <UiButton :class="`support-${Math.min(4, Math.ceil(l.missingCharacters.length / 5))}`">
+            <UiButton :class="`support-${Math.min(4, Math.ceil(l.missingCharacters.length / 5))}`"
+              @click="selectLanguage(l)"
+            >
               {{ l.language }}
             </UiButton>
-
-            <UiTooltip :appendToBody="false" :interactive="true" openOn="click">
-              <div style="display: flex">
-                <strong>{{ l.language }} </strong>
-                <a style="margin-left: auto"
-                  :href="`https://en.wikipedia.org/wiki/${l.language.replace(/languages?$/,'_language')}`"
-                  target="_blank" rel="noopener noreferrer"
-                >Wikipedia</a>
-              </div>
-
-              <p><strong>{{ printNumber(l.speakers) }} speakers</strong></p>
-              <div>
-                <div>missing:</div>
-                <button class="glyph support-4" v-for="(c, j) in l.missingCharacters" :key="j"
-                  @click="selectCharacter(languageSupport.missingCharactersByScript.find(s=>s.script===l.script).characters.find(cc => cc.character === c))"
-                >{{ c }}
-                </button>
-              </div>
-              <div>
-                <div>supported:</div>
-                <button class="glyph support-0" v-for="(c, j) in l.includedCharacters" :key="j"
-                  @click="selectCharacter(languageSupport.includedCharacters.find(cc => cc.character === c))"
-                >{{ c }}
-                </button>
-              </div>
-            </UiTooltip>
           </span>
         </div>
 
@@ -114,12 +61,12 @@
         </h2>
 
         <div>
-          <div v-for="(script, i) in languageSupport.missingCharactersByScript" :key="i">
+          <div v-for="(script, i) in languageSupport.missingCharacterCombinationsByScript" :key="i">
             <h3>{{ script.script }}</h3>
             <button :class="`glyph support-${
                 5 - [ 0, 20000, 600000, 2000000, 8000000 ].filter(limit => c.speakers > limit).length
               }`"
-              v-for="(c, j) in script.characters.filter(c => c.character.length > 1 && isAccent(c, 1))" :key="j"
+              v-for="(c, j) in script.characters" :key="j"
               @click="selectCharacter(c)"
             >{{ c.character }}
             </button>
@@ -148,12 +95,12 @@
         </h2>
 
         <div>
-          <div v-for="(script, i) in languageSupport.includedCharactersByScript" :key="i">
+          <div v-for="(script, i) in languageSupport.includedCharacterCombinationsByScript" :key="i">
             <h3>{{ script.script }}</h3>
             <button :class="`glyph support-${
                 5 - [ 0, 20000, 600000, 2000000, 8000000 ].filter(limit => c.speakers > limit).length
                 }`"
-              v-for="(c, j) in script.characters.filter(c => c.character.length > 1 && isAccent(c, 1))" :key="j"
+              v-for="(c, j) in script.characters" :key="j"
               @click="selectCharacter(c)"
             >{{ c.character }}
             </button>
@@ -166,7 +113,7 @@
 
         <div>
           <button
-            v-for="(c, j) in languageSupport.includedCharacters" :key="j"
+            v-for="(c, j) in languageSupport.fontCharacters" :key="j"
             :class="`glyph support-${
                 5 - [ 0, 20000, 600000, 2000000, 8000000 ].filter(limit => c.speakers > limit).length
               }`"
@@ -182,9 +129,29 @@
       class="sidebar"
       :isPinned="true"
       :isVisible="true"
-      :scrolled="true"
+      :scrolled="false"
     >
-      <CharacterPanel v-if="selectedCharacter" :characterInfo="selectedCharacter" />
+      <div class="language-character-sidebar">
+        <ScrollPanel v-if="selectedCharacter">
+          <CharacterPanel :characterInfo="selectedCharacter"
+            @select-language="l => selectLanguage(l)"
+          />
+        </ScrollPanel>
+        <div class="placeholder-info" v-else>
+          {{ languageSupport.characters.filter(c => !c.isMissing).length }} /
+          {{ languageSupport.characters.length }} characters
+        </div>
+
+        <ScrollPanel v-if="selectedLanguage">
+          <LanguagePanel :lang="selectedLanguage.htmlTag" :languageInfo="selectedLanguage"
+            @character-clicked="c => selectCharacter(languageSupport.characters.find(cc => cc.character === c))"
+          />
+        </ScrollPanel>
+        <div class="placeholder-info" v-else>
+          {{ languageSupport.supportedLanguages.length }} /
+          {{ languageSupport.languages.length }} languages
+        </div>
+      </div>
     </Pinnable>
 
   </div>
@@ -192,9 +159,11 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
-import Pinnable from "@/components/layout/Pinnable.vue";
+import Pinnable from "@/components/layout/Pinnable";
+import ScrollPanel from "@/components/layout/ScrollPanel";
 import UiTooltip from "@/components/UiTooltip";
-import LanguageInfo from "@/components/LanguageInfo";
+import LanguagePanel from "@/components/LanguagePanel";
+import LanguageList from "@/components/LanguageList";
 import CharacterPanel from "@/components/CharacterPanel";
 import UiButton from "keen-ui/src/UiButton";
 import UiSelect from "keen-ui/src/UiSelect";
@@ -224,12 +193,14 @@ const missingCharacterSortingOptions = [
 
 export default {
   components: {
-    LanguageInfo,
+    LanguagePanel,
+    LanguageList,
     CharacterPanel,
     UiTooltip,
     UiButton,
     UiSelect,
     Pinnable,
+    ScrollPanel,
   },
   data() {
     return {
@@ -240,6 +211,7 @@ export default {
       supportedLanguagesSorting: supportedLanguagesSortingOptions[1],
       missingCharacterSorting: missingCharacterSortingOptions[2],
       selectedCharacter: null,
+      selectedLanguage: null,
     }
   },
   computed: {
@@ -279,16 +251,11 @@ export default {
     },
 
     printNumber,
-    copySupportedLanguages() {
-      this.$refs.supportedLanguages.select();
-      document.execCommand('copy');
-      window.getSelection().removeAllRanges();
-    },
     selectCharacter(c) {
       this.selectedCharacter = c;
     },
-    isAccent(c, i) {
-      return c.character.charCodeAt(i) > 0x0300 && c.character.charCodeAt(i) < 0x037E;
+    selectLanguage(c) {
+      this.selectedLanguage = c;
     },
   },
 }
@@ -304,15 +271,39 @@ export default {
     padding: 1rem;
   }
   .sidebar {
-    background: white !important;
-    --backgroundColor: white;
+    background: transparent !important;
+    --backgroundColor: transparent;
     padding: 1rem;
     flex-shrink: 0;
-    width: 250px;
+    width: 30%;
     height: 100%;
     // align-self: flex-start;
     // position: sticky;
     // top: 0;
+
+    .language-character-sidebar {
+      display: flex;
+      height: 100%;
+      flex-direction: column;
+      justify-content: space-between;
+      > :first-child {
+        margin-bottom: 1.5em;
+      }
+      > * {
+        border-radius: 0.8em;
+        flex: 0 0 50%;
+        overflow-y: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background: white !important;
+        padding: 1em;
+
+        >:not(.placeholder-info) {
+          height: 100%;
+        }
+      }
+    }
   }
 
   .ui-button {
@@ -403,6 +394,9 @@ export default {
   $b: #44e4d6;
   $aText: #6db9b6;
 
+
+
+/****************/
   $a: #f0e3e3;
   $b: #92beff;
   $aText: #2e78b4;
@@ -417,18 +411,31 @@ export default {
       text-transform: none;
     }
   }
+/****************/
 
-  .gotcha-warning-icon {
-    margin-left: 0.4em;
-    margin-right: -0.4em;
-    border-radius: 50%;
-    color: $b;
-    background: $a;
-    opacity: 0.5;
-    font-weight: bold;
-    width: 1.2em;
-    height: 1.2em;
-    line-height: 1.2;
+
+/****************/
+  $aText: #501111;
+
+  @for $i from 0 through 5 {
+    .support-#{$i} {
+      $shade: hsl((5 - $i) * 20 + if($i==0, 25, 0), 55, 72);
+      background: mix(white, $shade, 0);
+      color: mix($aText, black, $i * 20);
+      // color: white;
+      font-weight: 500;
+      text-transform: none;
+    }
   }
+/****************/
+
+
+
+}
+
+.placeholder-info {
+  text-align: center;
+  font-variant-caps: small-caps;
+  color: #aaa;
 }
 </style>

@@ -407,10 +407,13 @@ export default {
     languageSupport: (state, getters) => {
       const testableLanguages = getters.selectedLanguages; //.filter(l => l.specialCharacters);
 
-      const details = testableLanguages.map(l => {
-        const requiredCharacters = (l.script === 'Latn' ? l.specialCharacters : l.alphabet).split(' ').filter((e, i, a) => a.indexOf(e) === i && e);
+      const languages = testableLanguages.map(l => {
+        const requiredCharacters = (l.script === 'Latn' ? l.specialCharacters : l.alphabet).split(' ')
+          .filter((e, i, a) => a.indexOf(e) === i && e)
+          .filter((c) => c.length < 2 || Array(c.length - 1).fill(0).every((_,i) => isAccent(c, i + 1)));
         const includedCharacters = requiredCharacters.filter(g => g.split('').every(c => state.fontCharacters.indexOf(c) > -1));
         const missingCharacters = requiredCharacters.filter(g => includedCharacters.indexOf(g) === -1);
+
         return {
           ...l,
           requiredCharacters,
@@ -419,18 +422,38 @@ export default {
         };
       });
 
-      const supportedLanguages = details
-        .filter(l => l.requiredCharacters.length === l.includedCharacters.length);
-      const unsupportedLanguages = details.filter(l => supportedLanguages.indexOf(l) === -1);
+      const supportedLanguages = languages.filter(l => l.requiredCharacters.length === l.includedCharacters.length);
+      const unsupportedLanguages = languages.filter(l => supportedLanguages.indexOf(l) === -1);
 
-      const missingCharactersByScript = groupCharactersByScriptAndSpeakers(unsupportedLanguages, "missingCharacters");
-      const includedCharactersByScript = groupCharactersByScriptAndSpeakers(supportedLanguages, "includedCharacters");
+      const missingCharacters = languages
+        .reduce((acc, cur) => [...cur.missingCharacters, ...acc], []);
 
-      const includedCharacters = state.fontCharacters.map(c => ({
+      const characters = languages
+        .reduce((acc, cur) => [...cur.requiredCharacters, ...acc], [])
+        .filter((v, i, a) => a.indexOf(v) === i)
+        .map(c => ({
           character: c,
           unicode: c.charCodeAt(0),
-          obligatoryLanguages: LANGUAGES.filter(l => l.alphabet.indexOf(c) > -1),
-          optionalLanguages: LANGUAGES.filter(l => l.optionalCharacters.indexOf(c) > -1),
+          obligatoryLanguages: languages.filter(l => l.alphabet.indexOf(c) > -1),
+          optionalLanguages: languages.filter(l => l.optionalCharacters.indexOf(c) > -1),
+          script: (LANGUAGES.find(l => l.alphabet.indexOf(c) > -1) || {script: 'Latn'}).script,
+          isMissing: missingCharacters.indexOf(c) > -1,
+        }))
+        .map(ch => ({
+          ...ch,
+          speakers: [... ch.obligatoryLanguages, ...ch.optionalLanguages ].reduce((acc, cur) => acc + cur.speakers, 0),
+        }));
+
+      const missingCharactersByScript = groupCharactersByScript(characters, true);
+      const includedCharactersByScript = groupCharactersByScript(characters, false);
+      const missingCharacterCombinationsByScript = characterCombinations(missingCharactersByScript);
+      const includedCharacterCombinationsByScript = characterCombinations(includedCharactersByScript);
+
+      const fontCharacters = state.fontCharacters.map(c => ({
+          character: c,
+          unicode: c.charCodeAt(0),
+          obligatoryLanguages: languages.filter(l => l.alphabet.indexOf(c) > -1),
+          optionalLanguages: languages.filter(l => l.optionalCharacters.indexOf(c) > -1),
         }))
         .map(ch => ({
           ...ch,
@@ -438,47 +461,51 @@ export default {
         }));
 
       return {
+        languages,
         supportedLanguages,
         unsupportedLanguages,
-        allLanguages: details,
+        characters,
         missingCharactersByScript,
         includedCharactersByScript,
-        includedCharacters,
+        missingCharacterCombinationsByScript,
+        includedCharacterCombinationsByScript,
+        fontCharacters,
       };
     },
   },
 }
 
 
-function groupCharactersByScriptAndSpeakers(languages, fieldKey, targetKey = "characters") {
+function groupCharactersByScript(characters, isMissing) {
   const charactersByScript = [];
-  languages.forEach(language => {
-    let script = charactersByScript.find(s => s.script === language.script);
-    if (!script) {
-      script = { script: language.script, [targetKey]: [] }
-      charactersByScript.push(script);
-    }
-
-    language[fieldKey].forEach(lc => {
-      let character = script[targetKey].find(c => c.character === lc);
-      if (!character) {
-        character = { character: lc, languages: [], speakers: 0 };
-        script[targetKey].push(character);
+  characters
+    .filter(c => c.isMissing === isMissing)
+    .forEach(c => {
+      let script = charactersByScript.find(s => s.script === c.script);
+      if (!script) {
+        script = { script: c.script, characters: [] }
+        charactersByScript.push(script);
       }
-      character.languages.push(language.language);
-      character.speakers += language.speakers;
-    });
+      script.characters.push(c);
   });
 
   charactersByScript.forEach(script => {
-    script[targetKey]
-    .sort((a, b) => a.character.localeCompare(b.character, 'en', { caseFirst: 'upper' }));
-    script[targetKey]
-      .forEach(c => {
-        c.obligatoryLanguages = LANGUAGES.filter(l => l.alphabet.indexOf(c.character) > -1);
-        c.optionalLanguages = LANGUAGES.filter(l => l.optionalCharacters.indexOf(c.character) > -1);
-      });
+    script.characters.sort((a, b) => a.character.localeCompare(b.character, 'en', { caseFirst: 'upper' }));
   });
 
   return charactersByScript;
+}
+
+
+function isAccent(c, i) {
+  return c.charCodeAt(i) > 0x0300 && c.charCodeAt(i) < 0x037E;
+}
+
+function characterCombinations(charactersByScript) {
+  return charactersByScript.map(s =>
+    ({
+      ...s,
+      characters: s.characters.filter(c => c.character.length > 1 && isAccent(c.character, 1))
+    })
+  ).filter(s => s.characters.length);
 }
