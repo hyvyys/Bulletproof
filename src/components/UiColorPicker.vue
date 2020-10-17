@@ -113,6 +113,7 @@ export default {
       if (this.colorValue.getFormat() === "hex") {
         if (!/^#/.test(this.textValue)) {
           this.textValue = "#" + this.textValue;
+          // this.update();
         }
       }
     },

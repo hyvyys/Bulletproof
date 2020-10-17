@@ -16,6 +16,11 @@
     max-height: 46px;
     overflow: hidden;
   }
+
+  .ui-textbox.is-multi-line {
+    background: #fff;
+  }
+
   .ui-select__display-value {
     max-height: 2.5em;
     overflow: hidden;
@@ -28,7 +33,7 @@
     height: unset !important;
   }
   .ui-textbox__label {
-    height: $ui-input-height !important;
+    // height: $ui-input-height !important;
   }
 
   .ui-textbox__label,

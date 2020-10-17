@@ -168,12 +168,12 @@ export default class Settings {
   }
 
   static mergeStyleOntoSettings(settings, style) {
-    settings.fontSize = parseFloat(style.fontSize),
-    settings.lineHeight = parseFloat(settings.lineHeight),
+    settings.fontSize = parseFloat(style.fontSize);
+    settings.lineHeight = parseFloat(settings.lineHeight);
     // settings.textAlign = style.textAlign
     // settings.textTransform = style.textTransform
-    settings.textColor = style.color
-    settings.backgroundColor = style.backgroundColor
+    settings.textColor = style.color;
+    settings.backgroundColor = style.backgroundColor;
 
     function mapCompoundProp(from, to) {
       const features = {};

@@ -7,15 +7,30 @@ function clone(obj) {
 
 export default {
   state: {
+    animatedProperties: Object.keys(Settings.definitions),
+    animatableProperties: Object.keys(Settings.definitions),
     animationKeyframes: [],
     activeKeyframeId: null,
     maxId: 0,
   },
   getters: {
+    animatedProperties: state => state.animatedProperties,
+    animatableProperties: state => state.animatableProperties,
     animationKeyframes: state => state.animationKeyframes,
     activeKeyframeId: state => state.activeKeyframeId,
   },
   mutations: {
+    setAnimatedProperties(state, { properties }) {
+      state.animatedProperties = properties;
+    },
+    importAnimationKeyframes(state, { keyframes }) {
+      try {
+        state.animationKeyframes = JSON.parse(keyframes);
+      }
+      catch (e) {
+        console.log(e);
+      }
+    },
     addAnimationKeyframe(state) {
       const id = ++state.maxId;
       state.activeKeyframeId = id;
@@ -50,7 +65,12 @@ export default {
     animateSettings(context, { style }) {
       const snapshot = clone(this.state.settings);
       Settings.mergeStyleOntoSettings(snapshot, style);
-      this.commit("animateSettings", { settings: snapshot });
+
+      const settings = clone(this.state.settings);
+      Object.keys(snapshot).filter(k => context.state.animatedProperties.indexOf(k) > -1).forEach(k => {
+        settings[k] = snapshot[k];
+      })
+      this.commit("animateSettings", { settings });
     },
   },
 }

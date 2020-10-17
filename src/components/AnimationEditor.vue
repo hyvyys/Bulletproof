@@ -44,6 +44,20 @@
       </template>
     </EditableList>
 
+
+    <div class="row-v">
+      <label class="row-label">Code</label>
+      <UiTextbox :value="keyframesText" @input="v => importAnimationKeyframes(v)"
+         :multiLine="true" :rows="5" :autosize="false"
+      />
+    </div>
+
+    <div class="row-v">
+      <label class="row-label">Animated</label>
+      <UiSelect :value="animatedProperties" :options="animatableProperties" @input="properties => setAnimatedProperties({ properties })" :multiple="true"  />
+    </div>
+
+
     <a key="help" target="_blank" rel="noopener noreferrer" href="/help/animation" class="help-link">
       <img svg-inline src="@/assets/icons/info.svg" class="help-icon" />
       <span>
@@ -58,6 +72,7 @@ import anime from "animejs";
 import { mapGetters, mapMutations } from "vuex";
 
 import UiTextbox from "keen-ui/src/UiTextbox.vue";
+import UiSelect from "keen-ui/src/UiSelect.vue";
 import UiButton from "keen-ui/src/UiButton.vue";
 import UiProgressLinear from "keen-ui/src/UiProgressLinear.vue";
 import EditableList from "@/components/EditableList.vue";
@@ -65,6 +80,7 @@ import EditableList from "@/components/EditableList.vue";
 export default {
   components: {
     UiTextbox,
+    UiSelect,
     UiButton,
     UiProgressLinear,
     EditableList,
@@ -80,15 +96,20 @@ export default {
   computed: {
     ...mapGetters([
       "animationKeyframes",
+      "animatedProperties",
+      "animatableProperties",
       "activeKeyframeId",
       ]),
     canAnimate() { return this.animationKeyframes.length >= 2; },
+    keyframesText() { return JSON.stringify(this.animationKeyframes); },
   },
   methods: {
     ...mapMutations([
       "addAnimationKeyframe",
       "removeAnimationKeyframe",
       "activateKeyframe",
+      "importAnimationKeyframes",
+      "setAnimatedProperties",
     ]),
     updateKeyframeProgress() {
       this.animationKeyframes.forEach((k, i, arr) => {

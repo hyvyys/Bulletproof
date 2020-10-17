@@ -105,7 +105,7 @@ export default {
     }),
     ...mapGetters([
       "selectedSampleKey",
-      "settings",
+      "displayedSettings",
       "selectedLoclLanguage",
       "selectedFont",
       "selectedBoldFont",
@@ -116,6 +116,7 @@ export default {
       "fontVariationSettings",
       "languageSupport",
     ]),
+    settings() { return this.displayedSettings },
     isGotchas() { return this.selectedSampleKey === "gotchas"; },
     fontSizes() {
       return this.settings.enableWaterfall
