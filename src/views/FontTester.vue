@@ -148,6 +148,7 @@ export default {
 
 .site-sidebar {
   z-index: 4;
+  flex: 0 0 auto;
 }
 
 .sidebar-settings {
