@@ -1,3 +1,93 @@
+
+<template>
+  <div class="ui-textbox ui-number" :class="classes">
+    <div v-if="icon || $slots.icon" class="ui-textbox__icon-wrapper">
+      <slot name="icon">
+        <ui-icon :icon="icon"></ui-icon>
+      </slot>
+    </div>
+
+    <div class="ui-textbox__content">
+      <label class="ui-textbox__label">
+        <div class="ui-textbox__input-wrapper">
+          <input
+            ref="input"
+            v-autofocus="autofocus"
+            class="ui-textbox__input"
+            :autocomplete="autocomplete ? autocomplete : null"
+            :disabled="disabled"
+            inputmode="numeric"
+            :max="maxValue"
+            :maxlength="enforceMaxlength ? maxlength : null"
+            :minlength="minlength"
+            :min="minValue"
+            :name="name"
+            :number="type === 'number' ? true : null"
+            :placeholder="hasFloatingLabel ? null : placeholder"
+            :readonly="readonly"
+            :required="required"
+            :step="stepValue"
+            :tabindex="tabindex"
+            :type="type"
+            :value="displayedText != null ? displayedText : value"
+            @blur="onBlur2"
+            @focus="onFocus"
+            @change="updateValue($event.target.value)"
+            @input="updateValue($event.target.value)"
+            @keydown.enter="onKeydownEnter"
+            @keydown="onKeydown"
+          />
+
+          <div class="ui-number-buttons">
+            <UiIconButton
+              :disabled="disabled"
+              class="ui-number__button ui-select__dropdown-button"
+              @mousedown.native="startIncrement"
+              @mouseleave.native="endIncrementDecrement"
+              @mouseup.native="endIncrementDecrement"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path
+                  transform="translate(0 24) scale(1 -1) translate(0 -1)"
+                  d="M6.984 9.984h10.03L12 15z"
+                />
+              </svg>
+            </UiIconButton>
+            <UiIconButton
+              :disabled="disabled"
+              class="ui-number__button ui-select__dropdown-button"
+              @mousedown.native="startDecrement"
+              @mouseleave.native="endIncrementDecrement"
+              @mouseup.native="endIncrementDecrement"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path transform="translate(0 -1)" d="M6.984 9.984h10.03L12 15z" />
+              </svg>
+            </UiIconButton>
+          </div>
+        </div>
+
+        <div v-if="label || $slots.default" class="ui-textbox__label-text" :class="labelClasses">
+          <slot>{{ label }}</slot>
+        </div>
+      </label>
+
+      <div v-if="hasFeedback || maxlength" class="ui-textbox__feedback">
+        <div v-if="showError" class="ui-textbox__feedback-text">
+          <slot name="error">{{ error }}</slot>
+        </div>
+
+        <div v-else-if="showHelp" class="ui-textbox__feedback-text">
+          <slot name="help">{{ help }}</slot>
+        </div>
+
+        <div v-if="maxlength" class="ui-textbox__counter">{{ valueLength + "/" + maxlength }}</div>
+      </div>
+    </div>
+  </div>
+</template>
+
+
 <script>
 const Decimal  = require("decimal.js")
 
@@ -33,6 +123,7 @@ export default {
   data() {
     return {
       displayedText: null, // only set when text is different from value and input is focused
+      tryValue: null,
       incrementTimeout: null,
     };
   },
@@ -71,11 +162,11 @@ export default {
       ) {
         const corrected = this.correctValue(value);
         if (Math.abs(value - corrected) < Number.EPSILON) {
-          this.displayedText = stringValue;
+          this.tryValue = null;
+          this.$emit("input", corrected);
         } else {
-          this.displayedText = null;
+          this.tryValue = corrected;
         }
-        this.$emit("input", corrected);
       }
     },
     coerceValue(value) {
@@ -101,6 +192,10 @@ export default {
       return value;
     },
     onBlur2(e) {
+      if (this.tryValue != null) {
+        this.updateValue(this.tryValue);
+        this.tryValue = null;
+      }
       this.onBlur(e);
       this.displayedText = null;
     },
@@ -202,91 +297,3 @@ $button-width: $button-height + 0.25rem;
   }
 }
 </style>
-
-<template>
-  <div class="ui-textbox ui-number" :class="classes">
-    <div v-if="icon || $slots.icon" class="ui-textbox__icon-wrapper">
-      <slot name="icon">
-        <ui-icon :icon="icon"></ui-icon>
-      </slot>
-    </div>
-
-    <div class="ui-textbox__content">
-      <label class="ui-textbox__label">
-        <div class="ui-textbox__input-wrapper">
-          <input
-            ref="input"
-            v-autofocus="autofocus"
-            class="ui-textbox__input"
-            :autocomplete="autocomplete ? autocomplete : null"
-            :disabled="disabled"
-            inputmode="numeric"
-            :max="maxValue"
-            :maxlength="enforceMaxlength ? maxlength : null"
-            :minlength="minlength"
-            :min="minValue"
-            :name="name"
-            :number="type === 'number' ? true : null"
-            :placeholder="hasFloatingLabel ? null : placeholder"
-            :readonly="readonly"
-            :required="required"
-            :step="stepValue"
-            :tabindex="tabindex"
-            :type="type"
-            :value="displayedText != null ? displayedText : value"
-            @blur="onBlur2"
-            @focus="onFocus"
-            @change="updateValue($event.target.value)"
-            @input="updateValue($event.target.value)"
-            @keydown.enter="onKeydownEnter"
-            @keydown="onKeydown"
-          />
-
-          <div class="ui-number-buttons">
-            <UiIconButton
-              :disabled="disabled"
-              class="ui-number__button ui-select__dropdown-button"
-              @mousedown.native="startIncrement"
-              @mouseleave.native="endIncrementDecrement"
-              @mouseup.native="endIncrementDecrement"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                <path
-                  transform="translate(0 24) scale(1 -1) translate(0 -1)"
-                  d="M6.984 9.984h10.03L12 15z"
-                />
-              </svg>
-            </UiIconButton>
-            <UiIconButton
-              :disabled="disabled"
-              class="ui-number__button ui-select__dropdown-button"
-              @mousedown.native="startDecrement"
-              @mouseleave.native="endIncrementDecrement"
-              @mouseup.native="endIncrementDecrement"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                <path transform="translate(0 -1)" d="M6.984 9.984h10.03L12 15z" />
-              </svg>
-            </UiIconButton>
-          </div>
-        </div>
-
-        <div v-if="label || $slots.default" class="ui-textbox__label-text" :class="labelClasses">
-          <slot>{{ label }}</slot>
-        </div>
-      </label>
-
-      <div v-if="hasFeedback || maxlength" class="ui-textbox__feedback">
-        <div v-if="showError" class="ui-textbox__feedback-text">
-          <slot name="error">{{ error }}</slot>
-        </div>
-
-        <div v-else-if="showHelp" class="ui-textbox__feedback-text">
-          <slot name="help">{{ help }}</slot>
-        </div>
-
-        <div v-if="maxlength" class="ui-textbox__counter">{{ valueLength + "/" + maxlength }}</div>
-      </div>
-    </div>
-  </div>
-</template>
