@@ -62,6 +62,7 @@ export default {
 }
 .tags {
   flex: 1;
+  display: flex;
   span {
     @include dark;
     padding: 2px 4px;

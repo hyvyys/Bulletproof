@@ -17,7 +17,7 @@
 
         <LanguageSupportSummary v-if="selectedSampleKey === 'languages'" languageSupport="languageSupport" />
 
-        <FontSample
+        <TesterBody
           v-else
           class="main"
           :texts="fontSampleTexts"
@@ -51,7 +51,7 @@ import { mapState, mapGetters } from "vuex";
 
 import Pinnable from "@/components/layout/Pinnable.vue";
 import Settings from "@/components/Settings.vue";
-import FontSample from "@/components/FontSample.vue";
+import TesterBody from "@/components/TesterBody.vue";
 import LanguageNav from "@/components/LanguageNav.vue";
 import KerningNav from "@/components/KerningNav.vue";
 import LanguageSupportSummary from "@/components/LanguageSupportSummary";
@@ -62,7 +62,7 @@ export default {
   components: {
     Pinnable,
     Settings,
-    FontSample,
+    TesterBody,
     LanguageNav,
     KerningNav,
     FontSampleNav,

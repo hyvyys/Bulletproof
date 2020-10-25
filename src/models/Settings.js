@@ -133,6 +133,10 @@ export default class Settings {
         type: Object,
         default: () => ([]),
       },
+      enableVariationAxis: {
+        type: Object,
+        default: () => ([]),
+      },
     }
   }
 
@@ -162,8 +166,10 @@ export default class Settings {
           .map(f => `'${f.tag}' ${f.value ? '1' : '0'} `)
           .join(', '),
       fontVariationSettings: settings.variationAxes
+          .filter(a => a.enabled)
           .map(a => `'${a.tag}' ${a.value} `)
-          .join(', '),
+          .join(', ')
+          || 'unset',
     };
   }
 

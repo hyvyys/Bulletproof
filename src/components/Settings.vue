@@ -118,7 +118,7 @@
       <!-- <label class="row-label">Wrap lines</label> -->
       <UiCheckbox
         ref="settingWrapLines"
-        label="Wrap lines"
+        label="Break-word"
         :value="settings.wrapLines"
         @input="v => updateSetting('updateSettings', { wrapLines: v })"
       />
@@ -219,19 +219,36 @@
       <div class="notice" v-if="variationAxes.length === 0">
         The selected font is not variable.
       </div>
-      <div class="row" v-for="(axis, key) in variationAxes" :key="key">
-        <label class="row-label axis-label">
-          {{ axis.displayName }}
-        </label>
-        <UiSlider
-          :value="axis.value"
-          @input="v => updateSetting('updateVariationAxis', { tag: axis.tag, value: v })"
-          :min="axis.minValue"
-          :max="axis.maxValue"
-          :step="0.5"
-          :snapToStep="true"
-          :showMarker="true"
-        />
+      <div v-for="(axis, key) in variationAxes" :key="key">
+        <div class="row">
+          <UiCheckbox
+            :label="axis.displayName"
+            :value="axis.enabled"
+            @input="v => updateSetting('updateVariationAxis', { tag: axis.tag, enabled: v })"
+          />
+        </div>
+        <div class="row">
+          <!-- <label class="row-label axis-label">
+            {{ axis.displayName }}
+          </label> -->
+          <UiSlider
+            style="margin: 0 0.5em; flex: 2"
+            :value="axis.value"
+            @input="v => updateSetting('updateVariationAxis', { tag: axis.tag, value: v })"
+            :min="axis.minValue"
+            :max="axis.maxValue"
+            :step="1"
+            :snapToStep="true"
+            :showMarker="false"
+          />
+          <UiNumber
+            :value="axis.value"
+            :min="axis.minValue"
+            :max="axis.maxValue"
+            :step="1"
+            @input="v => updateSetting('updateVariationAxis', { tag: axis.tag, value: v })"
+          />
+        </div>
       </div>
     </div>
 

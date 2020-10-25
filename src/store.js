@@ -175,15 +175,21 @@ const store = new Vuex.Store({
         return {
           ...a,
           value: matching ? matching.value : a.defaultValue,
+          enabled: matching ? matching.enabled : true,
           displayName: a.name.en,
         };
       });
     },
 
-    updateVariationAxis(state, { tag, value }) {
+    updateVariationAxis(state, { tag, value, enabled }) {
       const axis = state.settings.variationAxes.find(a => a.tag === tag);
       if (axis) {
-        axis.value = value;
+        if (value != null) {
+          axis.value = value;
+        }
+        if (enabled != null) {
+          axis.enabled = enabled;
+        }
       }
       this.commit("updateSetting");
     },
@@ -211,7 +217,7 @@ const store = new Vuex.Store({
         const settings = state.settings;
         const definition = Settings.definitions[key];
         const value = options[key];
-        if (!definition.validate || definition.validate(value, settings)) {
+        if (true || !definition.validate || definition.validate(value, settings)) {
           if (key == "fontSizeUnit") {
             this.commit("convertFontSize", { newUnit: value });
           }

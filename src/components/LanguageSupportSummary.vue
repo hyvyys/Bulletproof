@@ -77,50 +77,50 @@
           Included characters by script
         </h2>
 
-        <div>
+        <FontSample>
           <div v-for="(script, i) in languageSupport.includedCharactersByScript" :key="i">
             <h3>{{ script.script }}</h3>
-            <button :class="`glyph support-${
+            <div :class="`glyph support-${
                 5 - [ 0, 20000, 600000, 2000000, 8000000 ].filter(limit => c.speakers > limit).length
                 }`"
               v-for="(c, j) in script.characters.filter(c => c.character.length === 1)" :key="j"
               @click="selectCharacter(c)"
             >{{ c.character }}
-            </button>
+            </div>
           </div>
-        </div>
+        </FontSample>
 
         <h2>
           Included character combinations by script
         </h2>
 
-        <div>
+        <FontSample>
           <div v-for="(script, i) in languageSupport.includedCharacterCombinationsByScript" :key="i">
             <h3>{{ script.script }}</h3>
-            <button :class="`glyph support-${
+            <div :class="`glyph support-${
                 5 - [ 0, 20000, 600000, 2000000, 8000000 ].filter(limit => c.speakers > limit).length
                 }`"
               v-for="(c, j) in script.characters" :key="j"
               @click="selectCharacter(c)"
             >{{ c.character }}
-            </button>
+            </div>
           </div>
-        </div>
+        </FontSample>
 
         <h2>
           All included characters
         </h2>
 
-        <div>
-          <button
+        <FontSample>
+          <div
             v-for="(c, j) in languageSupport.fontCharacters" :key="j"
             :class="`glyph support-${
                 5 - [ 0, 20000, 600000, 2000000, 8000000 ].filter(limit => c.speakers > limit).length
               }`"
             @click="selectCharacter(c)"
           >{{ c.character }}
-          </button>
-        </div>
+          </div>
+        </FontSample>
 
       </div>
     </div>
@@ -165,6 +165,7 @@ import UiTooltip from "@/components/UiTooltip";
 import LanguagePanel from "@/components/LanguagePanel";
 import LanguageList from "@/components/LanguageList";
 import CharacterPanel from "@/components/CharacterPanel";
+import FontSample from "@/components/FontSample";
 import UiButton from "keen-ui/src/UiButton";
 import UiSelect from "keen-ui/src/UiSelect";
 import printNumber from "@/utils/printNumber.js";
@@ -201,6 +202,7 @@ export default {
     UiSelect,
     Pinnable,
     ScrollPanel,
+    FontSample,
   },
   data() {
     return {
@@ -337,7 +339,6 @@ export default {
     font-size: 1.5em;
     min-width: 1.5em;
     line-height: 1.5em;
-    font-family: var(--selectedFontFamily), var(--fallbackFontFamily);
     // &:hover {
       //   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     // }
