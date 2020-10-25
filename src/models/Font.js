@@ -120,8 +120,8 @@ export default class Font {
     this.fontFace = `
       @font-face {
         font-family: "${family || this.cssFamily}";
-        font-style: ${style || this.cssStyle};
-        font-weight: ${weight || this.cssWeight};
+        // font-style: ${style || this.cssStyle};  // disabling helps work with variable fonts
+        // font-weight: ${weight || this.cssWeight};
         src: url('${this.url}');
       }
     `;

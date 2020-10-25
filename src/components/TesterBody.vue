@@ -1,87 +1,63 @@
 <template>
   <!-- eslint-disable-next-line vue/no-v-html -->
-  <div :class="`font-sample ${isGotchas ? 'gotchas' : ''}`"
-    :lang="selectedLoclLanguage"
-    :style="`
-        color: ${settings.textColor};
-        background: ${settings.backgroundColor};
-        line-height: ${settings.defaultLineHeight ? '' : settings.lineHeight};
-        letter-spacing: ${settings.defaultTracking ? '0' : settings.tracking}em;
-        text-align: ${settings.textAlign};
-        text-transform: ${settings.textTransform};
-        font-feature-settings: ${ fontFeatureSettings };
-        font-variation-settings: ${ fontVariationSettings };
-    `"
+  <div :class="`tester-body ${isGotchas ? 'gotchas' : ''}`"
+    :style="`background: ${settings.backgroundColor};`"
   >
 
-    <!-- <LanguageSupportSummary v-if="selectedSampleKey === 'languages'" languageSupport="languageSupport" /> -->
+    <template v-if="selectedSampleKey === 'glyphs'">This page only lists encoded glyphs.</template>
+    <template v-if="!isCustom">
+      <div v-for="(item, i) in texts" :key="i" >
+        <GotchaHeader v-if="selectedSampleKey === 'gotchas'" :header="item.header" />
+        <SampleHeader v-else-if="item.header.language" :header="item.header" />
 
-    <div v-if="selectedSampleKey === 'glyphs'">This page only lists encoded glyphs.</div>
-
-    <div
-      class="font-sample-content"
-      :style="{
-        'word-break': settings.wrapLines ? 'break-all' : 'normal',
-      }"
-    >
-
-      <div v-if="!isCustom">
-        <div v-for="(item, i) in texts" :key="i" >
-
-          <GotchaHeader
-            v-if="selectedSampleKey === 'gotchas'"
-            :header="item.header"
-          />
-          <SampleHeader v-else-if="item.header.language" :header="item.header" />
-
-          <div v-for="(text, j) in item.texts" :key="j">
-            <div v-for="(size, k) in fontSizes" :key="k" class="sample-paragraph">
-              <div v-if="fontSizes.length > 1"  class="font-size-label">{{size}}</div>
-              <div
-                v-html="text"
-                :style="{ 'font-size': `${size}${settings.fontSizeUnit}` }"
-                :contenteditable="isContentEditable"
-                spellcheck="false"
-                @selectstart="onSelectStart"
-                @click="onSelectEnd"
-              />
-            </div>
+        <FontSample v-for="(text, j) in item.texts" :key="j">
+          <div v-for="(size, k) in fontSizes" :key="k" class="sample-paragraph">
+            <div v-if="fontSizes.length > 1"  class="font-size-label">{{size}}</div>
+            <div
+              v-html="text"
+              :style="{ 'font-size': `${size}${settings.fontSizeUnit}` }"
+              :contenteditable="isContentEditable"
+              spellcheck="false"
+              @selectstart="onSelectStart"
+              @click="onSelectEnd"
+            />
           </div>
-
-        </div>
+        </FontSample>
       </div>
+    </template>
 
-      <div v-else>
-        <div v-for="(size, k) in fontSizes" :key="k" class="sample-paragraph">
-          <div v-if="fontSizes.length > 1"  class="font-size-label">{{size}}</div>
-          <div
-            class="font-sample-content-inner"
-            :style="{ 'font-size': `${size}${settings.fontSizeUnit}` }"
-            contenteditable
-            spellcheck="false"
-            @paste="onPaste"
-            @input="onInput"
-            @focus="onFocus"
-            ref="content"
-          />
-        </div>
+    <FontSample v-else>
+      <div v-for="(size, k) in fontSizes" :key="k" class="sample-paragraph">
+        <div v-if="fontSizes.length > 1"  class="font-size-label">{{size}}</div>
+        <div
+          class="font-sample-content-inner"
+          :style="{ 'font-size': `${size}${settings.fontSizeUnit}` }"
+          contenteditable
+          spellcheck="false"
+          @paste="onPaste"
+          @input="onInput"
+          @focus="onFocus"
+          ref="content"
+        />
       </div>
-    </div>
+    </FontSample>
 
   </div>
 </template>
 
 <script>
 import DomSelection from "@/utils/DomSelection";
+import FontSample from "@/components/FontSample";
 import SampleHeader from "@/components/SampleHeader";
 import GotchaHeader from "@/components/GotchaHeader";
 import { mapState, mapGetters } from "vuex";
 
 export default {
-  name: "FontSample",
+  name: "TesterBody",
   components: {
     SampleHeader,
     GotchaHeader,
+    FontSample,
   },
   props: {
     texts: {
@@ -214,10 +190,23 @@ export default {
 @import "@/scss/mixins";
 @import "@/scss/dark";
 
-.font-sample {
+.tester-body {
   font-size: 100% / $font-scale;
   flex: 1;
   padding: 10px 15px;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  .font-sample {
+    flex: 1;
+
+    .font-sample-content-inner {
+      &::after {
+        content: '\A0';
+      }
+    }
+  }
 
   @for $i from 1 through 6 {
     h#{$i} {
@@ -242,62 +231,8 @@ export default {
     text-align: right;
   }
 
-
   overflow: auto hidden;
   position: relative;
-
-  .font-sample-content {
-
-    height: 100%;
-    padding-bottom: 100vh;
-    white-space: pre-wrap;
-
-    &:focus {
-      outline: none;
-    }
-    font-family: var(--selectedFontFamily), var(--fallbackFontFamily);
-    // font-weight: var(--selectedFontCssWeight);
-    // font-style: var(--selectedFontCssStyle);
-
-    .font-sample-content-inner {
-      &::after {
-        content: '\A0';
-      }
-    }
-
-    h1, h2, h3, h4, h5, h6 {
-      font-family: var(--selectedHeaderFontFamily), var(--fallbackFontFamily);
-      // font-weight: var(--selectedBoldFontCssWeight);
-      // font-style: var(--selectedBoldFontCssStyle);
-      font-weight: normal;
-      font-style: normal;
-      white-space: normal;
-    }
-
-    b, strong {
-      font-family: var(--selectedBoldFontFamily), var(--fallbackFontFamily);
-      // font-weight: var(--selectedBoldFontCssWeight);
-      // font-style: var(--selectedBoldFontCssStyle);
-      font-weight: normal;
-      font-style: normal;
-      white-space: normal;
-
-      em {
-        font-family: var(--selectedBoldItalicFontFamily), var(--fallbackFontFamily);
-      }
-    }
-
-    i, em {
-      font-family: var(--selectedItalicFontFamily), var(--fallbackFontFamily);
-      // font-weight: var(--selectedItalicFontCssWeight);
-      // font-style: var(--selectedItalicFontCssStyle);
-      font-weight: normal;
-      font-style: normal;
-      b, strong {
-        font-family: var(--selectedBoldItalicFontFamily), var(--fallbackFontFamily);
-      }
-    }
-  }
 
   .header-flex {
     font-weight: normal;
@@ -316,6 +251,10 @@ export default {
     h3, code {
       user-select: all;
     }
+    h3 {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
     > * {
       margin: 0;
       margin-right: 1rem;
@@ -327,8 +266,6 @@ export default {
     }
   }
 }
-
-
 
 .gotchas {
   h3, h4, .header, .desc, .desc > * {
@@ -354,4 +291,5 @@ export default {
     }
   }
 }
+
 </style>

@@ -13,7 +13,15 @@
         font-variation-settings: ${ fontVariationSettings };
     `"
   >
-   <slot />
+
+    <div
+      class="font-sample-content"
+      :style="{
+        'word-break': settings.wrapLines ? 'break-all' : 'normal',
+      }"
+    >
+      <slot />
+    </div>
   </div>
 </template>
 
@@ -48,8 +56,59 @@ export default {
 @import "@/scss/mixins";
 @import "@/scss/dark";
 
-.font-sample * {
-  font-family: var(--selectedFontFamily), var(--fallbackFontFamily);
-  font-weight: normal;
+.font-sample {
+  .font-sample-content {
+    font-family: var(--selectedFontFamily), var(--fallbackFontFamily);
+    font-weight: normal; // sets to 400 even if variable font has different default instance
+    // font-weight: var(--selectedFontCssWeight);
+    // font-style: var(--selectedFontCssStyle);
+    white-space: pre-wrap;
+    &:focus {
+      outline: none;
+    }
+
+    .font-sample-content-inner {
+      &::after {
+        content: '\A0';
+      }
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--selectedHeaderFontFamily), var(--fallbackFontFamily);
+      // font-weight: normal;
+      // font-style: normal;
+      // white-space: normal;
+      // font-weight: var(--selectedBoldFontCssWeight);
+      // font-style: var(--selectedBoldFontCssStyle);
+      font-weight: 700;
+    }
+
+    b, strong {
+      font-family: var(--selectedBoldFontFamily), var(--fallbackFontFamily);
+      // font-weight: normal;
+      // font-style: normal;
+      // white-space: normal;
+      // font-weight: var(--selectedBoldFontCssWeight);
+      // font-style: var(--selectedBoldFontCssStyle);
+      font-weight: 700;
+
+      em {
+        font-family: var(--selectedBoldItalicFontFamily), var(--fallbackFontFamily);
+        font-weight: 300;
+      }
+    }
+
+    i, em {
+      font-family: var(--selectedItalicFontFamily), var(--fallbackFontFamily);
+      // font-weight: var(--selectedItalicFontCssWeight);
+      // font-style: var(--selectedItalicFontCssStyle);
+      font-weight: normal;
+      font-style: normal;
+      b, strong {
+        font-family: var(--selectedBoldItalicFontFamily), var(--fallbackFontFamily);
+      }
+    }
+  }
 }
+
 </style>

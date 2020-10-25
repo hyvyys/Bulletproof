@@ -85,8 +85,7 @@
                 }`"
               v-for="(c, j) in script.characters.filter(c => c.character.length === 1)" :key="j"
               @click="selectCharacter(c)"
-            >{{ c.character }}
-            </div>
+            >{{ c.character }}</div>
           </div>
         </FontSample>
 
@@ -102,8 +101,7 @@
                 }`"
               v-for="(c, j) in script.characters" :key="j"
               @click="selectCharacter(c)"
-            >{{ c.character }}
-            </div>
+            >{{ c.character }}</div>
           </div>
         </FontSample>
 
@@ -118,8 +116,7 @@
                 5 - [ 0, 20000, 600000, 2000000, 8000000 ].filter(limit => c.speakers > limit).length
               }`"
             @click="selectCharacter(c)"
-          >{{ c.character }}
-          </div>
+          >{{ c.character }}</div>
         </FontSample>
 
       </div>
@@ -268,6 +265,11 @@ export default {
   margin-bottom: 1.5rem;
 
   display: flex;
+
+  .font-sample {
+    background: transparent !important;
+    color: black !important;
+  }
 
   .main-column {
     padding: 1rem;
