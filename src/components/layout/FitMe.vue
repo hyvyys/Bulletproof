@@ -58,7 +58,7 @@ export default {
 
       const H = parent.clientHeight;
       const h = el.clientHeight;
-      if (h / H < 0.8 && i < this.cutText) {
+      if (h / H < 0.69 && i < this.cutText) {
         await this.fit(i + 1);
       }
     },

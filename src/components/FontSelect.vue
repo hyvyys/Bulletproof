@@ -44,6 +44,7 @@ import UiTooltip from "@/components/UiTooltip";
 import FitMe from "@/components/layout/FitMe.vue";
 
 export default {
+  name: 'FontSelect',
   components: {
     UiSelect,
     UiTooltip,
@@ -65,8 +66,8 @@ export default {
       },
       optionSampleStyle: option => `
         font-family: ${option.cssFamily};
-        font-style: ${option.cssStyle};
-        font-weight: ${option.cssWeight};
+        // font-style: ${option.cssStyle};
+        // font-weight: ${option.cssWeight};
         `,
       sampleText: "Abg",
     };
