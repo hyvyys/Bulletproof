@@ -22,7 +22,7 @@
     "language-data": "0.0.16",
     "lodash.debounce": "^4.0.8",
     "lodash.throttle": "^4.1.1",
-    "opentype.js": "^1.3.3",
+    "opentype.js": "git+https://github.com/hyvyys/opentype.js.git#stylistic-set-names",
     "vue": "^2.6.12",
     "vue-closable": "0.0.3",
     "vue-color": "^2.7.1",

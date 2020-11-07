@@ -98,13 +98,15 @@ export default class Font {
         const feature = {
           tag: f.tag,
           name: getOpenTypeFeatureName(f.tag),
+          // uiName: f.feature.uiName,
         };
 
         if (f.tag == "locl") {
           feature.languages = loclLanguages;
           feature.selectedLanguage = "";
         } else if (/ss\d\d/.test(f.tag)) {
-          feature.friendlyName = getStylisticSetName();
+          const uiName =  f.feature.uiName;
+          feature.uiName = uiName && uiName['en']; //getStylisticSetName();
         }
         this.gsubFeatures.push(feature);
       }

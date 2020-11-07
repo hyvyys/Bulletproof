@@ -132,7 +132,7 @@ const store = new Vuex.Store({
               matching.languages = f.languages;
             }
             else if (/ss\d\d/.test(f.tag)) {
-              matching.friendlyName = f.friendlyName;
+              matching.uiName = f.uiName;
             }
           }
         });

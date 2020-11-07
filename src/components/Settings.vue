@@ -190,7 +190,10 @@
         <UiCheckbox
           :value="feature.value"
           @input="v => updateSetting('updateGsubFeature', { tag: feature.tag, value: v })"
-        >{{ feature.friendlyName ? (feature.tag.slice(2) + ' ' + feature.friendlyName) : feature.name }}</UiCheckbox>
+        >
+          <template v-if="feature.uiName"><strong>{{ feature.tag }}</strong> {{ feature.uiName }}</template>
+          <template v-else>{{ feature.name }}</template>
+        </UiCheckbox>
       </div>
     </div>
 
