@@ -121,8 +121,8 @@ export default {
     window.addEventListener("resize", this.setAboveHeaderTransition);
     this.setAboveHeaderTransition();
     this.scrolledParent = document.querySelector(this.scrolledParentSelector);
-    if (this.hideHeaderOnScroll)
-      this.initStickyHeader();
+    // if (this.hideHeaderOnScroll)
+      // this.initStickyHeader();
   },
   methods: {
     setSticky(value) {

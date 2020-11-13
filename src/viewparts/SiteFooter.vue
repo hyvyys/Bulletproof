@@ -62,7 +62,7 @@ export default {
     }
   },
   mounted() {
-    this.initObserver();
+    // this.initObserver(); // disable un-sticky header
   },
   destroyed() {
     this.observer.disconnect();
