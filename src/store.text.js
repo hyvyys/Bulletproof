@@ -17,6 +17,7 @@ const SCRIPTS = {
   Latn: { name: 'Latin' },
   Cyrl: { name: 'Cyrillic' },
   Armn: { name: 'Armenian' },
+  Arab: { name: 'Arabic' },
   Grek: { name: 'Greek' },
   IPA:  { name: 'IPA', isSelected: false },
 };
