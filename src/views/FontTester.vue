@@ -142,7 +142,7 @@ export default {
     height: 100%;
     width: 100vw;
     max-width: 100%;
-    // padding-bottom: 10vh;
+    padding-bottom: 6vh;
   }
   z-index: 0;
 }
