@@ -66,33 +66,33 @@
           Included characters by script
         </h2>
 
-        <FontSample>
-          <div v-for="(script, i) in languageSupport.includedCharactersByScript" :key="i">
-            <h3>{{ script.script }}</h3>
+        <div v-for="(script, i) in languageSupport.includedCharactersByScript" :key="i">
+          <h3>{{ script.script }}</h3>
+          <FontSample>
             <div :class="`glyph needed-${
                 5 - [ 0, 20000, 600000, 2000000, 8000000 ].filter(limit => c.speakers > limit).length
                 }`"
               v-for="(c, j) in script.characters.filter(c => c.character.length === 1)" :key="j"
               @click="selectCharacter(c)"
             >{{ c.character }}</div>
-          </div>
-        </FontSample>
+          </FontSample>
+        </div>
 
         <h2>
           Included character combinations by script
         </h2>
 
-        <FontSample>
-          <div v-for="(script, i) in languageSupport.includedCharacterCombinationsByScript" :key="i">
-            <h3>{{ script.script }}</h3>
+        <div v-for="(script, i) in languageSupport.includedCharacterCombinationsByScript" :key="i">
+          <h3>{{ script.script }}</h3>
+          <FontSample>
             <div :class="`glyph needed-${
                 5 - [ 0, 20000, 600000, 2000000, 8000000 ].filter(limit => c.speakers > limit).length
                 }`"
               v-for="(c, j) in script.characters" :key="j"
               @click="selectCharacter(c)"
             >{{ c.character }}</div>
-          </div>
-        </FontSample>
+          </FontSample>
+        </div>
 
         <h2>
           All included characters
