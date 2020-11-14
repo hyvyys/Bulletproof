@@ -106,7 +106,11 @@ export default class Font {
           feature.selectedLanguage = "";
         } else if (/ss\d\d/.test(f.tag)) {
           const uiName =  f.feature.uiName;
-          feature.uiName = uiName && uiName['en']; //getStylisticSetName();
+          feature.uiName = uiName && uiName['en'];
+        } else if (/cv\d\d/.test(f.tag)) {
+          const uiName =  f.feature.featUiLabelName;
+          feature.uiName = uiName && uiName['en'];
+          console.log(feature.uiName)
         }
         this.gsubFeatures.push(feature);
       }

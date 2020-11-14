@@ -197,6 +197,19 @@
       </div>
     </div>
 
+    <h3 v-if="characterVariants.length > 0">Character Variants</h3>
+    <div class="setting-group">
+      <div class="row" v-for="(feature, key) in characterVariants" :key="key">
+        <UiCheckbox
+          :value="feature.value"
+          @input="v => updateSetting('updateGsubFeature', { tag: feature.tag, value: v })"
+        >
+          <template v-if="feature.uiName"><strong>{{ feature.tag }}</strong> {{ feature.uiName }}</template>
+          <template v-else>{{ feature.name }}</template>
+        </UiCheckbox>
+      </div>
+    </div>
+
     <h3 v-if="otherGsub.length > 0">Other GSUB</h3>
     <div class="setting-group">
       <div class="row" v-for="(feature, key) in otherGsub" :key="key">
@@ -307,6 +320,9 @@ export default {
       stylisticSetTags: Array(20)
         .fill(0)
         .map((_, i) => `ss${(i + 1).toString().padStart(2, "0")}`),
+      characterVariantsTags: Array(99)
+        .fill(0)
+        .map((_, i) => `cv${(i + 1).toString().padStart(2, "0")}`),
       loclTags: ["locl"],
       loclSelectKeys: {
         class: "class",
@@ -350,6 +366,9 @@ export default {
     stylisticSets() {
       return this.getGsubSubset(this.stylisticSetTags);
     },
+    characterVariants() {
+      return this.getGsubSubset(this.characterVariantsTags);
+    },
     localization() {
       return this.getGsubFeature("locl");
     },
@@ -376,6 +395,7 @@ export default {
             ...this.figureTags,
             ...this.numberTags,
             ...this.stylisticSetTags,
+            ...this.characterVariantsTags,
             ...this.loclTags,
           ].includes(f.tag)
       );

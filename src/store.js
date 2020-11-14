@@ -128,11 +128,9 @@ const store = new Vuex.Store({
           }
           else {
             matching.active = true;
+            matching.uiName = f.uiName;
             if (f.tag === "locl") {
               matching.languages = f.languages;
-            }
-            else if (/ss\d\d/.test(f.tag)) {
-              matching.uiName = f.uiName;
             }
           }
         });
