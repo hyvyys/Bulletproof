@@ -23,6 +23,8 @@
     <div class="dark main">
       <FontLoader :gui="showFontLoader" />
 
+      <TextTools />
+
       <nav class="nav nav-text-kinds">
         <EditorNav />
         <span class="nav-link" v-for="kind in textKinds" :key="kind">
@@ -71,6 +73,7 @@ import viewport from "@/utils/viewport";
 
 import FontLoader from "@/components/FontLoader.vue";
 import EditorNav from "@/components/EditorNav.vue";
+import TextTools from "@/components/TextTools.vue";
 import SiteLogo from "@/components/SiteLogo.vue";
 import SigmoidContainer from "@/components/layout/SigmoidContainer.vue";
 import UiIconButton from "keen-ui/src/UiIconButton.vue";
@@ -82,6 +85,7 @@ export default {
   components: {
     FontLoader,
     EditorNav,
+    TextTools,
     SiteLogo,
     SigmoidContainer,
     UiIconButton,
@@ -254,6 +258,9 @@ $header-background: linear-gradient(to right, $light, $accent);
 
   .font-loader {
     flex: 0 1 15em;
+  }
+  .text-tools {
+    flex-shrink: 0;
   }
   .nav-text-kinds {
     // min-width: 250px;

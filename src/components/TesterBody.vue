@@ -18,6 +18,9 @@
               :style="{ 'font-size': `${size}${settings.fontSizeUnit}` }"
               :contenteditable="isContentEditable"
               spellcheck="false"
+              @paste="onPaste"
+              @input="onInput"
+              @focus="onFocus"
               @selectstart="onSelectStart"
               @click="onSelectEnd"
             />
@@ -195,6 +198,8 @@ export default {
   flex: 1;
   padding: 10px 15px;
   min-height: 100vh;
+  padding-bottom: 10rem;
+
 
   display: flex;
   flex-direction: column;
