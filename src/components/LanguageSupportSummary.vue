@@ -33,7 +33,7 @@
         </h2>
 
         <div>
-          <div v-for="(script, i) in missingCharacters" :key="i">
+          <div v-for="script in missingCharacters" :key="script.script">
             <h3>{{ script.script }}</h3>
             <button :class="`glyph support-${
                 5 - [ 0, 20000, 600000, 2000000, 8000000 ].filter(limit => c.speakers > limit).length
@@ -50,7 +50,7 @@
         </h2>
 
         <div>
-          <div v-for="(script, i) in languageSupport.missingCharacterCombinationsByScript" :key="i">
+          <div v-for="script in languageSupport.missingCharacterCombinationsByScript" :key="script.script">
             <h3>{{ script.script }}</h3>
             <button :class="`glyph support-${
                 5 - [ 0, 20000, 600000, 2000000, 8000000 ].filter(limit => c.speakers > limit).length
@@ -66,32 +66,36 @@
           Included characters by script
         </h2>
 
-        <div v-for="(script, i) in languageSupport.includedCharactersByScript" :key="i">
-          <h3>{{ script.script }}</h3>
-          <FontSample>
-            <div :class="`glyph needed-${
-                5 - [ 0, 20000, 600000, 2000000, 8000000 ].filter(limit => c.speakers > limit).length
-                }`"
-              v-for="(c, j) in script.characters.filter(c => c.character.length === 1)" :key="j"
-              @click="selectCharacter(c)"
-            >{{ c.character }}</div>
-          </FontSample>
+        <div>
+          <div v-for="script in languageSupport.includedCharactersByScript" :key="script.script">
+            <h3>{{ script.script }}</h3>
+            <FontSample>
+              <div :class="`glyph needed-${
+                  5 - [ 0, 20000, 600000, 2000000, 8000000 ].filter(limit => c.speakers > limit).length
+                  }`"
+                v-for="(c, j) in script.characters.filter(c => c.character.length === 1)" :key="j"
+                @click="selectCharacter(c)"
+              >{{ c.character }}</div>
+            </FontSample>
+          </div>
         </div>
 
         <h2>
           Included character combinations by script
         </h2>
 
-        <div v-for="(script, i) in languageSupport.includedCharacterCombinationsByScript" :key="i">
-          <h3>{{ script.script }}</h3>
-          <FontSample>
-            <div :class="`glyph needed-${
-                5 - [ 0, 20000, 600000, 2000000, 8000000 ].filter(limit => c.speakers > limit).length
-                }`"
-              v-for="(c, j) in script.characters" :key="j"
-              @click="selectCharacter(c)"
-            >{{ c.character }}</div>
-          </FontSample>
+        <div>
+          <div v-for="script in languageSupport.includedCharacterCombinationsByScript" :key="script.script">
+            <h3>{{ script.script }}</h3>
+            <FontSample>
+              <div :class="`glyph needed-${
+                  5 - [ 0, 20000, 600000, 2000000, 8000000 ].filter(limit => c.speakers > limit).length
+                  }`"
+                v-for="(c, j) in script.characters" :key="j"
+                @click="selectCharacter(c)"
+              >{{ c.character }}</div>
+            </FontSample>
+          </div>
         </div>
 
         <h2>

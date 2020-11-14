@@ -13,14 +13,14 @@ import KerningGenerator from "./models/KerningGenerator";
 let id = 0;
 let customTextId = 1;
 
-const SCRIPTS = {
-  Latn: { name: 'Latin' },
-  Cyrl: { name: 'Cyrillic' },
-  Armn: { name: 'Armenian' },
-  Arab: { name: 'Arabic' },
-  Grek: { name: 'Greek' },
-  IPA:  { name: 'IPA', isSelected: false },
-};
+const SCRIPTS = [
+  { script: 'Latn', name: 'Latin' },
+  { script: 'Grek', name: 'Greek' },
+  { script: 'Cyrl', name: 'Cyrillic' },
+  { script: 'Arab', name: 'Arabic' },
+  { script: 'Armn', name: 'Armenian' },
+  { script: 'IPA ', name: 'IPA', isSelected: false },
+];
 
 const SCRIPT_TAGS = LanguageData.map(l => l.script).filter((v, i, a) => a.indexOf(v) === i);
 const LANGUAGES = LanguageData.sort((a,b) => a.language.localeCompare(b.language));
@@ -31,7 +31,7 @@ export default {
     texts: [],
     customTextIds: [],
     languages: LANGUAGES.map(l => ({ ...l, id: id++, isSelected: true })),
-    scripts: SCRIPT_TAGS.map(s => ({ script: s, id: id++, isSelected: true, ...SCRIPTS[s] })),
+    scripts: SCRIPTS.filter(s => SCRIPT_TAGS.indexOf(s.script) > -1).map(s => ({ id: id++, isSelected: true, ...s })),
     textHeadings: [],
     formatRequested: false,
     kerningPatterns: [],
