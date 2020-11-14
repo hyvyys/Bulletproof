@@ -25,18 +25,7 @@
           <UiSelect class="inline" :options="unsupportedLanguagesSortingOptions" v-model="unsupportedLanguagesSorting" />
         </h2>
 
-        <div>
-          <span
-            v-for="(l, i) in unsupportedLanguages"
-            :key="i"
-          >
-            <UiButton :class="`support-${Math.min(4, Math.ceil(l.missingCharacters.length / 5))}`"
-              @click="selectLanguage(l)"
-            >
-              {{ l.language }}
-            </UiButton>
-          </span>
-        </div>
+        <LanguageList :languages="unsupportedLanguages" @select-language="l => selectLanguage(l)" />
 
         <h2>
           Missing characters
@@ -80,7 +69,7 @@
         <FontSample>
           <div v-for="(script, i) in languageSupport.includedCharactersByScript" :key="i">
             <h3>{{ script.script }}</h3>
-            <div :class="`glyph support-${
+            <div :class="`glyph needed-${
                 5 - [ 0, 20000, 600000, 2000000, 8000000 ].filter(limit => c.speakers > limit).length
                 }`"
               v-for="(c, j) in script.characters.filter(c => c.character.length === 1)" :key="j"
@@ -96,7 +85,7 @@
         <FontSample>
           <div v-for="(script, i) in languageSupport.includedCharacterCombinationsByScript" :key="i">
             <h3>{{ script.script }}</h3>
-            <div :class="`glyph support-${
+            <div :class="`glyph needed-${
                 5 - [ 0, 20000, 600000, 2000000, 8000000 ].filter(limit => c.speakers > limit).length
                 }`"
               v-for="(c, j) in script.characters" :key="j"
@@ -112,7 +101,7 @@
         <FontSample>
           <div
             v-for="(c, j) in languageSupport.fontCharacters" :key="j"
-            :class="`glyph support-${
+            :class="`glyph needed-${
                 5 - [ 0, 20000, 600000, 2000000, 8000000 ].filter(limit => c.speakers > limit).length
               }`"
             @click="selectCharacter(c)"
@@ -373,21 +362,21 @@ export default {
     }
   }
 
-  .support-0 {
-    background: #bbffc7;
-  }
-  .support-1 {
-    background: #def087;
-  }
-  .support-2 {
-    background: #fff563;
-  }
-  .support-3 {
-    background: #ffd1a6;
-  }
-  .support-4 {
-    background: #ffb1b1;
-  }
+  // .support-0 {
+  //   background: #bbffc7;
+  // }
+  // .support-1 {
+  //   background: #def087;
+  // }
+  // .support-2 {
+  //   background: #fff563;
+  // }
+  // .support-3 {
+  //   background: #ffd1a6;
+  // }
+  // .support-4 {
+  //   background: #ffb1b1;
+  // }
 
   $a: lighten($brand-primary-color, 10);
   $b: lighten($brand-secondary-color, 5);
@@ -421,18 +410,42 @@ export default {
   }
 /****************/
 
-
 /****************/
   $aText: #501111;
 
-  @for $i from 0 through 5 {
-    .support-#{$i} {
-      $shade: hsl((5 - $i) * 20 + if($i==0, 25, 0), 55, 72);
+  $stop0: hue(#5ac763);
+  $stop1: hue(#c75555);
+  $stop2: hue(#b6cf48);
+
+  $stop1n: hue(#6abdf5);
+  $stop2n: hue(#5ac7a6);
+
+  .support-full {
+      $shade: hsl($stop0, 55, 75);
+      background: mix(white, $shade, 0);
+      color: mix($aText, black, 0);
+  }
+  @for $j from 0 through 5 {
+    .support-#{$j} {
+      $i: 5 - $j;
+      $hue: $stop1 + ($i / 5 * ($stop2 - $stop1));
+      $shade: hsl($hue, 55, 72);
       background: mix(white, $shade, 0);
       color: mix($aText, black, $i * 20);
-      // color: white;
-      font-weight: 500;
-      text-transform: none;
+    }
+  }
+  .needed-0 {
+      $shade: hsl($stop0, 55, 75);
+      background: mix(white, $shade, 0);
+      color: mix($aText, black, 0);
+  }
+  @for $j from 1 through 5 {
+    .needed-#{$j} {
+      $i: 5 - $j;
+      $hue: $stop1n + ($i / 5 * ($stop2n - $stop1n));
+      $shade: hsl($hue, 66, 78 - 0.7 * $i);
+      background: mix(white, $shade, 0);
+      color: mix($aText, black, $i * 20);
     }
   }
 /****************/

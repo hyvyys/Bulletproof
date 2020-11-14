@@ -5,7 +5,7 @@
       :key="l.language +'-'+ l.script"
       :lang="l.htmlCode"
     >
-      <UiButton :class="`language-button support-${Math.min(4, Math.ceil((l.missingCharacters || []).length / 5))}`"
+      <UiButton :class="`language-button support-${Math.min(4, Math.ceil((l.missingCharacters || []).length / 5)) || 'full'}`"
         @click="$emit('select-language', l)"
       >
         <div>
@@ -56,6 +56,8 @@ export default {
   padding-left: 0.2em;
   padding-right: 0.2em;
   border-radius: 2px;
+  font-weight: 500;
+  text-transform: none;
 
   ::v-deep .ui-button__content > * {
     margin: 0 0.2em;

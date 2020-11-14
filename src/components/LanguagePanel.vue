@@ -20,21 +20,19 @@
   </div>
 
   <header v-if="languageInfo.includedCharacters.length">supported characters</header>
-  <div class='glyphs'>
-    <button class="glyph support-0" v-for="(c, j) in languageInfo.includedCharacters" :key="j"
+  <FontSample>
+    <div class="glyph support-full" v-for="(c, j) in languageInfo.includedCharacters" :key="j"
       @click="$emit('character-clicked', c)"
-    >{{ c }}
-    </button>
-  </div>
+    >{{ c }}</div>
+  </FontSample>
 
   <div v-if="languageInfo.specialLetters.length != languageInfo.requiredCharacters.length">
     <header>letter units</header>
-    <div class='glyphs'>
-      <button class="glyph" v-for="(c, j) in languageInfo.specialLetters" :key="j"
+    <FontSample>
+      <div class="glyph" v-for="(c, j) in languageInfo.specialLetters" :key="j"
         @click="$emit('character-clicked', c)"
-      >{{ c }}
-      </button>
-    </div>
+      >{{ c }}</div>
+    </FontSample>
   </div>
 
   <div v-if="languageInfo.gotchas.length">
@@ -56,8 +54,12 @@
 
 <script>
 import printNumber from "@/utils/printNumber.js";
+import FontSample from "@/components/FontSample";
 
 export default {
+  components: {
+    FontSample,
+  },
   props: {
     languageInfo: {
       type: Object,
