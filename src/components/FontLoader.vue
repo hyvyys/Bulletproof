@@ -50,37 +50,77 @@
       </UiButton>
 
       <UiPopover :trigger="$refs.button1" class="font-select-popover" :zIndex="58">
-        <FontSelect
-          :fonts="fontOptions"
-          :value="selectedBoldFont"
-          @input="selectBoldFont"
-          label="Bold (strong emphasis)"
-          :loading="fontLoading"
-        />
+        <div class="font-select-menu">
+          <FontSelect
+            :fonts="fontOptions"
+            :value="selectedFont"
+            @input="v => setFont('regular', v)"
+            label="Regular"
+            :loading="fontLoading"
+          />
 
-        <FontSelect
-          :fonts="fontOptions"
-          :value="selectedItalicFont"
-          @input="selectItalicFont"
-          label="Italic (emphasis)"
-          :loading="fontLoading"
-        />
+          <UiTextbox
+            label="Override"
+            :value="fontOverrides.regular"
+            @input="v => overrideCssFont('regular', v)"
+          />
 
-        <FontSelect
-          :fonts="fontOptions"
-          :value="selectedBoldItalicFont"
-          @input="selectBoldItalicFont"
-          label="Bold italic"
-          :loading="fontLoading"
-        />
+          <FontSelect
+            :fonts="fontOptions"
+            :value="selectedItalicFont"
+            @input="v => setFont('italic', v)"
+            label="Italic (emphasis)"
+            :loading="fontLoading"
+          />
 
-        <FontSelect
-          :fonts="fontOptions"
-          :value="selectedHeaderFont"
-          @input="selectHeaderFont"
-          label="Header"
-          :loading="fontLoading"
-        />
+          <UiTextbox
+            label="Override"
+            :value="fontOverrides.italic"
+            @input="v => overrideCssFont('italic', v)"
+          />
+
+          <FontSelect
+            :fonts="fontOptions"
+            :value="selectedBoldFont"
+            @input="v => setFont('bold', v)"
+            label="Bold (strong emphasis)"
+            :loading="fontLoading"
+          />
+
+          <UiTextbox
+            label="Override"
+            :value="fontOverrides.bold"
+            @input="v => overrideCssFont('bold', v)"
+          />
+
+          <FontSelect
+            :fonts="fontOptions"
+            :value="selectedBoldItalicFont"
+            @input="v => setFont('boldItalic', v)"
+            label="Bold italic"
+            :loading="fontLoading"
+          />
+
+          <UiTextbox
+            label="Override"
+            :value="fontOverrides.boldItalic"
+            @input="v => overrideCssFont('boldItalic', v)"
+          />
+
+          <FontSelect
+            :fonts="fontOptions"
+            :value="selectedHeaderFont"
+            @input="v => setFont('header', v)"
+            label="Header"
+            :loading="fontLoading"
+          />
+
+          <UiTextbox
+            label="Override"
+            :value="fontOverrides.header"
+            @input="v => overrideCssFont('header', v)"
+          />
+        </div>
       </UiPopover>
     </div>
 
@@ -114,6 +154,7 @@ import UiFileupload from "keen-ui/src/UiFileupload.vue";
 import UiButton from "keen-ui/src/UiButton.vue";
 import UiPopover from "keen-ui/src/UiPopover.vue";
 import UiTooltip from "keen-ui/src/UiTooltip.vue";
+import UiTextbox from "keen-ui/src/UiTextbox.vue";
 import UiProgressLinear from "keen-ui/src/UiProgressLinear";
 
 import FontSelect from "@/components/FontSelect.vue";
@@ -137,6 +178,7 @@ export default {
     UiFileupload,
     FileDrop,
     UiTooltip,
+    UiTextbox,
     Fireworks,
   },
   props: {
@@ -174,6 +216,13 @@ export default {
       openedWithoutFonts: true,
       defaultFontsLoaded: false,
       previousFont: null,
+      fontOverrides: {
+        regular: '',
+        italic: '',
+        bold: '',
+        boldItalic: '',
+        header: '',
+      },
     };
   },
   watch: {
@@ -344,6 +393,63 @@ export default {
       this.selectBoldItalicFont(matchingBoldItalic);
     },
 
+    setFont(key, value) {
+      const { font } = this.getFont(value);
+      this.setCssFont(key, font.cssFamily);
+      key = key === 'regular' ? 'font' : key + 'Font';
+      this.$store.commit("selectFont", { [key]: font });
+    },
+
+    setCssFont(key, value) {
+      const variable = {
+        regular: "selectedFont",
+        italic: "selectedItalicFont",
+        bold: "selectedBoldFont",
+        boldItalic: "selectedBoldItalicFont",
+        header: "selectedHeaderFont",
+      }[key];
+      const cssVariable = '--' + variable + 'Family';
+      if (value) {
+        styles.setProperty(cssVariable, value);
+      } else {
+        styles.setProperty(cssVariable, this[variable].cssFamily);
+      }
+    },
+
+    overrideCssFont(key, value) {
+      const variable = {
+        regular: "selectedFont",
+        italic: "selectedItalicFont",
+        bold: "selectedBoldFont",
+        boldItalic: "selectedBoldItalicFont",
+        header: "selectedHeaderFont",
+      }[key];
+      const cssFontVariable = '--' + variable + 'Family';
+      const cssWeightVariable = '--' + variable + 'CssWeight';
+      if (value) {
+        const regex = /((Light|Semi-?bold|Bold|Heavy|Extra-?bold|Black|\d{1,3})? ?(Italic)?)$/i;
+        const styleMatch= value.match(regex);
+        if (styleMatch && styleMatch[0].length) {
+          const family = value.replace(regex, '');
+          const style = styleMatch[1];
+          // console.log(family, style)
+          styles.setProperty(cssFontVariable, family);
+          styles.setProperty(cssWeightVariable, style);
+          console.log(cssFontVariable, family);
+          console.log(cssWeightVariable, style);
+        }
+        else {
+          styles.setProperty(cssFontVariable, value);
+        }
+      } else {
+        styles.setProperty(cssFontVariable, this[variable].cssFamily);
+        styles.setProperty(cssWeightVariable, '');
+      }
+      this.fontOverrides[key] = value;
+    },
+
+
+
     selectBoldFont(v) {
       const { font: boldFont } = this.getFont(v);
       styles.setProperty("--selectedBoldFontFamily", boldFont.cssFamily);
@@ -371,7 +477,6 @@ export default {
       styles.setProperty("--selectedHeaderFontFamily", headerFont.cssFamily);
       this.$store.commit("selectFont", { headerFont });
     },
-
     setLastFont() {
       this.selectFont(this.lastFont);
     },
@@ -446,7 +551,11 @@ export default {
 
 .font-select-popover {
   padding: 8px;
-  width: calc(#{$font-select-width} + 16px);
+  width: calc(#{2 * $font-select-width} + 16px);
+}
+.font-select-menu {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 
 .bi-button {

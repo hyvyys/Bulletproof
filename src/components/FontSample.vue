@@ -60,7 +60,7 @@ export default {
   .font-sample-content {
     font-family: var(--selectedFontFamily), var(--fallbackFontFamily);
     font-weight: normal; // sets to 400 even if variable font has different default instance
-    // font-weight: var(--selectedFontCssWeight);
+    font-weight: var(--selectedFontCssWeight);
     // font-style: var(--selectedFontCssStyle);
     white-space: pre-wrap;
     &:focus {
@@ -78,9 +78,9 @@ export default {
       // font-weight: normal;
       // font-style: normal;
       // white-space: normal;
-      // font-weight: var(--selectedBoldFontCssWeight);
+      font-weight: var(--selectedBoldFontCssWeight, 700);
       // font-style: var(--selectedBoldFontCssStyle);
-      font-weight: 700;
+      // font-weight: 700;
     }
 
     b, strong {
@@ -88,9 +88,9 @@ export default {
       // font-weight: normal;
       // font-style: normal;
       // white-space: normal;
-      // font-weight: var(--selectedBoldFontCssWeight);
+      font-weight: var(--selectedBoldFontCssWeight, 700);
       // font-style: var(--selectedBoldFontCssStyle);
-      font-weight: 700;
+      // font-weight: 700;
 
       em {
         font-family: var(--selectedBoldItalicFontFamily), var(--fallbackFontFamily);
@@ -100,12 +100,13 @@ export default {
 
     i, em {
       font-family: var(--selectedItalicFontFamily), var(--fallbackFontFamily);
-      // font-weight: var(--selectedItalicFontCssWeight);
+      font-weight: var(--selectedItalicFontCssWeight);
       // font-style: var(--selectedItalicFontCssStyle);
-      font-weight: normal;
+      // font-weight: normal;
       font-style: normal;
       b, strong {
         font-family: var(--selectedBoldItalicFontFamily), var(--fallbackFontFamily);
+        font-weight: var(--selectedBoldItalicFontCssWeight);
       }
     }
   }
