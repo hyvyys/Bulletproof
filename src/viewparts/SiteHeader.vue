@@ -21,9 +21,9 @@
     </transition-group>
 
     <div class="dark main">
-      <FontLoader :gui="showFontLoader" />
+      <FontLoader :gui="isTesterPage" />
 
-      <TextTools />
+      <TextTools v-if="isTesterPage" />
 
       <nav class="nav nav-text-kinds">
         <EditorNav />
@@ -113,7 +113,7 @@ export default {
       "customTextIds",
       "selectedSampleKey",
     ]),
-    showFontLoader() {
+    isTesterPage() {
       return !!this.$route.params.text;
     },
     textKind() {
