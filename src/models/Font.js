@@ -128,7 +128,7 @@ export default class Font {
       @font-face {
         src: url('${this.url}');
         font-family: "${family || this.cssFamily}";
-        font-weight: bold;  // prevent fake bold
+        ${ this.variationAxes.length === 0 ? 'font-weight: bold' : ''};  // prevent fake bold, allow for automatic weight in Variable fonts
         // font-style: ${style || this.cssStyle};  // hmmm...
       }
     `;
