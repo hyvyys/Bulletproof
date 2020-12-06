@@ -123,12 +123,13 @@ export default class Font {
   }
 
   generateFontFace({ family, style, weight } = {}) {
+    console.log(this.cssWeight)
     this.fontFace = `
       @font-face {
-        font-family: "${family || this.cssFamily}";
-        // font-style: ${style || this.cssStyle};  // disabling helps work with variable fonts
-        // font-weight: ${weight || this.cssWeight};
         src: url('${this.url}');
+        font-family: "${family || this.cssFamily}";
+        font-weight: bold;  // prevent fake bold
+        // font-style: ${style || this.cssStyle};  // hmmm...
       }
     `;
     return this.fontFace;
