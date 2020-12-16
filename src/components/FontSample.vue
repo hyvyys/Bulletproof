@@ -7,6 +7,7 @@
         background: ${settings.backgroundColor};
         line-height: ${settings.defaultLineHeight ? '' : settings.lineHeight};
         letter-spacing: ${settings.defaultTracking ? '0' : settings.tracking}em;
+        word-spacing: ${settings.wordSpacing}em;
         text-align: ${settings.textAlign};
         text-transform: ${settings.textTransform};
         font-feature-settings: ${ fontFeatureSettings };

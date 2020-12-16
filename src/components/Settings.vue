@@ -77,6 +77,23 @@
     </div>
 
     <div class="row">
+      <label class="row-label">Word spacing</label>
+      <UiNumber
+        ref="settingWordSpacing"
+        :value="settings.wordSpacing"
+        :min="settings.minWordSpacing"
+        :max="settings.maxWordSpacing"
+        :step="settings.wordSpacingStep"
+        :clickStep="settings.wordSpacingStep"
+        @input="v => updateSetting('updateSettings', { wordSpacing: v })"
+      />
+      <UiButton class="tiny"
+        ref="settingDefaultWor"
+        @input="v => updateSetting('updateSettings', { wordSpacing: 0 })"
+      >&times;</UiButton>
+    </div>
+
+    <div class="row">
       <label class="row-label">Text align</label>
       <UiSelect
         ref="settingTextAlign"
@@ -277,6 +294,7 @@ import { mapGetters } from "vuex";
 
 import UiCheckbox from "keen-ui/src/UiCheckbox.vue";
 import UiRadioGroup from "keen-ui/src/UiRadioGroup.vue";
+import UiButton from "keen-ui/src/UiButton.vue";
 import UiSlider from "keen-ui/src/UiSlider.vue";
 import UiSelect from "@/components/UiSelect.vue";
 import UiNumber from "@/components/UiNumber.vue";
@@ -290,6 +308,7 @@ export default {
     UiCheckbox,
     UiSlider,
     UiRadioGroup,
+    UiButton,
     UiNumber,
     UiTextbox,
     UiColorPicker,

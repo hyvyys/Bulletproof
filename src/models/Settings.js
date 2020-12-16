@@ -86,6 +86,24 @@ export default class Settings {
         default: 0.01,
       },
 
+      wordSpacing: {
+        type: Number,
+        default: 0,
+        validate: (value, settings) => value >= settings.minWordSpacing && value <= settings.maxWordSpacing,
+      },
+      minWordSpacing: {
+        type: Number,
+        default: -1,
+      },
+      maxWordSpacing: {
+        type: Number,
+        default: 1,
+      },
+      wordSpacingStep: {
+        type: Number,
+        default: 0.01,
+      },
+
       textAlign: {
         type: String,
         default: "left",

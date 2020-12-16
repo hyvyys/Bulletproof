@@ -163,3 +163,11 @@
     text-overflow: ellipsis;
   }
 }
+
+
+.ui-button.tiny {
+  padding: 0 .4em;
+  opacity: 0.7;
+  color: #241f1e;
+  flex: 0 1 auto !important;
+}
