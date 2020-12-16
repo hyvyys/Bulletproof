@@ -13,7 +13,7 @@ import textKinds from "@/models/textKinds";
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   mode: "history",
   base: process.env.BASE_URL,
   routes: [
@@ -66,3 +66,18 @@ export default new Router({
     },
   ],
 });
+
+
+function hasQueryParams(route) {
+  return !!Object.keys(route.query).length
+}
+
+router.beforeEach((to, from, next) => {
+   if(!hasQueryParams(to) && hasQueryParams(from)){
+    next({ ...to, query: from.query });
+  } else {
+    next()
+  }
+})
+
+export default router;

@@ -311,7 +311,10 @@ export default {
             );
             // don't make font objects reactive for performance gains
             this.fonts = Object.freeze([ ...fonts, ...this.fonts ]);
-            this.selectFont(fonts[0]);
+
+            let requestedFont = this.$route.query.f || '';
+            let matchedFont = fonts.findIndex(f => f.family.toLowerCase().startsWith(requestedFont.toLowerCase()));
+            this.selectFont(fonts[matchedFont === -1 ? 0 : matchedFont]);
           }
           if (errors.length) {
             this.printFontLoadingError(errors);
