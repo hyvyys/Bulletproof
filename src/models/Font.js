@@ -123,7 +123,6 @@ export default class Font {
   }
 
   generateFontFace({ family, style, weight } = {}) {
-    console.log(this.cssWeight)
     this.fontFace = `
       @font-face {
         src: url('${this.url}');
