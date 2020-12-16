@@ -5,4 +5,5 @@ export default [
   "AlegreyaSans/AlegreyaSans-BoldItalic.ttf",
   "Rywalka-Regular.ttf",
   "Graduate.ttf",
+  "Tektur[wdth,wght].ttf",
 ];
