@@ -254,26 +254,11 @@
         The selected font is not variable.
       </div>
       <div v-for="(axis, key) in variationAxes" :key="key">
-        <div class="row">
-          <UiCheckbox
+        <div class="row" style="align-items: center; gap: .3em;">
+          <UiCheckbox style="margin-bottom: 0; margin-right: 1em"
             :label="axis.displayName"
             :value="axis.enabled"
             @input="v => updateSetting('updateVariationAxis', { tag: axis.tag, enabled: v })"
-          />
-        </div>
-        <div class="row">
-          <!-- <label class="row-label axis-label">
-            {{ axis.displayName }}
-          </label> -->
-          <UiSlider
-            style="margin: 0 0.5em; flex: 2"
-            :value="axis.value"
-            @input="v => updateSetting('updateVariationAxis', { tag: axis.tag, value: v })"
-            :min="axis.minValue"
-            :max="axis.maxValue"
-            :step="1"
-            :snapToStep="true"
-            :showMarker="false"
           />
           <UiNumber
             :value="axis.value"
@@ -281,6 +266,24 @@
             :max="axis.maxValue"
             :step="1"
             @input="v => updateSetting('updateVariationAxis', { tag: axis.tag, value: v })"
+          />
+          <UiButton class="tiny" @click="updateSetting('updateVariationAxis', { tag: axis.tag, value: axis.defaultValue })">
+            ⭯
+          </UiButton>
+        </div>
+        <div class="row" style="padding: .5em 0.3em .7em">
+          <!-- <label class="row-label axis-label">
+            {{ axis.displayName }}
+          </label> -->
+          <UiSlider
+            style="flex: 2"
+            :value="axis.value"
+            @input="v => updateSetting('updateVariationAxis', { tag: axis.tag, value: v })"
+            :min="axis.minValue"
+            :max="axis.maxValue"
+            :step="1"
+            :snapToStep="true"
+            :showMarker="false"
           />
         </div>
       </div>
@@ -468,6 +471,10 @@ export default {
 
 .settings {
   padding: $sidebar-padding;
+
+  h3 {
+    margin-bottom: .3em;
+  }
 }
 
 .row-check {
