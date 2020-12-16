@@ -133,7 +133,10 @@
         </div>
 
         <ScrollPanel v-if="selectedLanguage">
-          <LanguagePanel :lang="selectedLanguage.htmlTag" :languageInfo="selectedLanguage"
+          <LanguagePanel
+            :lang="selectedLanguage.htmlTag"
+            :languageInfo="selectedLanguage"
+            :characters="languageSupport.characters"
             @character-clicked="c => selectCharacter(languageSupport.characters.find(cc => cc.character === c))"
           />
         </ScrollPanel>

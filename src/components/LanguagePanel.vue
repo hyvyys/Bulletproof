@@ -21,7 +21,11 @@
 
   <header v-if="languageInfo.includedCharacters.length">supported characters</header>
   <FontSample>
-    <div class="glyph support-full" v-for="(c, j) in languageInfo.includedCharacters" :key="j"
+    <div
+      :class="`glyph needed-${
+      5 - [ 0, 20000, 600000, 2000000, 8000000 ].filter(limit => characters.find(ch => ch.character === c).speakers > limit).length
+      }`"
+      v-for="(c, j) in languageInfo.includedCharacters" :key="j"
       @click="$emit('character-clicked', c)"
     >{{ c }}</div>
   </FontSample>
@@ -63,6 +67,10 @@ export default {
   props: {
     languageInfo: {
       type: Object,
+      required: true,
+    },
+    characters: {
+      type: Array,
       required: true,
     },
   },
