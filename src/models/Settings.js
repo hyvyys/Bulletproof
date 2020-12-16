@@ -34,9 +34,9 @@ export default class Settings {
         default: '10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,32,34,36,38,44,64',
       },
 
-      defaultLineHeight: {
+      enableLineHeight: {
         type: Boolean,
-        default: true,
+        default: false,
       },
       lineHeight: {
         type: Number,
@@ -60,7 +60,7 @@ export default class Settings {
         default: 0.01,
       },
 
-      defaultTracking: {
+      enableTracking: {
         type: Boolean,
         default: true,
       },
@@ -86,6 +86,10 @@ export default class Settings {
         default: 0.01,
       },
 
+      enableWordSpacing: {
+        type: Boolean,
+        default: true,
+      },
       wordSpacing: {
         type: Number,
         default: 0,

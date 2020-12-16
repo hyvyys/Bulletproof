@@ -5,9 +5,9 @@
     :style="`
         color: ${settings.textColor};
         background: ${settings.backgroundColor};
-        line-height: ${settings.defaultLineHeight ? '' : settings.lineHeight};
-        letter-spacing: ${settings.defaultTracking ? '0' : settings.tracking}em;
-        word-spacing: ${settings.wordSpacing}em;
+        line-height: ${settings.enableLineHeight ? settings.lineHeight : ''};
+        letter-spacing: ${settings.enableTracking ? settings.tracking : '0'}em;
+        word-spacing: ${settings.enableWordSpacing ? settings.wordSpacing : '0'}em;
         text-align: ${settings.textAlign};
         text-transform: ${settings.textTransform};
         font-feature-settings: ${ fontFeatureSettings };

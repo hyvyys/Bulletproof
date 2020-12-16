@@ -46,14 +46,14 @@
         :step="settings.lineHeightStep"
         :clickStep="settings.lineHeightClickStep"
         @input="v => updateSetting('updateSettings', { lineHeight: v })"
-        :disabled="settings.defaultLineHeight"
+        :disabled="!settings.enableLineHeight"
       />
       <UiCheckbox
         ref="settingDefaultLineHeight"
         class="checkbox-small"
-        :value="settings.defaultLineHeight"
-        @input="v => updateSetting('updateSettings', { defaultLineHeight: v })"
-      >default</UiCheckbox>
+        :value="settings.enableLineHeight"
+        @input="v => updateSetting('updateSettings', { enableLineHeight: v })"
+      ></UiCheckbox>
     </div>
 
     <div class="row">
@@ -66,31 +66,32 @@
         :step="settings.trackingStep"
         :clickStep="settings.trackingClickStep"
         @input="v => updateSetting('updateSettings', { tracking: v })"
-        :disabled="settings.defaultTracking"
+        :disabled="!settings.enableTracking"
       />
       <UiCheckbox
         ref="settingDefaultTracking"
         class="checkbox-small"
-        :value="settings.defaultTracking"
-        @input="v => updateSetting('updateSettings', { defaultTracking: v })"
-      >default</UiCheckbox>
+        :value="settings.enableTracking"
+        @input="v => updateSetting('updateSettings', { enableTracking: v })"
+      ></UiCheckbox>
     </div>
 
     <div class="row">
       <label class="row-label">Word spacing</label>
       <UiNumber
-        ref="settingWordSpacing"
         :value="settings.wordSpacing"
         :min="settings.minWordSpacing"
         :max="settings.maxWordSpacing"
         :step="settings.wordSpacingStep"
         :clickStep="settings.wordSpacingStep"
         @input="v => updateSetting('updateSettings', { wordSpacing: v })"
+        :disabled="!settings.enableWordSpacing"
       />
-      <UiButton class="tiny"
-        ref="settingDefaultWor"
-        @input="v => updateSetting('updateSettings', { wordSpacing: 0 })"
-      >&times;</UiButton>
+      <UiCheckbox
+        class="checkbox-small"
+        :value="settings.enableWordSpacing"
+        @input="v => updateSetting('updateSettings', { enableWordSpacing: v })"
+      ></UiCheckbox>
     </div>
 
     <div class="row">
@@ -173,7 +174,7 @@
           class="checkbox-small"
           :value="localization.value"
           @input="v => updateSetting('updateGsubFeature', { tag: 'locl', value: v })"
-        >enable</UiCheckbox>
+        ></UiCheckbox>
       </div>
     </div>
 
