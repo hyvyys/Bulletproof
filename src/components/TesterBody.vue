@@ -21,7 +21,7 @@
               @paste="onPaste"
               @input="onInput"
               @focus="onFocus"
-              @selectstart="onSelectStart"
+              @mousemove="onSelectStart"
               @click="onSelectEnd"
             />
           </div>
@@ -129,11 +129,15 @@ export default {
   beforeDestroy() {
   },
   methods: {
-    onSelectStart() {
-      this.isContentEditable = false;
+    onSelectStart(event) {
+      if (event.buttons === 1) {
+        this.isContentEditable = false;
+        console.log('nonEditable')
+      }
     },
     onSelectEnd() {
       this.isContentEditable = true;
+      console.log('editable')
     },
     configureAnchors() {
       return;
