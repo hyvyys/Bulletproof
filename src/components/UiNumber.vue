@@ -36,6 +36,8 @@
             @input="updateValue($event.target.value)"
             @keydown.enter="onKeydownEnter"
             @keydown="onKeydown"
+            @keydown.up="$event => increment(1, $event)"
+            @keydown.down="$event => increment(-1, $event)"
           />
 
           <div class="ui-number-buttons">
@@ -213,7 +215,8 @@ export default {
     getDelay(iteration) {
       return iteration < 2 ? 200 : 100;
     },
-    increment(by) {
+    increment(by, event) {
+      by *= event ? (event.ctrlKey ? 100 : event.shiftKey ? 10 : 1) : 1;
       this.updateValue(this.roundedToClickStep() + by * this._clickStep);
     },
     decrement(by) {
