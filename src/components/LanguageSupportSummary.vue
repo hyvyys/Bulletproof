@@ -334,7 +334,7 @@ export default {
     text-align: center;
     margin: 1px;
 
-    font-size: 1.5em;
+    // font-size: 1.5em;
     min-width: 1.5em;
     line-height: 1.5em;
     // &:hover {
