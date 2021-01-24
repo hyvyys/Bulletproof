@@ -1,5 +1,5 @@
 import Vue from "vue";
-import Settings from "./models/Settings";
+import Settings from "@/models/Settings";
 
 function clone(obj) {
   return JSON.parse(JSON.stringify(obj));

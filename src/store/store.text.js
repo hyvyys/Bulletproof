@@ -6,9 +6,9 @@ import kerningPatterns from "@/models/kerningPatterns";
 import kerningPatternName from "@/models/kerningPatternName";
 import languageDataFields from "@/models/textKindLanguageDataField";
 import LanguageData from "language-data";
-import escapeHtmlId from "./utils/escapeHtmlId";
-import escapeHtml from "./utils/escapeHtml";
-import KerningGenerator from "./models/KerningGenerator";
+import escapeHtmlId from "@/utils/escapeHtmlId";
+import escapeHtml from "@/utils/escapeHtml";
+import KerningGenerator from "@/models/KerningGenerator";
 
 let id = 0;
 let customTextId = 1;
