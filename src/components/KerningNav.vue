@@ -33,10 +33,15 @@
                   @input="v => toggleKerningPattern(pattern.id, v)"
                 ></UiCheckbox>
 
-                <div class="link" :href="`#${pattern.id}`" @click="selectPattern(pattern.id)" tabindex="0">
+                <!-- <div class="link" :href="`#${pattern.id}`" @click="selectPattern(pattern.id)" tabindex="0">
                   <kbd :title="pattern.id"
                   v-html="formatPatternId(pattern.name || 'new pattern')"></kbd>
-                </div>
+                </div> -->
+
+                <a class="link" :href="`#${pattern.id}`" @click="selectPattern(pattern.id)" tabindex="0">
+                  <kbd :title="pattern.id"
+                  v-html="formatPatternId(pattern.name || 'new pattern')"></kbd>
+                </a>
 
                 <UiIconButton @click="removeKerningPattern(pattern.id)" color="default" class="border" size="small">
                   <img svg-inline src="@/assets/icons/remove.svg" />
@@ -128,8 +133,8 @@ export default {
       });
       this.segments.splice(pattern.segments.length);
 
-      const scrolled = document.querySelector(this.scrolledParentSelector);
-      scrollToHash(null, scrolled, "#" + id);
+      // const scrolled = document.querySelector(this.scrolledParentSelector);
+      // scrollToHash(null, scrolled, "#" + id);
     },
     getKey() {
       return ++this.key;

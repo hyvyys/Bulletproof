@@ -8,7 +8,7 @@
     <template v-if="!isCustom">
       <div v-for="(item, i) in texts" :key="i" >
         <GotchaHeader v-if="selectedSampleKey === 'gotchas'" :header="item.header" />
-        <SampleHeader v-else-if="item.header.language" :header="item.header" />
+        <SampleHeader v-else-if="item.header && item.header.language" :header="item.header" />
 
         <FontSample v-for="(text, j) in item.texts" :key="j">
           <div v-for="(size, k) in fontSizes" :key="k" class="sample-paragraph">

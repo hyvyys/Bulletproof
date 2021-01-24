@@ -184,8 +184,9 @@ export default {
             ? lines.join("\n")
             : lines.join(" ").replace(/ +/g, " ");
           return {
-            header: `<h6 id="${escapeHtmlId(pattern.id)}"></h6>`,
-            texts: [`<p>${escapeHtml(text)}</p>`],
+            // header: `<h6 id="${escapeHtmlId(pattern.id)}"></h6>`,
+            // texts: [`<p>${escapeHtml(text)}</p>`],
+            texts: [`<a id="${escapeHtmlId(pattern.id)}"></a><p>${escapeHtml(text)}</p>`],
           };
         });
       this.commit("setText", { sampleKey: "kerning", html });
@@ -227,10 +228,11 @@ export default {
     },
 
     updateText({ state, commit, getters }) {
-
       function squish(str) { return str.replace(/\s\s+/g, "") }
       function fNum(n) { return n > 1000000 ? n/1000000 + 'M' : n/1000 + 'K'; }
 
+      // fieldKey = texts from language-data
+      // no fieldKey = custom tab
       const fieldKey = getters.selectedSampleTextKey;
       if (!fieldKey) {
         if (state.selectedSampleKey === "kerning") {
@@ -320,7 +322,7 @@ export default {
             }
             default:
               if (texts instanceof Array)
-                fragments = texts.map(t => `<p>${t}</p>`);
+                fragments = texts.map(t => `<p class='abc'>${t}</p>`);
               else
                 fragments = [texts].map(t => `<p>${t}</p>`);
           }
