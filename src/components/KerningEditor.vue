@@ -58,8 +58,9 @@ export default {
     };
   },
   watch: {
-    segments(val, oldVal) {
+    async segments(val, oldVal) {
       if (this.$refs.segmentSelects && this.$refs.segmentSelects.length) {
+        await this.$nextTick();
         let index = 0;
         if (oldVal.length > 0)
           index = this.$refs.segmentSelects.length - 1;
