@@ -17,7 +17,7 @@
           <a href="https://github.com/etunni/Graduate-Variable-Font">Graduate</a> Variable Font by Eduardo Tunni.
         </div>
         <div>
-          Rywalka font by Adam Jagosz.
+          Rywalka and <a href="https://github.com/hyvyys/Tektur">Tektur</a> fonts by Adam Jagosz.
         </div>
       </div>
 
@@ -26,7 +26,7 @@
           Bulletproof Font Tester
         </div>
         <div>
-          Copyright 2020 Adam Jagosz.
+          Copyright 2020–2021 Adam Jagosz.
         </div>
       </div>
     </div>
