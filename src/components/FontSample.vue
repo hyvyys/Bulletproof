@@ -1,7 +1,6 @@
 <template>
   <!-- eslint-disable-next-line vue/no-v-html -->
   <div class="font-sample"
-    :lang="selectedLoclLanguage"
     :style="`
         color: ${settings.textColor};
         background: ${settings.backgroundColor};
@@ -9,7 +8,7 @@
         letter-spacing: ${settings.enableTracking ? settings.tracking : '0'}em;
         word-spacing: ${settings.enableWordSpacing ? settings.wordSpacing : '0'}em;
         text-align: ${settings.textAlign};
-        text-transform: ${settings.textTransform};
+        text-transform: ${settings.enableTextTransform ? settings.textTransform : 'none'};
         font-feature-settings: ${ fontFeatureSettings };
         font-variation-settings: ${ fontVariationSettings };
     `"

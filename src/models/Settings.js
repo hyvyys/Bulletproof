@@ -32,6 +32,7 @@ export default class Settings {
         type: String,
         // default: '10,12,16,24,26,36,45',
         default: '10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,32,34,36,38,44,64',
+        default: '10,14,24,36,64',
       },
 
       enableLineHeight: {
@@ -131,12 +132,16 @@ export default class Settings {
 
       textTransform: {
         type: String,
-        default: "none",
+        default: "uppercase",
         kind: "select",
       },
       textTransformOptions: {
         type: Array,
         default: () => ["none", "uppercase", "capitalize", "lowercase"],
+      },
+      enableTextTransform: {
+        type: Boolean,
+        default: false,
       },
       wrapLines: {
         type: Boolean,

@@ -123,13 +123,19 @@
     </div>
 
     <div class="row">
-      <label class="row-label">Case transform</label>
+      <label class="row-label">Transform</label>
       <UiSelect
         ref="settingTextTransform"
         :value="settings.textTransform"
         :options="settings.textTransformOptions"
         @input="v => updateSetting('updateSettings', { textTransform: v })"
       />
+      <UiCheckbox
+        ref="settingEnableTextTransform"
+        class="checkbox-small"
+        :value="settings.enableTextTransform"
+        @input="v => updateSetting('updateSettings', { enableTextTransform: v })"
+      ></UiCheckbox>
     </div>
 
     <div class="row row-check">
@@ -399,7 +405,7 @@ export default {
       return this.selectedSampleKey === "gotchas";
     },
     localizationLanguage() {
-      return this.onGotchasTab ? "multiple" : this.localization.selectedLanguage;
+      return this.onGotchasTab ? "automatic" : this.localization.selectedLanguage;
     },
     localizationLanguages() {
       return this.localization.languages;

@@ -70,6 +70,7 @@ export default class Font {
         return ({ tag, name, htmlTag });
       })
       .sort((a, b) => a.name > b.name);
+    loclLanguages.unshift({ tag: '', htmlTag: '', name: 'automatic' });
 
     const stylisticSetNames = Object.getOwnPropertyNames(names)
       .filter(p => /\d+/.test(p))
@@ -103,7 +104,7 @@ export default class Font {
 
         if (f.tag == "locl") {
           feature.languages = loclLanguages;
-          feature.selectedLanguage = "";
+          feature.selectedLanguage = loclLanguages[0];
         } else if (/ss\d\d/.test(f.tag)) {
           const uiName =  f.feature.uiName;
           feature.uiName = uiName && uiName['en'];

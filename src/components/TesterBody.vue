@@ -6,15 +6,15 @@
 
     <template v-if="selectedSampleKey === 'glyphs'">This page only lists encoded glyphs.</template>
     <template v-if="!isCustom">
-      <div v-for="(item, i) in texts" :key="i" >
+      <div v-for="(item, i) in texts" :key="i">
         <GotchaHeader v-if="selectedSampleKey === 'gotchas'" :header="item.header" />
         <SampleHeader v-else-if="item.header && item.header.language" :header="item.header" />
 
-        <FontSample v-for="(text, j) in item.texts" :key="j">
+        <FontSample v-for="(text, j) in item.texts" :key="j" :lang="selectedLoclLanguage || item.header && item.header.htmlTag">
           <div v-for="(size, k) in fontSizes" :key="k" class="sample-paragraph">
             <div v-if="fontSizes.length > 1"  class="font-size-label">{{size}}</div>
             <div
-              v-html="text"
+              v-html="transformText(text, item.header && item.header.htmlTag)"
               :style="{ 'font-size': `${size}${settings.fontSizeUnit}` }"
               :contenteditable="isContentEditable"
               spellcheck="false"
@@ -29,7 +29,7 @@
       </div>
     </template>
 
-    <FontSample v-else>
+    <FontSample v-else :lang="selectedLoclLanguage">
       <div v-for="(size, k) in fontSizes" :key="k" class="sample-paragraph">
         <div v-if="fontSizes.length > 1"  class="font-size-label">{{size}}</div>
         <div
@@ -189,6 +189,12 @@ export default {
       // trigger resize event so that Fitter can be positioned
       window.dispatchEvent(new Event("resize"));
     },
+    transformText(text, locale) {
+      return text;
+      // transform the text so that you can copy transformed version also in Firefox
+      return this.settings.enableTextTransform && this.settings.textTransform === 'uppercase' ?
+        text.toLocaleUpperCase(locale) : text;
+    }
   },
 };
 </script>
