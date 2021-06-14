@@ -18,6 +18,7 @@
               :style="{ 'font-size': `${size}${settings.fontSizeUnit}` }"
               :contenteditable="isContentEditable"
               spellcheck="false"
+              @focus="onFocus"
             />
           </div>
         </FontSample>
