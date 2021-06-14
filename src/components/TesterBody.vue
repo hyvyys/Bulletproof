@@ -18,11 +18,6 @@
               :style="{ 'font-size': `${size}${settings.fontSizeUnit}` }"
               :contenteditable="isContentEditable"
               spellcheck="false"
-              @paste="onPaste"
-              @input="onInput"
-              @focus="onFocus"
-              @mousemove="onSelectStart"
-              @click="onSelectEnd"
             />
           </div>
         </FontSample>
@@ -37,7 +32,6 @@
           :style="{ 'font-size': `${size}${settings.fontSizeUnit}` }"
           contenteditable
           spellcheck="false"
-          @paste="onPaste"
           @input="onInput"
           @focus="onFocus"
           ref="content"
