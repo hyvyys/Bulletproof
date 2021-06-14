@@ -137,11 +137,11 @@ $holes-width: 500px;
       @include pseudo;
       position: absolute; // positioned thanks to transform creating new stacking context
       &::before {
-        right: 100%;
+        left: 2px;
         transform: translateX(-100%);
       }
       &::after {
-        left: 100%;
+        left: calc(100% - 2px);
       }
 
       $left-y: -1700px;
@@ -166,9 +166,9 @@ $holes-width: 500px;
 
       &::before,
       &::after {
-        width: calc((110vw - #{$solid-bg-width}) / 2);
+        width: calc((110vw - #{$solid-bg-width}) / 2 + 10px);
         @media screen and (min-width: 1420px) {
-          width: $holes-width;
+          width: calc(#{$holes-width} + 10px);
         }
         background-repeat: repeat-y;
       }

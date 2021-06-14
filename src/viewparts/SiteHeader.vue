@@ -192,9 +192,10 @@ $header-background: linear-gradient(to right, $light, $accent);
 
 @mixin header-background($top: 0) {
   background: $accent;
-  @include gradient-red;
-  background-position: 0 $top;
-  background-size: 100vw 150px;
+  // @include gradient-red();
+  background: linear-gradient(-90deg, #110e0f, $accent-faded);
+  // background-position: 0 $top;
+  // background-size: 100vw 150px;
 }
 
 .site-header {
