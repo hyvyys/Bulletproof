@@ -8,7 +8,7 @@
   &.vb-visible > .vb-content {
     padding-right: $vuebar-width;
     // width: calc(100% + 17px);
-    // box-sizing: border-box !important;
+    box-sizing: border-box !important;
   }
 
   > .vb-dragger {

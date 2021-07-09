@@ -44,9 +44,7 @@
       />
     </div>
 
-    <div class="language-list" v-bar="{
-        preventParentScroll: true,
-      }" ref="vb">
+    <div class="language-list">
       <div class="scrolled" ref="scrolled"
         @keydown.down.capture.prevent
         @keydown.up.capture.prevent
@@ -249,9 +247,8 @@ export default {
 }
 
 .language-list {
-  overflow: hidden;
+  overflow-y: auto;
   flex: 1;
-  @include scroll-veil;
 }
 
 .language-item {

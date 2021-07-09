@@ -8,13 +8,15 @@
   </h1>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 @import "@/scss/variables.scss";
 
 h1.site-logo {
   font-weight: normal;
   font-size: 1.8em;
-  margin: 0 10px 0 0;
+  @media (min-width: 1000px) {
+    margin: 0 20px 0 0;
+  }
   color: $light;
   display: flex;
   align-items: center;
@@ -31,7 +33,6 @@ h1.site-logo {
     }
   }
   .logotype {
-    margin-left: -4px;
     span {
       display: block;
     }
@@ -48,7 +49,7 @@ h1.site-logo {
     font-size: 1rem;
     line-height: 1;
     text-align: center;
-    letter-spacing: 1.8px;
+    letter-spacing: 1.4px;
   }
 }
 </style>

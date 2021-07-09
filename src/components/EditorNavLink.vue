@@ -1,6 +1,6 @@
 <template>
   <span class="editor-nav-link nav-link">
-    <router-link :to="`/custom/${id}`">
+    <router-link :to="`/custom/${id}`" @click.native="$emit('navigated')">
       <div class="middle-ellipsis">
         <div class="start">Custom&nbsp;</div>
         <div class="end">{{ id }}</div>
@@ -34,7 +34,7 @@ export default {
 @import "@/scss/dark";
 
 .editor-nav-link {
-  margin: 0 3px !important;
+  margin: 0 3px;
   display: inline-flex;
   align-items: center;
   $button-size: 20px;

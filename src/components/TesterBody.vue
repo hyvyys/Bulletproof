@@ -100,6 +100,7 @@ export default {
   },
   watch: {
     formatRequested(tag) {
+      if (!this.selection) return;
       if (tag) {
         try {
           this.selection.wrap(tag);
@@ -250,6 +251,24 @@ export default {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    @media (max-width: 1000px) {
+      gap: 4px 0;
+      padding: 4px 8px;
+      // display: grid;
+      // grid-template-columns: 1fr auto auto;
+      // grid-template-areas: "topic btn tags tags" "language language language-speakers language-codes";
+      .tags, .language-codes, .language-speakers {
+        display: none !important;
+      }
+      .btn {
+        order: -1;
+      }
+      .language {
+        flex: 1;
+        text-align: right;
+        font-weight: 400;
+      }
+    }
     border-bottom: 1px solid currentColor;
     margin-top: 1rem;
     font-family: $font-stack !important;

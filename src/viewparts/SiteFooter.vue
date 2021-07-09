@@ -2,14 +2,7 @@
   <div class="site-footer">
     <div class="sentinel" ref="sentinel"/>
     <div class="main u-dark">
-      <div>
-        <div>
-          Sample texts from
-          <a href="https://github.com/hyvyys/language-data" target="_blank" rel="noopener noreferrer">
-            Language-Data
-          </a>.
-          Visit link to contribute.
-        </div>
+      <div class="extra-info">
         <div>
           <a href="https://github.com/huertatipografica/Alegreya-Sans">Alegreya Sans</a> font by Juan Pablo del Peral.
         </div>
@@ -19,14 +12,21 @@
         <div>
           Rywalka and <a href="https://github.com/hyvyys/Tektur">Tektur</a> fonts by Adam Jagosz.
         </div>
+        <div>
+          Sample texts from
+          <a href="https://github.com/hyvyys/language-data" target="_blank" rel="noopener noreferrer">
+            Language-Data.
+          </a><br>
+          Visit to contribute! ↑
+        </div>
       </div>
 
       <div class="bulletproof-info">
         <div>
-          Bulletproof Font Tester
+          Bulletproof Font Tester
         </div>
         <div>
-          Copyright 2020–2021 Adam Jagosz.
+          © 2021 Adam Jagosz
         </div>
       </div>
     </div>
@@ -120,7 +120,7 @@ export default {
     color: rgba($accent-text, 0.7);
     font-size: 0.9rem;
     flex: 1;
-    padding: 15px 20px 10px;
+    padding: 15px 0px 10px 20px;
     display: flex;
     align-items: center;
     > :not(:last-child) {
@@ -129,8 +129,6 @@ export default {
   }
 
   .bulletproof-info {
-    flex: 1;
-    text-align: center;
   }
 
   .light {
@@ -139,6 +137,7 @@ export default {
   .aside {
     align-self: stretch;
     padding-right: $vuebar-width;
+    padding-right: 14px;
     background: $light;
     --adjust-y: 1px;
 
@@ -155,6 +154,12 @@ export default {
         text-align: right;
       }
     }
+  }
+}
+
+.extra-info {
+  @media (max-width: 600px) {
+    display: none;
   }
 }
 </style>

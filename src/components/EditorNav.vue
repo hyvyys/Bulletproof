@@ -1,13 +1,6 @@
 <template>
   <span class="editor-nav">
-    <div class="links-wrapper">
-      <transition-group class="links" name="fade">
-        <EditorNavLink v-for="id in lessCustomTextIds" :key="id" :id="id" />
-      </transition-group>
-      <transition-group class="links" name="fade">
-        <EditorNavLink v-for="id in moreCustomTextIds" :key="id" :id="id" />
-      </transition-group>
-    </div>
+    <EditorNavLink @navigated="$emit('navigated')" v-for="id in customTextIds" :key="id" :id="id" />
 
     <span
       class="nav-link new"
@@ -30,18 +23,11 @@ export default {
   },
   computed: {
     ...mapGetters(["customTextIds"]),
-    boundary() {
-      const len = this.customTextIds.length;
-      if (len <= 8) return 4;
-      else return len / 2;
-    },
-    lessCustomTextIds() { return this.customTextIds.slice(0, this.boundary); },
-    moreCustomTextIds() { return this.customTextIds.slice(this.boundary); },
   },
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import "@/scss/variables";
 
 .editor-nav {

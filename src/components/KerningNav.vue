@@ -1,8 +1,6 @@
 <template>
   <div class="kerning-nav contextual-sidebar u-flex-v">
-    <div v-bar="{
-          preventParentScroll: true,
-        }" ref="vb">
+    <div>
       <div class="scrolled">
         <transition-group name="fade" class="fade-transition-group" tag="div">
 

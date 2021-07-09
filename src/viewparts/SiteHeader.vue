@@ -20,20 +20,33 @@
       </div>
     </transition-group>
 
-    <div class="dark main">
-      <FontLoader :gui="isTesterPage" />
-
-      <TextTools v-if="isTesterPage" />
-
-      <nav class="nav nav-text-kinds">
-        <EditorNav />
-        <span class="nav-link" v-for="kind in textKinds" :key="kind">
-          <router-link :to="`/${kind}`">{{ navlinkText(kind) }}</router-link>
-        </span>
-      </nav>
+    <div class="logo-top" :class="{ 'alone': !isTesterPage }">
+        <router-link to="/" class="home" @click.native="scrollToTop">
+          <SiteLogo />
+        </router-link>
     </div>
 
-    <SigmoidContainer id="nav-trigger" class="light aside" sides="left top">
+    <div class="dark main">
+
+      <UiButton v-if="isTesterPage" class="collapse-mobile-trigger left" @click="expandMenu('fontMenu')">{{ selectedFont && selectedFont.family ? selectedFont.family : 'Font' }}</UiButton>
+      <div class="collapse-mobile" :class="{ expanded: expandedMenu === 'fontMenu' }">
+        <FontLoader :gui="isTesterPage" />
+        <TextTools v-if="isTesterPage" />
+      </div>
+
+      <UiButton v-if="isTesterPage" class="collapse-mobile-trigger right" @click="expandMenu('navMenu')">{{ textKind || 'Begin' }}</UiButton>
+      <div class="collapse-mobile nav-menu" :class="{ expanded: expandedMenu === 'navMenu' }">
+          <nav class="nav nav-text-kinds">
+            <EditorNav @navigated="expandMenu(null)" />
+            <span class="nav-link" v-for="kind in textKinds" :key="kind">
+              <router-link @click.native="expandMenu(null)" :to="`/${kind}`">{{ navlinkText(kind) }}</router-link>
+            </span>
+          </nav>
+      </div>
+
+    </div>
+
+    <SigmoidContainer id="nav-trigger" class="light aside right-wrapper" sides="left top">
       <nav class="nav nav-aside" @click="toggleContextualPanel">
         <div class="transition-wrapper">
           <transition name="swap">
@@ -76,7 +89,10 @@ import EditorNav from "@/components/EditorNav.vue";
 import TextTools from "@/components/TextTools.vue";
 import SiteLogo from "@/components/SiteLogo.vue";
 import SigmoidContainer from "@/components/layout/SigmoidContainer.vue";
+import UiButton from "keen-ui/src/UiButton.vue";
 import UiIconButton from "keen-ui/src/UiIconButton.vue";
+import UiPopover from "keen-ui/src/UiPopover.vue";
+import UiCollapsible from "keen-ui/src/UiCollapsible.vue";
 
 import textKinds from "@/models/textKinds";
 import textKindTitle from "@/models/textKindTitle";
@@ -88,7 +104,10 @@ export default {
     TextTools,
     SiteLogo,
     SigmoidContainer,
+    UiButton,
     UiIconButton,
+    UiPopover,
+    UiCollapsible,
   },
   props: {
     hideHeaderOnScroll: { type: Boolean, default: false },
@@ -108,10 +127,15 @@ export default {
       sticky: state => state.layout.sticky,
       footerVisible: state => state.layout.footerVisible,
     }),
+    ...mapState([
+      "expandedMenu",
+      "isMobile",
+    ]),
     ...mapGetters([
       "scrolledParentSelector",
       "customTextIds",
       "selectedSampleKey",
+      "selectedFont",
     ]),
     isTesterPage() {
       return !!this.$route.params.text;
@@ -129,6 +153,9 @@ export default {
       // this.initStickyHeader();
   },
   methods: {
+    expandMenu(menuId) {
+      this.$store.commit("expandMenu", { menuId });
+    },
     setSticky(value) {
       this.$store.commit("sticky", { value });
     },
@@ -140,11 +167,20 @@ export default {
     },
     scrollToTop() {
       this.scrolledParent.scrollTo(0, 0);
+      this.expandMenu(null);
     },
     toggleSettingsPanel() {
+      this.expandMenu(null);
+      if (this.isMobile) {
+        this.$store.commit("toggleContextualPanel", { value: false });
+      }
       this.$store.commit("toggleSettingsPanel");
     },
     toggleContextualPanel() {
+      this.expandMenu(null);
+      if (this.isMobile) {
+        this.$store.commit("toggleSettingsPanel", { value: false });
+      }
       this.$store.commit("toggleContextualPanel");
     },
 
@@ -183,7 +219,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import "@/scss/variables.scss";
 @import "@/scss/sigmoid-border";
 @import "@/scss/super-gradient.scss";
@@ -193,12 +229,13 @@ $header-background: linear-gradient(to right, $light, $accent);
 @mixin header-background($top: 0) {
   background: $accent;
   // @include gradient-red();
-  background: linear-gradient(-90deg, #110e0f, $accent-faded);
+  background: linear-gradient(-90deg, $dark-brown, $accent-faded);
   // background-position: 0 $top;
   // background-size: 100vw 150px;
 }
 
 .site-header {
+  // position: relative;
   display: flex;
   align-items: stretch;
   justify-items: space-between;
@@ -236,21 +273,25 @@ $header-background: linear-gradient(to right, $light, $accent);
   }
 
   .above-sidebar {
+    @media (min-width: 1000px) {
     width: $sidebar-width;
+    }
     display: flex;
   }
 
   .logo {
     margin-top: -4px;
-    padding: 0 15px 0 0;
     display: flex;
     justify-content: center;
+    flex: 0 0 auto;
+  }
+  .logo, .logo-top {
     a.home {
       text-decoration: none;
       display: flex;
       align-items: center;
+      justify-content: center;
     }
-    flex: 0 0 auto;
   }
 
   .nav {
@@ -262,21 +303,6 @@ $header-background: linear-gradient(to right, $light, $accent);
   }
   .text-tools {
     flex-shrink: 0;
-  }
-  .nav-text-kinds {
-    // min-width: 250px;
-    // flex: 1 0 auto;
-    flex: 1 2 48em;
-    flex-wrap: wrap;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding-right: 0;
-    text-shadow: 0 0 15px darken($accent, 30%);
-
-    > :last-child {
-      margin-right: 0.75em;
-    }
   }
 
   .settings-aside-wrap {
@@ -297,6 +323,7 @@ $header-background: linear-gradient(to right, $light, $accent);
 
   .aside {
     padding-right: $vuebar-width;
+    padding-right: 14px;
     --adjust-y: 1px;
     --sigmoid-adjust: -15px;
 
@@ -308,7 +335,7 @@ $header-background: linear-gradient(to right, $light, $accent);
     }
   }
 
-  ::v-deep .nav-link {
+  .nav-link {
     margin: 0 5px;
     a {
       display: inline-block;
@@ -331,6 +358,203 @@ $header-background: linear-gradient(to right, $light, $accent);
       }
     }
   }
+
+  .nav-text-kinds {
+    // min-width: 250px;
+    // flex: 1 0 auto;
+    flex: 1 2 48em;
+    flex-wrap: wrap;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 0;
+    text-shadow: 0 0 15px darken($accent, 30%);
+
+    > :last-child {
+      margin-right: 0.75em;
+    }
+  }
+
+  .collapse-mobile {
+    display: flex;
+    align-items: center;
+    &.nav-menu {
+      flex: 1;
+    }
+  }
+  .collapse-mobile-trigger {
+    display: none;
+    overflow: hidden;
+    padding: 2px;
+    > div {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      width: 100%;
+      display: block;
+      overflow: hidden;
+    }
+  }
+
+  .logo-top {
+    display: none;
+  }
+  @media (max-width: 1400px) {
+      .slide-left-wrapper {
+        width: unset;
+      }
+      .site-logo {
+        margin: 0;
+        font-size: 18px;
+        justify-content: center;
+        padding-right: .5em;
+        .weak {
+          display: none;
+        }
+      }
+      .logo {
+        height: 100%;
+        padding-right: .2em;
+        margin-top: -2px;
+      }
+  }
+
+  @media (max-width: 1000px) {
+    .logo {
+      margin-left: 0;
+      height: 1.5em;
+    }
+    .logo-top {
+      display: block;
+      grid-area: top;
+      margin: -5px 0 -25px;
+      &.alone {
+        padding-left: 51px;
+      }
+    }
+
+    display: grid;
+    grid-template-areas:  "left top right" "left bottom right";
+    grid-template-columns: auto 1fr auto;
+
+    .slide-left-wrapper {
+      grid-area: left;
+      .logo {
+        display: none;
+      }
+    }
+    .right-wrapper {
+      grid-area: right;
+    }
+    .main {
+      grid-area: bottom;
+      justify-content: center;
+      margin: 0 -10px;
+    }
+    .font-loader {
+      flex-basis: 25em;
+    }
+
+    .collapse-mobile {
+      align-items: flex-start;
+      background: #eee;
+      padding: .8rem .6rem;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      &.nav-menu {
+        height: calc(100vh - #{ $header-height });
+      }
+      overflow: auto;
+      transform-origin: 50% 0%;
+      transform: scaleY(0);
+      // transition: transform .3s;
+      > * {
+        opacity: 0;
+        // transition: opacity .15s;
+      }
+      &.expanded {
+        transform: none;
+        > * {
+          opacity: 1;
+        }
+      }
+    }
+    .collapse-mobile-trigger.ui-button {
+      display: block;
+      font-size: 11px;
+      flex: 1 0 50%;
+      margin: 0;
+      height: 100% !important;
+      border-radius: 0 .8rem 0 0;
+      padding-left: 10px;
+      &.right {
+        border-radius: .8rem 0 0 0;
+        padding-right: 10px;
+        padding-left: 0;
+      }
+      background: transparent;
+      color: white;
+      &:hover {
+        background: transparent;
+        color: white;
+      }
+    }
+
+    .nav-text-kinds {
+      justify-content: flex-start;
+      > :last-child {
+        margin: 0;
+      }
+    }
+
+    .nav-link {
+      flex: 0 0 50%;
+      margin: 0;
+      text-shadow: none;
+      padding: 5px;
+      a {
+        padding: .6rem;
+        color: black;
+        display: block;
+        border: 1px solid #333;
+        border-radius: 3px;
+        text-align: center;
+        transform: scale(1);
+        &.router-link-active {
+          background: rgba(34, 17, 17, 0.8);
+          box-shadow: inset 0 0 5px #000;
+          color: white;
+          text-decoration: none;
+        }
+      }
+    }
+
+    .editor-nav {
+      flex: 0 0 100%;
+      flex-wrap: wrap;
+
+      .nav-link {
+        display: flex;
+        a {
+          flex: 1;
+        }
+      }
+      .nav-link.new {
+        flex: 0 0 50% !important;
+        flex: 0 0 50% !important;
+      }
+      // display: block;
+
+      .ui-icon-button {
+        color: black !important;
+        width: 32px;
+        height: 32px;
+        margin-bottom: 2px;
+        margin-left: 2px;
+      }
+    }
+  }
 }
 
 .github-icon-link-wrapper {
@@ -345,4 +569,5 @@ $header-background: linear-gradient(to right, $light, $accent);
     }
   }
 }
+
 </style>

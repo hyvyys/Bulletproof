@@ -24,11 +24,7 @@
       </UiIconButton>
     </div>
 
-    <div class="nav-links" v-bar="{
-        preventParentScroll: true,
-      }"
-      ref="vb"
-    >
+    <div class="nav-links">
       <div class="scrolled">
         <div class="nav panel">
           <div v-for="(heading, i) in textHeadings" :key="i">

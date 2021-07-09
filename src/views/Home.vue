@@ -110,16 +110,27 @@ $holes-width: 500px;
 
 @function bg-holes($side: left, $y: 0px, $url: url("../assets/images/background-holes-bar.svg")) {
   @return $side 0 top #{$y} / cover #{$url};
+  // $d: 10px;
+  // @return
+  // $side 0 top #{$y + .5 * $d} / 100% 100% linear-gradient(0deg, #f00, #f00 $d, transparent $d + 1px, transparent),
+  // $side 0 top #{$y} / cover #{$url},
+  // ;
 }
 
 .home {
   flex: 1;
   padding: 0 80px;
+  @media (max-width: 1000px) {
+    padding: 0 7.5vw;
+  }
   z-index: 0;
   position: relative;
   overflow: hidden;
 
   .background {
+    @media (max-width: 1000px) {
+      display: none;
+    }
     position: absolute;
     width: 100vw;
     left: 50%;
@@ -170,6 +181,7 @@ $holes-width: 500px;
         @media screen and (min-width: 1420px) {
           width: calc(#{$holes-width} + 10px);
         }
+        // background-repeat: repeat-y repeat-y;
         background-repeat: repeat-y;
       }
     }

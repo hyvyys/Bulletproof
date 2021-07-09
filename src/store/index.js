@@ -30,6 +30,8 @@ const store = new Vuex.Store({
     displayedSettings: {},
     settingsPanelVisible: true,
     contextualPanelVisible: false,
+    expandedMenu: null,
+    isMobile: false,
   },
 
   getters: {
@@ -79,6 +81,18 @@ const store = new Vuex.Store({
     toggleContextualPanel(state, { value } = { value: null }) {
       const val = value != null ? value : !state.contextualPanelVisible;
       state.contextualPanelVisible = val;
+    },
+    expandMenu(state, { menuId }) {
+      if (state.expandedMenu === menuId) {
+        this.expandedMenu = null;
+      } else {
+        this.commit("toggleContextualPanel", { value: false });
+        this.commit("toggleSettingsPanel", { value: false });
+        state.expandedMenu = menuId;
+      }
+    },
+    setMobile(state, { isMobile }) {
+      state.isMobile = isMobile;
     },
 
     fontLoadStart(state) {

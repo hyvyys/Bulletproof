@@ -1,5 +1,5 @@
 <template>
-  <div v-bar class="app">
+  <div class="app">
     <div class="app-content">
       <router-view name="header" />
 
@@ -27,6 +27,7 @@ export default {
   },
   mounted() {
     window.addEventListener("beforeunload", this.someMethod);
+    this.$store.commit("setMobile", { isMobile: window.innerWidth <= 1000 });
   },
   beforeDestroy() {
     window.removeEventListener("beforeunload", this.someMethod);

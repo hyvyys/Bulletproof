@@ -2,6 +2,9 @@
   max-width: 700px;
   margin: 40px auto;
   font-size: 1.35em;
+  @media (max-width: 800px) {
+    font-size: 1.1em;
+  }
   line-height: 1.45;
 
   h2 {

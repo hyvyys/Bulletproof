@@ -88,7 +88,10 @@ export default {
 }
 
 .toolbar {
+  margin: 0;
+  padding: 0;
   flex: 0 0 auto;
+  justify-content: flex-end;
 }
 
 .nav-links {

@@ -1,6 +1,6 @@
 <template>
   <div class="font-loader">
-    <span class="font-loader-item" v-if="gui">
+    <div class="font-loader-item" v-if="gui">
       <UiFileupload
         class="dark"
         label=" "
@@ -13,7 +13,7 @@
       <UiTooltip :openDelay="500">
         Open fonts (you can also drag and drop font files anywhere on the page)
       </UiTooltip>
-    </span>
+    </div>
 
     <FontSelect
       class="dark font-select-main font-loader-item"
@@ -505,16 +505,16 @@ export default {
   display: flex;
   align-items: center;
 
+  .font-loader-item {
+    margin: 0 2px;
+  }
+
   .font-select {
-    // flex: 1;
+    flex: 1 0 auto;
     width: 12em;
     .ui-select__display-value {
       white-space: nowrap;
     }
-  }
-
-  .font-loader-item {
-    margin: 0 2px;
   }
 
   .ui-fileupload {
@@ -536,18 +536,21 @@ export default {
   }
 
 
-  @media screen and (max-width: $mq-max-width) {
-    flex-wrap: wrap;
-    .font-select {
-      flex: 0 0 100%;
-      order: -1;
-      margin-bottom: 3px;
-    }
+
+  @media (max-width: 1400px) {
+    display: grid;
+    gap: 3px;
+    grid-template-columns: repeat(4, 1fr);
     .font-loader-item {
+      margin: 0;
       flex: 1;
       > * {
         width: 100%;
       }
+    }
+    .font-select {
+      width: 100%;
+      grid-column-end: span 3;
     }
   }
 }

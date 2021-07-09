@@ -257,11 +257,15 @@ export default {
 </script>
 
 <style lang="scss">
+$break: 650px;
+
 .language-support-summary {
   margin-bottom: 1.5rem;
 
   display: flex;
-
+  @media (max-width: $break) {
+    flex-wrap: wrap;
+  }
   .font-sample {
     background: transparent !important;
     color: black !important;
@@ -274,18 +278,26 @@ export default {
     background: transparent !important;
     --backgroundColor: transparent;
     padding: 1rem;
-    flex-shrink: 0;
-    width: 40%;
-    height: 100%;
+    flex: 1 0 40%;
+    @media (min-width: $break + 0.02px) {
+      height: 100%;
+    }
+    @media (max-width: $break) {
+      &.pinnable {
+        max-height: unset;
+      }
+    }
     // align-self: flex-start;
     // position: sticky;
     // top: 0;
 
     .language-character-sidebar {
-      display: flex;
-      height: 100%;
-      flex-direction: column;
-      justify-content: space-between;
+      @media (min-width:  $break + 0.02px) {
+        display: flex;
+        height: 100%;
+        flex-direction: column;
+        justify-content: space-between;
+      }
       > :first-child {
         margin-bottom: 1.5em;
       }

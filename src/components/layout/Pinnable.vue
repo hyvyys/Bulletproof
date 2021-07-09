@@ -16,7 +16,7 @@
           <img svg-inline src="@/assets/icons/pin.svg" />
         </UiIconButton>
       </div>
-      <div class="content" v-bar ref="vb" v-if="scrolled">
+      <div class="content" v-if="scrolled">
         <div
           ref="scrolled"
           @wheel="onWheel"
@@ -226,7 +226,7 @@ export default {
   &:not(.pinned) {
     box-shadow: 7px 0 6px -5px $c, -7px 0 6px -5px $c;
     position: fixed;
-    background: rgba($light, 0.93);
+    background: rgba($light, 0.97);
     transition: opacity 0.25s;
     &:not(:hover):not(.trigger-hover) {
       transition: opacity 0.25s 0.1s;
@@ -242,8 +242,7 @@ export default {
     display: flex;
     flex-direction: column;
     flex: 1;
-
-    @include scroll-veil;
+    overflow-y: auto;
   }
 
   &:not(.pinnable-scrolled) {

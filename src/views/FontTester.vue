@@ -1,12 +1,12 @@
 <template>
-  <div class="font-tester">
+  <div class="font-tester" :style="`padding-top: ${this.expandedMenu === 'fontMenu' ? '90px' : 0};`">
     <transition name="fade-slow" mode='in-out'>
       <div class="font-tester-content" v-show="!fontLoading">
 
         <Pinnable
           class="site-sidebar sidebar-settings"
           title="Settings"
-          :isPinned="true"
+          :isPinned="isPinned"
           :isVisible="settingsPanelVisible"
           @toggle="$store.commit('toggleSettingsPanel')"
           @hide="$store.commit('toggleSettingsPanel', {value: false})"
@@ -28,7 +28,7 @@
         <Pinnable
           class="site-sidebar sidebar-nav"
           :title="navElementTitle"
-          :isPinned="true"
+          :isPinned="isPinned"
           :isVisible="contextualPanelVisible"
           :scrolled="false"
           @toggle="$store.commit('toggleContextualPanel')"
@@ -68,12 +68,18 @@ export default {
     FontSampleNav,
     LanguageSupportSummary,
   },
+  data() {
+    return {
+      isPinned: true,
+    };
+  },
   computed: {
     ...mapState([
       "fontLoading",
       "settingsPanelVisible",
       "contextualPanelVisible",
       "languageSupport",
+      "expandedMenu",
     ]),
     selectedTextKind() {
       return this.$route.params.text;
@@ -112,7 +118,11 @@ export default {
     this.$store.commit("resetSettings");
     this.selectSample();
   },
-  mounted() {},
+  mounted() {
+    if (window.innerWidth < 1000) {
+      this.$store.commit('toggleSettingsPanel', {value: false})
+    }
+  },
   methods: {
     selectSample() {
       const kind = this.selectedTextKind;
@@ -136,7 +146,7 @@ export default {
   min-height: 100vh;
 
 .font-tester-content {
-    padding-right: $vuebar-width;
+    // padding-right: $vuebar-width;
     flex: 1;
     display: flex;
     height: 100%;

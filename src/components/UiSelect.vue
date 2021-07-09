@@ -82,7 +82,7 @@
                     @reveal="onReveal"
                 >
                   <keep-alive>
-                    <div v-bar
+                    <div
                         class="ui-select__dropdown-content"
                         ref="dropdownContent"
                         tabindex="-1"
@@ -595,6 +595,7 @@ export default {
             this.isActive = true;
             this.$refs.dropdown.$el.style.width = this.$refs.label.getBoundingClientRect().width + 'px';
             this.$nextTick(() => {
+              if (this.$refs.optionsList)
                 this.scrollOptionIntoView(this.$refs.optionsList.querySelector('.is-selected'));
             });
             this.$emit('dropdown-open');
