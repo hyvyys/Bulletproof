@@ -306,8 +306,6 @@ $header-background: linear-gradient(to right, $light, $accent);
   }
 
   .settings-aside {
-    --adjust-y: 1px;
-    --sigmoid-adjust: -15px;
 
     .nav-aside {
       padding-left: 0;
@@ -320,8 +318,6 @@ $header-background: linear-gradient(to right, $light, $accent);
   .aside {
     padding-right: $vuebar-width;
     padding-right: 14px;
-    --adjust-y: 1px;
-    --sigmoid-adjust: -15px;
 
     .nav-aside {
       padding-left: 0;

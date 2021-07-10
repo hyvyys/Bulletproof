@@ -1,14 +1,13 @@
 <template>
-  <div :class="`home ${webkit ? 'webkit' : ''}`">
-    <div :class="parallaxClasses">
+  <div class="home" :class="{webkit, safari, loaded }">
+    <div class="background background-parallax" :class="{webkit, safari, loaded }">
       <div class="pane">
         <div ref="parallax" class="parallax-content" data-parallax="0.3 0">
           {{ getParallaxText() }}
         </div>
       </div>
     </div>
-    <div ref="overlay"
-      :class="overlayClasses"></div>
+    <div ref="overlay" class="background background-overlay" :class="{webkit, safari, loaded }"></div>
 
     <Welcome msg="Welcome to Your Vue.js App" />
   </div>
@@ -33,19 +32,13 @@ export default {
   },
   computed: {
     ...mapGetters(["scrolledParentSelector"]),
-    overlayClasses() { return `background background-overlay `
-      + `${this.loaded ? 'loaded' : ''} `
-      + `${this.webkit ? 'webkit' : ''} `;
-    },
-    parallaxClasses() { return `background background-parallax `
-      + `${this.loaded ? 'loaded' : ''} `;
-    },
   },
   data() {
     return {
       loaded: false,
       parallaxTexts: LanguageData.flatMap(l => l.gotchas).flatMap(g => g.tests[0]),
       webkit: false,
+      safari: false,
     };
   },
   mounted() {
@@ -71,6 +64,12 @@ export default {
           break;
         case "edge":
           // not yet tested
+          break;
+        case "safari":
+          this.safari = true;
+          break;
+        case "ios":
+          this.safari = true;
           break;
         default:
           break;
@@ -128,91 +127,97 @@ $holes-width: 500px;
   overflow: hidden;
 
   .background {
-    @media (max-width: 1000px) {
-      display: none;
-    }
     position: absolute;
     width: 100vw;
     left: 50%;
     transform: translateX(-50%); // also creates new stacking context
     z-index: -1;
 
-    &.background-overlay {
-      background: $light;
-      top: 0;
-      bottom: 0;
-      &.loaded {
-        width: $solid-bg-width;
-      }
+    &.safari {
+      display: none;
+    }
+    @media (max-width: 1000px) {
+      display: none;
+    }
 
-      @include pseudo;
-      position: absolute; // positioned thanks to transform creating new stacking context
-      &::before {
-        left: 2px;
-        transform: translateX(-100%);
-      }
-      &::after {
-        left: calc(100% - 2px);
-      }
+    &:not(.safari) {
+      &.background-overlay {
+        background: $light;
+        top: 0;
+        bottom: 0;
+        &.loaded {
+          width: $solid-bg-width;
+        }
 
-      $left-y: -1700px;
-      $right-y: 0px;
-      $url: url("../assets/images/background-holes-bar.svg");
-      &::before {
-        background: bg-holes(right, $left-y, $url);
-      }
-      &::after {
-        background: bg-holes(left, $right-y, $url);
-      }
+        @include pseudo;
+        position: absolute; // positioned thanks to transform creating new stacking context
+        &::before {
+          left: 2px;
+          transform: translateX(-100%);
+        }
+        &::after {
+          left: calc(100% - 2px);
+        }
 
-      &.webkit {
-        $url: url("../assets/images/background-holes-bar-webkit.svg");
+        $left-y: -1700px;
+        $right-y: 0px;
+        $url: url("../assets/images/background-holes-bar.svg");
         &::before {
           background: bg-holes(right, $left-y, $url);
         }
         &::after {
           background: bg-holes(left, $right-y, $url);
         }
-      }
 
-      &::before,
-      &::after {
-        width: calc((110vw - #{$solid-bg-width}) / 2 + 10px);
-        @media screen and (min-width: 1420px) {
-          width: calc(#{$holes-width} + 10px);
+        &.webkit {
+          $url: url("../assets/images/background-holes-bar-webkit.svg");
+          &::before {
+            background: bg-holes(right, $left-y, $url);
+          }
+          &::after {
+            background: bg-holes(left, $right-y, $url);
+          }
         }
-        // background-repeat: repeat-y repeat-y;
-        background-repeat: repeat-y;
-      }
-    }
 
-    &.background-parallax {
-      font-family: "Rywalka Bulletproof";
-      font-size: 1.8rem;
-      @media screen and (max-width: 1000px) {
-        font-size: 2vw;
-      }
-      line-height: 1.2;
-      top: -1.2em;
-      bottom: -1.2em;
-      width: $solid-bg-width + 2 * $holes-width - 5px;
-      background: #333;
-      &.webkit {
-        background: #222;
-      }
-      color: #bbb;
-
-      opacity: 0;
-      &.loaded {
-        // opacity: 1;
-        @include fade-in(fade-in-1, $duration: 0.3s, $to: 1);
+        &::before,
+        &::after {
+          width: calc((110vw - #{$solid-bg-width}) / 2 + 10px);
+          @media screen and (min-width: 1420px) {
+            width: calc(#{$holes-width} + 10px);
+          }
+          // background-repeat: repeat-y repeat-y;
+          background-repeat: repeat-y;
+        }
       }
 
-      .pane {
-        text-align: center;
-        overflow: hidden;
-        .parallax-content {
-          // transition: transform 0.2s;
+      &.background-parallax {
+        font-family: "Rywalka Bulletproof";
+        font-size: 1.8rem;
+        @media screen and (max-width: 1000px) {
+          font-size: 2vw;
+        }
+        line-height: 1.2;
+        top: -1.2em;
+        bottom: -1.2em;
+        width: $solid-bg-width + 2 * $holes-width - 5px;
+        background: #333;
+        &.webkit {
+          background: #222;
+        }
+        color: #bbb;
+
+        opacity: 0;
+        &.loaded {
+          // opacity: 1;
+          @include fade-in(fade-in-1, $duration: 0.3s, $to: 1);
+        }
+
+        .pane {
+          text-align: center;
+          overflow: hidden;
+          .parallax-content {
+            // transition: transform 0.2s;
+          }
         }
       }
     }

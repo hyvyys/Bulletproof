@@ -49,24 +49,11 @@ export default {
   background: $light;
   color: $light-text;
 
-  /* this is what v-bar applies anyway */
   height: 100vh;
   overflow-y: hidden;
   .app-content {
     height: 100%;
     overflow: auto;
-  }
-
-  &.vb {
-    > .vb-content {
-      padding-right: 0;
-    }
-    > .vb-dragger {
-      > .vb-dragger-styler {
-        margin-top: 10px;
-        height: calc(100% - 20px);
-      }
-    }
   }
 }
 

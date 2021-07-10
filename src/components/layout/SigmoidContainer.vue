@@ -1,34 +1,25 @@
 <template>
   <div class="sigmoid-container" :style="rootStyle">
-    <svg style="display: block;" height="0" width="0" preserveAspectRatio="none">
-      <defs>
-        <clipPath :id="svgLeftId" clipPathUnits="objectBoundingBox">
-          <path :d="path('left')" />
-        </clipPath>
-        <clipPath :id="svgRightId" clipPathUnits="objectBoundingBox">
-          <path :d="path('right')" />
-        </clipPath>
-      </defs>
-    </svg>
-
     <div
       v-if="left"
       class="sigmoid left"
-      :style="sigmoidWrapperStyle('left')"
+      :style="sigmoidWrapperStyle"
     >
-      <div :style="sigmoidStyle('left')"/>
+      <div :style="sigmoidStyle"/>
     </div>
+
     <div class="container" :style="containerStyle">
       <div class="content" :style="contentStyle">
         <slot></slot>
       </div>
     </div>
+
     <div
       v-if="right"
       class="sigmoid right"
-      :style="sigmoidWrapperStyle('right')"
+      :style="sigmoidWrapperStyle"
     >
-      <div :style="sigmoidStyle('right')"/>
+      <div :style="sigmoidStyle"/>
     </div>
   </div>
 </template>
@@ -87,62 +78,50 @@ export default {
       return `
         ${this.left ? `margin-left: -${this.marginAdjust}px;` : ''}
         ${this.right ? `margin-right: -${this.marginAdjust}px;` : ''}
-        // opacity: 0.9999;
         z-index: 1;
+      `;
+    },
+    sigmoidWrapperStyle() {
+      return `
+        width: ${this.width}px;
+      `;
+    },
+    sigmoidStyle() {
+      return `
+        background: ${this.background};
+        ${!this.top ? 'transform: translateY(-1px) scaleY(-1);' : ''}
       `;
     },
   },
   mounted() {
     const style = getComputedStyle(this.$el);
-    // console.log(this.$el.style.background , style.backgroundImage ,style.backgroundColor)
-    // TODO: adjust background position
     this.background = this.$el.style.background || style.backgroundImage + ' ' + style.backgroundColor;
-  },
-  methods: {
-    path(side) {
-      return this.top ?
-      (
-        side === 'left'
-        ? `M0,1 C${this.control * 1},1 ${(1 - this.control) * 1},0 1,0 L1,1 0,1`
-        : `M0,0 C${this.control * 1},0 ${(1 - this.control) * 1},1 1,1 L0,1 0,0`
-      ) : (
-        side === 'left'
-        ? `M0,0 C${this.control * 1},0 ${(1 - this.control) * 1},1 1,1 L1,0 0,0`
-        : `M0,1 C${this.control * 1},1 ${(1 - this.control) * 1},0 1,0 L0,0 0,1`
-      );
-    },
-    sigmoidWrapperStyle(side) {
-      return `
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: ${this.width}px;
-        ${side === 'left' ? `
-          right: 100%;
-        ` : `
-          left: 100%;
-        `}
-        overflow: hidden;
-      `;
-
-    },
-    sigmoidStyle(side) {
-      return `
-        background: ${this.background};
-        height: calc(100% + 1px) /* fixes gap left by imprecise clip-path */;
-        width: calc(100% + 1px) /* fixes gap left by imprecise clip-path */;
-        ${!this.top ? 'transform: translateY(-1px);' : ''}
-        ${side === 'left' ? `
-          clip-path: url('#${this.svgLeftId}');
-        ` : `
-          clip-path: url('#${this.svgRightId}');
-        `}
-      `;
-    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
 @import "@/scss/mixins.scss";
+
+.sigmoid {
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  &.left {
+    right: calc(100% - 0.5px);
+  }
+  &.right {
+    left: calc(100% - 0.5px);
+  }
+  > div {
+    height: calc(100% + .5px) /* fixes gap left by imprecise clip-path */;
+    width: calc(100% + .5px) /* fixes gap left by imprecise clip-path */;
+    mask: url('../../assets/images/sigmoid.svg');
+    mask-size: 101% 101%;
+  }
+  &.right {
+    transform: scaleX(-1);
+  }
+}
 </style>

@@ -27,19 +27,19 @@
 
     <div v-if="gui" class="font-loader-item">
       <UiButton class="dark bi-button" @click="setLastFont" tooltip="Set last font">
-        <b>⮀</b>
+        <img svg-inline src="@/assets/icons/swap.svg" alt="Set last font" width="14" height="14" />
       </UiButton>
     </div>
 
     <div v-if="gui" class="font-loader-item">
       <UiButton class="dark bi-button" @click="setPreviousFont" tooltip="Set previous font">
-        <b>⇐</b>
+        <img svg-inline src="@/assets/icons/prev.svg" alt="Previous font" width="14" height="14" />
       </UiButton>
     </div>
 
     <div v-if="gui" class="font-loader-item">
       <UiButton class="dark bi-button" @click="setNextFont" tooltip="Set next font">
-        <b>⇒</b>
+        <img svg-inline src="@/assets/icons/next.svg" alt="Next font" width="14" height="14" />
       </UiButton>
     </div>
 
@@ -259,10 +259,6 @@ export default {
     },
 
     loadFonts({ files = [], urls = [] } = {}) {
-      let items = files.map(f => ({
-        ...f,
-      }));
-
       if (!urls.length) {
         urls = files.map(file => URL.createObjectURL(file));
       }

@@ -30,7 +30,7 @@
         </div>
       </div>
     </div>
-    <SigmoidContainer sides="left bottom" width="65" class="large light aside" idSeed="footer">
+    <SigmoidContainer sides="left bottom" width="75" class="large light aside" idSeed="footer">
       <a class="github-link" href="https://github.com/hyvyys/Bulletproof" target="_blank" rel="noopener noreferrer">
         <div>
           Bulletproof
@@ -102,6 +102,7 @@ export default {
 
 .site-footer {
   position: relative;
+  font-size: 0.9rem;
   .sentinel {
     position: absolute;
     bottom: 100%;
@@ -118,7 +119,6 @@ export default {
 
   .main {
     color: rgba($accent-text, 0.7);
-    font-size: 0.9rem;
     flex: 1;
     padding: 15px 0px 10px 20px;
     display: flex;
@@ -136,22 +136,25 @@ export default {
   }
   .aside {
     align-self: stretch;
-    padding-right: $vuebar-width;
     padding-right: 14px;
     background: $light;
-    --adjust-y: 1px;
 
     .github-link {
       text-decoration: none;
       line-height: 1;
-      padding: 0.5em;
+      padding: 0;
       flex: 1;
       overflow: visible;
       display: flex;
       align-items: center;
+      margin-left: -1rem;
       div {
-        margin: 0.2em;
+        min-width: 70px;
+        margin: 0.4em;
         text-align: right;
+      }
+      svg {
+        margin: 0;
       }
     }
   }
