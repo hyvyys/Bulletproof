@@ -241,11 +241,21 @@ export default {
       }
     },
 
+    getQueryStringFontUrls() {
+      const urls = this.$route.query.preload || [];
+      return Array.isArray(urls) ? urls : [urls];
+    },
+
+    getDefaultFontUrls() {
+      const dir = (process.env.BASE_URL + "/fonts/").replace(/\/+/g, "/");
+      return DEFAULT_FONTS.map(f => dir + f);
+    },
+
     loadDefaultFonts() {
       this.defaultFontsLoaded = true;
-      const dir = (process.env.BASE_URL + "/fonts/").replace(/\/+/g, "/");
-      const fonts = DEFAULT_FONTS;
-      this.loadFonts({ urls: fonts.map(f => dir + f) });
+      let urls = this.getQueryStringFontUrls();
+      if (!urls.length) urls = this.getDefaultFontUrls();
+      this.loadFonts({ urls });
     },
 
     onFilesDropped(files) {
