@@ -151,15 +151,13 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 import Pinnable from "@/components/layout/Pinnable";
 import ScrollPanel from "@/components/layout/ScrollPanel";
-import UiTooltip from "@/components/UiTooltip";
 import LanguagePanel from "@/components/LanguagePanel";
 import LanguageList from "@/components/LanguageList";
 import CharacterPanel from "@/components/CharacterPanel";
 import FontSample from "@/components/FontSample";
-import UiButton from "keen-ui/src/UiButton";
 import UiSelect from "keen-ui/src/UiSelect";
 import printNumber from "@/utils/printNumber.js";
 
@@ -168,7 +166,7 @@ import Vue from 'vue';
 Vue.component('v-style', {
   render: function (createElement) {
     return createElement('style', this.$slots.default)
-  }
+  },
 });
 
 const unsupportedLanguagesSortingOptions = [
@@ -182,7 +180,7 @@ const supportedLanguagesSortingOptions = unsupportedLanguagesSortingOptions;
 const missingCharacterSortingOptions = [
   'alphabetically',
   'by speakers',
-  'by language count'
+  'by language count',
 ];
 
 export default {
@@ -190,8 +188,6 @@ export default {
     LanguagePanel,
     LanguageList,
     CharacterPanel,
-    UiTooltip,
-    UiButton,
     UiSelect,
     Pinnable,
     ScrollPanel,

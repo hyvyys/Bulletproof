@@ -30,12 +30,10 @@
 import { mapGetters } from "vuex";
 import UiIconButton from "keen-ui/src/UiIconButton.vue";
 import DomSelection from "@/utils/DomSelection";
-import AnimationEditor from "@/components/AnimationEditor.vue";
 
 export default {
   components: {
     UiIconButton,
-    AnimationEditor,
   },
   data() {
     return {

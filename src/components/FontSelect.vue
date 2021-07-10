@@ -78,7 +78,7 @@ export default {
         str.length > 22 ? str.slice(0, 8) + '...' + str.slice(-10) : str
       ).replace(/\.(ttf|otf)$/, v => v.toUpperCase());
     },
-  }
+  },
 }
 </script>
 

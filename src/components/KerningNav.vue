@@ -68,7 +68,6 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
-import scrollToHash from "@/utils/scrollToHash";
 import UiIconButton from "keen-ui/src/UiIconButton.vue";
 import UiButton from "keen-ui/src/UiButton.vue";
 import UiCheckbox from "keen-ui/src/UiCheckbox.vue";

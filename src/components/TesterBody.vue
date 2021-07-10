@@ -163,7 +163,7 @@ export default {
     },
     transformText(text) {
       return text;
-    }
+    },
   },
 };
 </script>

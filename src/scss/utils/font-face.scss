@@ -22,6 +22,7 @@
       font-family: $cssFontFamily;
       font-weight: nth($style, 2);
       font-style: nth($style, 3);
+      font-display: swap;
     }
   } 
 }

@@ -91,8 +91,6 @@ import SiteLogo from "@/components/SiteLogo.vue";
 import SigmoidContainer from "@/components/layout/SigmoidContainer.vue";
 import UiButton from "keen-ui/src/UiButton.vue";
 import UiIconButton from "keen-ui/src/UiIconButton.vue";
-import UiPopover from "keen-ui/src/UiPopover.vue";
-import UiCollapsible from "keen-ui/src/UiCollapsible.vue";
 
 import textKinds from "@/models/textKinds";
 import textKindTitle from "@/models/textKindTitle";
@@ -106,8 +104,6 @@ export default {
     SigmoidContainer,
     UiButton,
     UiIconButton,
-    UiPopover,
-    UiCollapsible,
   },
   props: {
     hideHeaderOnScroll: { type: Boolean, default: false },

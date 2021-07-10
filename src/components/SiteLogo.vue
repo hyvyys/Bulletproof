@@ -39,8 +39,9 @@ h1.site-logo {
   }
   .strong {
     font-size: 1.035em;
-    font-family: "Rywalka Bulletproof";
+    font-family: "Rywalka Bulletproof", sans-serif;
     line-height: 1;
+    font-weight: 400;
   }
   .weak {
     opacity: 0.8;

@@ -57,7 +57,7 @@ export default {
   },
   methods: {
     printNumber,
-  }
+  },
 }
 </script>
 

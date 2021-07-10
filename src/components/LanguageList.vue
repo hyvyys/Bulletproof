@@ -46,7 +46,7 @@ export default {
       document.execCommand('copy');
       window.getSelection().removeAllRanges();
     },
-  }
+  },
 }
 </script>
 
