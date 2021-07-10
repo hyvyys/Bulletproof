@@ -2,3 +2,4 @@
 
 [Kerning](/help/kerning)
 [Animation](/help/animation)
+[Preloading custom fonts](/help/query-string)
