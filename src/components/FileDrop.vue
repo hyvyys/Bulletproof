@@ -52,30 +52,24 @@ export default {
   },
   methods: {
     showDrop() {
-      console.log('showDrop');
       this.visible = true;
       this.toggleBodyScroll(false);
     },
     hideDrop() {
-      console.log('hideDrop');
       this.visible = false;
       this.toggleBodyScroll(true);
     },
     handleDragEnter(e) {
-      console.log('(handleDragEnter)');
       e.preventDefault();
     },
     handleDragLeave(e) {
-      console.log('handleDragLeave');
       this.hideDrop();
       e.preventDefault();
     },
     handleDragOver(e) {
-      console.log('(handleDragOver)');
       e.preventDefault();
     },
     handleDrop(e) {
-      console.log('handleDrop');
       e.preventDefault();
       // fetch FileList object
       var files = e.target.files || e.dataTransfer.files;
@@ -88,15 +82,12 @@ export default {
     handleBodyDragEnter(e) {
       if (e.dataTransfer.types.indexOf("Files") > -1) {
         e.preventDefault();
-        console.log('handleBodyDragEnter');
         this.showDrop();
       }
     },
 
     preventScroll() {
       this.scrolledParent.scrollTop = this.scrolledParentTop;
-      // eslint-disable-next-line no-console
-      console.log('prevented scroll');
     },
 
     disableScroll() {

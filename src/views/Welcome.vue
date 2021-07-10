@@ -38,7 +38,6 @@ export default {
   },
   methods: {
     expandMenu(menuId) {
-      console.log('clicked')
       this.$store.commit("expandMenu", { menuId });
     },
   },

@@ -117,7 +117,6 @@ export default {
     },
   },
   mounted() {
-    // this.configureAnchors();
     this.syncSamples();
     this.$watch('texts', this.syncSamples, { deep:true });
     this.$watch('fontSizes', this.syncSamples, { deep:true });
@@ -125,31 +124,8 @@ export default {
   beforeDestroy() {
   },
   methods: {
-    onSelectStart(event) {
-      if (event.buttons === 1) {
-        this.isContentEditable = false;
-        console.log('nonEditable')
-      }
-    },
-    onSelectEnd() {
-      this.isContentEditable = true;
-      console.log('editable')
-    },
-    configureAnchors() {
-      return;
-      // doesn't work any more but... what problem this that fixed? body overscroll?
-      // const anchors = document.querySelectorAll("a[href^='#']");
-      // const scrolled = document.querySelector(this.scrolledParentSelector);
-      // anchors.forEach(a => {
-      //   a.addEventListener("click", function(e) {
-      //     e.preventDefault();
-      //     scrollToHash(a, scrolled);
-      //   });
-      // });
-    },
     onPaste(event) {
       let paste = (event.clipboardData || window.clipboardData).getData('text');
-      // paste = paste.replace(/font-family:[^;]+;?/g, '');
       const selection = window.getSelection();
       if (!selection.rangeCount) return false;
       selection.deleteFromDocument();
@@ -185,11 +161,8 @@ export default {
       // trigger resize event so that Fitter can be positioned
       window.dispatchEvent(new Event("resize"));
     },
-    transformText(text, locale) {
+    transformText(text) {
       return text;
-      // transform the text so that you can copy transformed version also in Firefox
-      return this.settings.enableTextTransform && this.settings.textTransform === 'uppercase' ?
-        text.toLocaleUpperCase(locale) : text;
     }
   },
 };

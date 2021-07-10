@@ -435,11 +435,8 @@ export default {
         if (styleMatch && styleMatch[0].length) {
           const family = value.replace(regex, '');
           const style = styleMatch[1];
-          // console.log(family, style)
           styles.setProperty(cssFontVariable, family);
           styles.setProperty(cssWeightVariable, style);
-          console.log(cssFontVariable, family);
-          console.log(cssWeightVariable, style);
         }
         else {
           styles.setProperty(cssFontVariable, value);
