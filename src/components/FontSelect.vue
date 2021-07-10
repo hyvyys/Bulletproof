@@ -2,8 +2,8 @@
   <UiSelect
     class="font-select"
     :value="value"
-    @input="v => $emit('input', v)"
-    :options="fonts"
+    @input="selectOption"
+    :options="options"
     :keys="fontOptionKeys"
     dropdownClass="font-select__dropdown"
     :label="label"
@@ -15,25 +15,35 @@
     <slot v-for="slot in Object.keys($slots)" :name="slot" :slot="slot"/>
 
     <div slot="option" slot-scope="props">
-      <div class="col col-sample" :style="optionSampleStyle(props.option)">
-        <FitMe
-          :text="props.option && sampleText"
-          :cutText="2"
-        />
-      </div>
-      <div class="col">
-        <div class="font-family">{{ props.option && props.option.originalFamily }}</div>
-        <div class="font-style">{{ props.option && props.option.style }}</div>
-        <div class="font-version">
-          {{
-          props.option && props.option.version
-          ? `(${props.option.version})` : ""
-          }}
+      <template v-if="props.option.addFont">
+        <div class="col col-sample icon-add">
+          +
         </div>
-      </div>
-      <UiTooltip position="left" :appendToBody="false" :openDelay="380">
-        {{ shortFileName(props.option.fileName) }}
-      </UiTooltip>
+        <div class="col">
+          Add remote font
+        </div>
+      </template>
+      <template v-else>
+        <div class="col col-sample" :style="optionSampleStyle(props.option)">
+          <FitMe
+            :text="props.option && sampleText"
+            :cutText="2"
+          />
+        </div>
+        <div class="col">
+          <div class="font-family">{{ props.option && props.option.originalFamily }}</div>
+          <div class="font-style">{{ props.option && props.option.style }}</div>
+          <div class="font-version">
+            {{
+            props.option && props.option.version
+            ? `(${props.option.version})` : ""
+            }}
+          </div>
+        </div>
+        <UiTooltip position="left" :appendToBody="false" :openDelay="380">
+          {{ shortFileName(props.option.fileName) }}
+        </UiTooltip>
+      </template>
     </div>
   </UiSelect>
 </template>
@@ -72,11 +82,26 @@ export default {
       sampleText: "Abg",
     };
   },
+  computed: {
+    options() {
+      return [
+        ...this.fonts,
+        { addFont: true },
+      ];
+    },
+  },
   methods: {
     shortFileName(str) {
       return (
         str.length > 22 ? str.slice(0, 8) + '...' + str.slice(-10) : str
       ).replace(/\.(ttf|otf)$/, v => v.toUpperCase());
+    },
+    selectOption(v) {
+      if (v.addFont) {
+        this.$emit('openAddFontDialog', v)
+      } else {
+        this.$emit('input', v)
+      }
     },
   },
 }
@@ -117,6 +142,15 @@ export default {
           width: 1.75rem;
           height: 1.5rem;
           line-height: 0.85;
+          &.icon-add {
+            font-size: 28px;
+            font-weight: 700;
+            display: flex;
+            place-content: center;
+            margin: 0;
+            padding-bottom: .1em;
+            box-sizing: border-box;
+          }
         }
         .font-style {
           opacity: 0.6;

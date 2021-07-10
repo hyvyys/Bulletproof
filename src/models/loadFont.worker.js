@@ -5,7 +5,7 @@ self.onmessage = function (e) {
   const { url, fileName } = e.data;
   opentype.load(url, (error, font) => {
     if (error) {
-      self.postMessage({ url, fileName, error: error.message });
+      self.postMessage({ url, fileName, error: error.message || error });
     }
     else {
       self.postMessage({ url, fileName, font });

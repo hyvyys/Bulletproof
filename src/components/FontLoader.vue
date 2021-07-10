@@ -21,6 +21,7 @@
       :fonts="fontOptions"
       :value="selectedFont"
       @input="selectFont"
+      @openAddFontDialog="openAddFontDialog"
       :loading="fontLoading"
     />
 
@@ -135,10 +136,23 @@
       />
     </transition>
 
-    <UiModal ref="modal" title="Error opening fonts.">
-      <div>
-        <div>{{ errorMessage }}</div>
-        <code v-for="(log, i) in errorLogs" :key="i">{{ log }}</code>
+    <UiModal ref="modal" title="Error opening fonts">
+      <div class="error-modal-body">
+        <p>{{ errorMessage }}</p>
+        <p v-for="(log, i) in errorLogs" :key="i">
+          <code><strong>{{ log.url }}:</strong> {{ log.error }}</code>
+          </p>
+      </div>
+    </UiModal>
+
+    <UiModal ref="modalAddFont" title="Add remote fonts">
+      <div class="add-font-modal-body">
+        <UiTextbox v-model="addFontUrl" placeholder="HTTPS-enabled URL (TTF, OTF, WOFF)">
+        </UiTextbox>
+
+        <div class="align-right">
+          <UiButton @click="addRemoteFont">Request</UiButton>
+        </div>
       </div>
     </UiModal>
 
@@ -223,6 +237,7 @@ export default {
         boldItalic: '',
         header: '',
       },
+      addFontUrl: '',
     };
   },
   watch: {
@@ -258,6 +273,19 @@ export default {
       this.loadFonts({ urls });
     },
 
+    openAddFontDialog() {
+      this.$refs.modalAddFont.open();
+      },
+    addRemoteFont() {
+      this.loadFonts({ urls: [ this.addFontUrl ], remote: true });
+      this.$refs.modalAddFont.close();
+    },
+    updateQuery(update) {
+        let query = JSON.parse(JSON.stringify(this.$route.query));
+        query = { ...query, ...update };
+        this.$router.replace({ query }).catch(() => {});
+    },
+
     onFilesDropped(files) {
       this.openedWithoutFonts = false;
       // disable Fireworks
@@ -268,7 +296,7 @@ export default {
       this.loadFonts({ files: Array.from(files) });
     },
 
-    loadFonts({ files = [], urls = [] } = {}) {
+    loadFonts({ files = [], urls = [], remote = false } = {}) {
       if (!urls.length) {
         urls = files.map(file => URL.createObjectURL(file));
       }
@@ -301,11 +329,13 @@ export default {
           styles.add(font.fontFace);
           fonts.push(font);
           this.fontLoadingProgress = 100 * i / urls.length;
-
         }
         else if (e.data.error) {
-          const { error, fileName } = e.data;
-          errors.push({ error, fileName });
+          const { error, url, fileName } = e.data;
+          errors.push({ error, url, fileName });
+          this.updateQuery({
+            preload: this.getQueryStringFontUrls().filter(u => u !== url),
+          });
         }
 
         if (i === urls.length) {
@@ -321,6 +351,9 @@ export default {
             let requestedFont = this.$route.query.f || '';
             let matchedFont = fonts.findIndex(f => f.family.toLowerCase().startsWith(requestedFont.toLowerCase()));
             this.selectFont(fonts[matchedFont === -1 ? 0 : matchedFont]);
+            if (remote) this.updateQuery({
+              preload: [ ...this.getQueryStringFontUrls(), ...urls ],
+            });
           }
           if (errors.length) {
             this.printFontLoadingError(errors);
@@ -339,7 +372,7 @@ export default {
       if (results.length) {
         const errors = results.filter(r => r.error);
         this.errorMessage = `${errors.length} out of ${results.length} files were not loaded.`;
-        this.errorLogs = errors.map(e => `${e.fileName}: ${e.error}`);
+        this.errorLogs = errors;
       } else {
         this.errorMessage = `An unexpected error occurred.`;
         this.errorLogs = [extraError];
@@ -616,5 +649,16 @@ export default {
   top: 2em;
   bottom: 2em;
   max-height: calc(100vh - 4em);
+}
+.ui-modal .ui-button {
+  margin-top: 1rem;
+  margin-left: auto;
+  margin-right: 0;
+}
+.add-font-modal-body {
+  .align-right {
+    display: flex;
+    justify-content: flex-end;
+  }
 }
 </style>
