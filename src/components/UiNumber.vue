@@ -158,17 +158,21 @@ export default {
     updateValue(stringOrNumber) {
       let stringValue = String(stringOrNumber);
       let value = Number(stringValue.replace(",", "."));
+
       if (!isNaN(value)
           // prevent erasing decimal point when user wants to change the fraction part
           && !/[.,]$/.test(stringValue)
       ) {
         const corrected = this.correctValue(value);
-        if (Math.abs(value - corrected) < Number.EPSILON) {
-          this.tryValue = null;
           this.$emit("input", corrected);
-        } else {
-          this.tryValue = corrected;
-        }
+
+        // I don't remember what this was about but it broke increasing value from 1.12 to 1.13...
+        // if (Math.abs(value - corrected) < Number.EPSILON) {
+        //   this.tryValue = null;
+        //   this.$emit("input", corrected);
+        // } else {
+        //   this.tryValue = corrected;
+        // }
       }
     },
     coerceValue(value) {
