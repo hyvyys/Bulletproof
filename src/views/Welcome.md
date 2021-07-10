@@ -29,3 +29,7 @@ The app is equipped with a <router-link to="/kerning">kerning string generator</
 ## Playground & Animation
 
 Any open text sample can be edited. In the <router-link to="/editor">editor tab</router-link> some more options are available: setting bold and italic (with separately selectable fonts), as well as taking snapshots of the settings and using them as animation keyframes — can be useful for recording gifs or videos, or toggling multiple features on and off more quickly. <router-link to="/help/animation">[See animation editor help]</router-link>
+
+## Preload a remote font
+
+If you want to share a link to a specific tab and automatically load a remote font, you can add a query parameter with the URL of your font file — like `?preload=https://example.com/Font.ttf` — to the end of the page URL. <router-link to="/help/query-string">[See preloading custom fonts help]</router-link>

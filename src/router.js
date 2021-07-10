@@ -7,6 +7,7 @@ import Home from "@/views/Home.vue";
 import Help from "@/views/Help.vue";
 import KerningHelp from "@/views/KerningHelp.vue";
 import AnimationHelp from "@/views/AnimationHelp.vue";
+import QueryString from "@/views/QueryString.vue";
 import FontTester from "@/views/FontTester.vue";
 
 import textKinds from "@/models/textKinds";
@@ -52,6 +53,15 @@ const router = new Router({
       components: {
         header: SiteHeader,
         main: AnimationHelp,
+        footer: SiteFooter,
+      },
+    },
+    {
+      path: "/help/query-string",
+      name: "QueryString",
+      components: {
+        header: SiteHeader,
+        main: QueryString,
         footer: SiteFooter,
       },
     },
