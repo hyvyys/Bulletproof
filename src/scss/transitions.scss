@@ -66,30 +66,3 @@ $fade-slow-delay: 0.45s;
     position: absolute;
   }
 }
-
-.slide-left {
-  $duration: 0.3s;
-
-  &-enter-active,
-  &-leave-active {
-    transition: opacity $duration, transform $duration;
-  }
-  &-enter, &-leave-to {
-    opacity: 0;
-    transform: translateX(-100%);
-  }
-  &-enter-to, &-leave {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  &-move {
-    transition: transform $duration;
-  }
-  &-leave-active {
-    position: absolute;
-    height: 100%;
-  }
-  &-wrapper {
-    position: relative;
-  }
-}

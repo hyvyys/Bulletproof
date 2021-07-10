@@ -152,7 +152,7 @@
         </UiTextbox>
 
         <div class="align-right">
-          <UiButton @click="addRemoteFont(addFontUrl)">Load</UiButton>
+          <UiButton @click="addRemoteFont(addFontUrl)" :disabled="!addFontUrl">Load</UiButton>
         </div>
       </div>
     </UiModal>

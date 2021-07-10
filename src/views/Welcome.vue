@@ -14,10 +14,10 @@
         <div v-if="!isMobile">or</div>
         <div class="request-font">
           <UiTextbox class="font-url-input" v-model="addFontUrl" placeholder="Enter font file URL (TTF, OTF, WOFF)" @keydown.enter="requestFont"></UiTextbox>
-          <UiButton @click="requestFont">Load</UiButton>
+          <UiButton @click="requestFont" :disabled="!addFontUrl">Load</UiButton>
         </div>
         <div v-if="isMobile">or</div>
-        <UiButton v-if="isMobile" @click="expandMenu('navMenu')">Try with Alegreya</UiButton>
+        <UiButton v-if="isMobile" @click="expandMenu('navMenu')">Just look around</UiButton>
       </div>
 
     </div>
@@ -59,6 +59,7 @@ export default {
     },
     requestFont() {
       this.$store.commit("requestFont", { url: this.addFontUrl });
+      this.addFontUrl = '';
     },
   },
 };

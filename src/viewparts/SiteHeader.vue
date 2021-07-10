@@ -1,7 +1,7 @@
 <template>
   <div :class="`site-header ${!footerVisible && sticky ? 'sticky' : ''}`">
-    <transition-group tag="div" class="above-sidebar slide-left-wrapper" :name="aboveHeaderTransition">
-      <div key="button" v-if="!!textKind" class="settings-aside-wrap">
+    <div class="above-sidebar slide-left-wrapper" :class="{ slide: !textKind }">
+      <div key="button" class="settings-aside-wrap">
         <SigmoidContainer id="settings-trigger" class="settings-aside light" sides="right top">
           <nav class="nav nav-aside" @click="toggleSettingsPanel">
             <div class="transition-wrapper">
@@ -18,9 +18,9 @@
           <SiteLogo />
         </router-link>
       </div>
-    </transition-group>
+    </div>
 
-    <div class="logo-top" :class="{ 'alone': !isTesterPage }">
+    <div class="logo-top">
         <router-link to="/" class="home" @click.native="scrollToTop">
           <SiteLogo />
         </router-link>
@@ -34,7 +34,17 @@
         <TextTools v-if="isTesterPage" />
       </div>
 
-      <UiButton v-if="isTesterPage" class="collapse-mobile-trigger right" @click="expandMenu('navMenu')">{{ textKind || 'Begin' }}</UiButton>
+      <UiButton v-if="true" class="collapse-mobile-trigger right" :class="{ alone: !isTesterPage }" @click="expandMenu('navMenu')">
+        <span v-if="textKind">
+          {{textKind}}
+        </span>
+        <span v-else>
+          <span>Pages</span>
+          <span style="margin-left: .1em; font-family: sans-serif; font-size: 12px">
+            {{ expandedMenu === 'navMenu' ? '▲' : '▼' }}
+          </span>
+        </span>
+      </UiButton>
       <div class="collapse-mobile nav-menu" :class="{ expanded: expandedMenu === 'navMenu' }">
           <nav class="nav nav-text-kinds">
             <EditorNav @navigated="expandMenu(null)" />
@@ -111,7 +121,6 @@ export default {
   data() {
     return {
       textKinds,
-      aboveHeaderTransition: "slide-left",
       scrolledParent: null,
       stickyShowDelta: 200, // px
       stickyHideDelta: 300, // px
@@ -141,9 +150,6 @@ export default {
     },
   },
   mounted() {
-    // duct tape to avoid erroneous transition up/down when clicking a hash anchor
-    window.addEventListener("resize", this.setAboveHeaderTransition);
-    this.setAboveHeaderTransition();
     this.scrolledParent = document.querySelector(this.scrolledParentSelector);
     // if (this.hideHeaderOnScroll)
       // this.initStickyHeader();
@@ -154,9 +160,6 @@ export default {
     },
     setSticky(value) {
       this.$store.commit("sticky", { value });
-    },
-    setAboveHeaderTransition() {
-      this.aboveHeaderTransition = viewport.height < 500 ? "" : "slide-left";
     },
     navlinkText(kind) {
       return textKindTitle(kind);
@@ -391,9 +394,6 @@ $header-background: linear-gradient(to right, $light, $accent);
     display: none;
   }
   @media (max-width: 1400px) {
-      .slide-left-wrapper {
-        width: unset;
-      }
       .site-logo {
         margin: 0;
         font-size: 18px;
@@ -485,6 +485,11 @@ $header-background: linear-gradient(to right, $light, $accent);
         padding-right: 10px;
         padding-left: 0;
       }
+      &.alone {
+        border-radius: 0;
+        margin-left: -70px;
+        padding-left: 70px;
+      }
       background: transparent;
       color: white;
       &:hover {
@@ -523,6 +528,9 @@ $header-background: linear-gradient(to right, $light, $accent);
     }
 
     .editor-nav {
+      @media (max-width: 1000px) {
+        order: 1;
+      }
       flex: 0 0 100%;
       flex-wrap: wrap;
 
@@ -536,7 +544,6 @@ $header-background: linear-gradient(to right, $light, $accent);
         flex: 0 0 50% !important;
         flex: 0 0 50% !important;
       }
-      // display: block;
 
       .ui-icon-button {
         color: black !important;
@@ -551,13 +558,27 @@ $header-background: linear-gradient(to right, $light, $accent);
 
 .github-icon-link-wrapper {
   cursor: pointer;
-  display: flex; // saves the day! (if it comes to transitions)
+  display: flex; // saves the day! (if it comes to transitions) // years later: oh really?
   a {
     display: flex;
     svg {
       width: 32px;
       height: 32px;
       margin: 2px;
+    }
+  }
+}
+
+.slide-left-wrapper {
+  $duration: 0.3s;
+  transition: transform $duration;
+  .settings-aside-wrap {
+    transition: opacity $duration;
+  }
+  &.slide {
+    transform: translateX(-40px);
+    .settings-aside-wrap {
+      opacity: 0;
     }
   }
 }
