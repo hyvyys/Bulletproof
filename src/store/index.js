@@ -84,7 +84,7 @@ const store = new Vuex.Store({
     },
     expandMenu(state, { menuId }) {
       if (state.expandedMenu === menuId) {
-        this.expandedMenu = null;
+        state.expandedMenu = null;
       } else {
         this.commit("toggleContextualPanel", { value: false });
         this.commit("toggleSettingsPanel", { value: false });
@@ -226,20 +226,12 @@ const store = new Vuex.Store({
 
     updateSettings(state, options) {
       Object.keys(options).forEach(key => {
-        const settings = state.settings;
-        const definition = Settings.definitions[key];
         const value = options[key];
-        if (true || !definition.validate || definition.validate(value, settings)) {
-          if (key == "fontSizeUnit") {
-            this.commit("convertFontSize", { newUnit: value });
-          }
-          state.settings[key] = value;
-          this.commit("updateSetting");
+        if (key == "fontSizeUnit") {
+          this.commit("convertFontSize", { newUnit: value });
         }
-        else {
-          // eslint-disable-next-line no-console
-          console.log(`${value} is invalid for ${key}`)
-        }
+        state.settings[key] = value;
+        this.commit("updateSetting");
       });
       this.commit("computeParams");
     },
