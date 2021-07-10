@@ -107,15 +107,22 @@ a {
   display: flex;
   justify-content: flex-start;
   margin-bottom: 150px;
+  padding: 0 7.5vw;
   
   .help {
-    flex: 1 1 60%;
-    margin: 0 40px 0 6rem;
+    max-width: 100%;
+    @media (min-width: 1000px) {
+      flex: 1 1 60%;
+      margin: 0 40px 0 6rem;
+    }
     .reading {
       margin-right: 0;
     }
   }
   .example {
+    @media (max-width: 1000px) {
+      display: none;
+    }
     width: 300px;
     flex: 0 1 30%;
     align-self: flex-start;
@@ -133,8 +140,13 @@ a {
     .router-link-active {
       color: #bbb;
       text-decoration: none;
-      position: absolute;
-      right: 100%;
+      @media (max-width: 1000px) {
+        display: block;
+      }
+      @media (min-width: 1000.02px) {
+        position: absolute;
+        right: 100%;
+      }
       white-space: pre;
       &:hover {
         color: $light-link;

@@ -12,12 +12,15 @@
   }
 
   code, pre {
-    white-space: nowrap;
     background: mix($brand-primary-color, white, 30%);
     padding: 4px 6px;
     border-radius: 4px;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    max-width: 100%;
   }
   pre code {
-    white-space: pre;
+    white-space: pre-wrap;
   }
 }
