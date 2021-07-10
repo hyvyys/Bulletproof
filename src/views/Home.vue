@@ -104,11 +104,13 @@ export default {
 @import "@/scss/variables";
 @import "@/scss/mixins";
 
-$solid-bg-width: 500px;
+$solid-bg-width: 600px;
 $holes-width: 500px;
 
-@function bg-holes($side: left, $y: 0px, $url: url("../assets/images/background-holes-bar.svg")) {
-  @return $side 0 top #{$y} / cover #{$url};
+@mixin bg-holes($side: left, $y: 0px, $url: url("../assets/images/background-holes-bar.svg")) {
+  background: #{$url};
+  background-position: 0 #{$y};
+  background-size: 100% auto;
   // $d: 10px;
   // @return
   // $side 0 top #{$y + .5 * $d} / 100% 100% linear-gradient(0deg, #f00, #f00 $d, transparent $d + 1px, transparent),
@@ -159,23 +161,24 @@ $holes-width: 500px;
           left: calc(100% - 2px);
         }
 
-        $left-y: -1700px;
-        $right-y: 0px;
+        $left-y: -110vh;
+        $left-y: -1500px;
+        $right-y: 0;
         $url: url("../assets/images/background-holes-bar.svg");
         &::before {
-          background: bg-holes(right, $left-y, $url);
+          @include bg-holes(right, $left-y, $url);
         }
         &::after {
-          background: bg-holes(left, $right-y, $url);
+          @include bg-holes(left, $right-y, $url);
         }
 
         &.webkit {
           $url: url("../assets/images/background-holes-bar-webkit.svg");
           &::before {
-            background: bg-holes(right, $left-y, $url);
+            @include bg-holes(right, $left-y, $url);
           }
           &::after {
-            background: bg-holes(left, $right-y, $url);
+            @include bg-holes(left, $right-y, $url);
           }
         }
 

@@ -28,6 +28,11 @@ export default {
   mounted() {
     window.addEventListener("beforeunload", this.someMethod);
     this.$store.commit("setMobile", { isMobile: window.innerWidth <= 1000 });
+
+    const route = this.$route;
+    if (route.path === '/' && route.query.preload) {
+      this.$router.push({ path: 'lettering', query: route.query });
+    }
   },
   beforeDestroy() {
     window.removeEventListener("beforeunload", this.someMethod);

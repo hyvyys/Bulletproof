@@ -15,6 +15,7 @@
     <slot v-for="slot in Object.keys($slots)" :name="slot" :slot="slot"/>
 
     <div slot="option" slot-scope="props">
+
       <template v-if="props.option.addFont">
         <div class="col col-sample icon-add">
           +
@@ -23,6 +24,7 @@
           Add remote font
         </div>
       </template>
+
       <template v-else>
         <div class="col col-sample" :style="optionSampleStyle(props.option)">
           <FitMe
@@ -44,6 +46,7 @@
           {{ shortFileName(props.option.fileName) }}
         </UiTooltip>
       </template>
+
     </div>
   </UiSelect>
 </template>
@@ -65,6 +68,7 @@ export default {
     fonts: Array,
     label: String,
     loading: Boolean,
+    addFontOption: Boolean,
   },
   data() {
     return {
@@ -84,10 +88,7 @@ export default {
   },
   computed: {
     options() {
-      return [
-        ...this.fonts,
-        { addFont: true },
-      ];
+      return this.addFontOption ? [ ...this.fonts, { addFont: true } ] : this.fonts;
     },
   },
   methods: {

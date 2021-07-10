@@ -22,6 +22,7 @@
       :value="selectedFont"
       @input="selectFont"
       @openAddFontDialog="openAddFontDialog"
+      :addFontOption="true"
       :loading="fontLoading"
     />
 
@@ -147,16 +148,14 @@
 
     <UiModal ref="modalAddFont" title="Add remote fonts">
       <div class="add-font-modal-body">
-        <UiTextbox v-model="addFontUrl" placeholder="HTTPS-enabled URL (TTF, OTF, WOFF)">
+        <UiTextbox v-model="addFontUrl" @keydown.enter="addRemoteFont(addFontUrl)" ref="addFontUrlInput" placeholder="HTTPS-enabled URL (TTF, OTF, WOFF)">
         </UiTextbox>
 
         <div class="align-right">
-          <UiButton @click="addRemoteFont">Request</UiButton>
+          <UiButton @click="addRemoteFont(addFontUrl)">Load</UiButton>
         </div>
       </div>
     </UiModal>
-
-    <Fireworks ref="fireworks" :font="selectedFont.family" />
   </div>
 </template>
 
@@ -173,7 +172,6 @@ import UiProgressLinear from "keen-ui/src/UiProgressLinear";
 
 import FontSelect from "@/components/FontSelect.vue";
 import FileDrop from "@/components/FileDrop.vue";
-import Fireworks from "@/components/Fireworks.vue";
 
 import LoadFontWorker from 'worker-loader!@/models/loadFont.worker.js';
 import Font from "@/models/Font";
@@ -193,7 +191,6 @@ export default {
     FileDrop,
     UiTooltip,
     UiTextbox,
-    Fireworks,
   },
   props: {
     gui: {
@@ -204,6 +201,7 @@ export default {
   computed: {
     ...mapState([
       "fontLoading",
+      "remoteFontRequested",
     ]),
     ...mapGetters([
       "settings",
@@ -224,6 +222,7 @@ export default {
   data() {
     return {
       fonts: [],
+      lastFont: null,
       errorMessage: "",
       errorLogs: [],
       fontLoadingProgress: 0,
@@ -243,6 +242,10 @@ export default {
   watch: {
     gui () {
       this.init();
+    },
+    remoteFontRequested(url) {
+      this.navigateToTester();
+      this.addRemoteFont(url);
     },
   },
   mounted() {
@@ -275,25 +278,32 @@ export default {
 
     openAddFontDialog() {
       this.$refs.modalAddFont.open();
-      },
-    addRemoteFont() {
-      this.loadFonts({ urls: [ this.addFontUrl ], remote: true });
+      setTimeout(() => {
+          this.$refs.modalAddFont.$el.focus();
+          this.$refs.modalAddFont.$el.querySelector('input').focus();
+      }, 10)
+    },
+    addRemoteFont(url) {
+      this.openedWithoutFonts = false;
+      this.loadFonts({ urls: [ url || this.addFontUrl ], remote: true });
+      this.addFontUrl = '';
       this.$refs.modalAddFont.close();
     },
     updateQuery(update) {
         let query = JSON.parse(JSON.stringify(this.$route.query));
         query = { ...query, ...update };
-        this.$router.replace({ query }).catch(() => {});
+        this.$router.replace({ query });
     },
 
     onFilesDropped(files) {
       this.openedWithoutFonts = false;
-      // disable Fireworks
-      // this.$refs.fireworks.$emit('event');
-      if (this.$route.path === "/") {
-        this.$router.push({ path: 'lettering' });
-      }
       this.loadFonts({ files: Array.from(files) });
+    },
+
+    navigateToTester() {
+      if (this.$route.path === "/") {
+        this.$router.push({ query: this.$route.query, path: 'lettering' });
+      }
     },
 
     loadFonts({ files = [], urls = [], remote = false } = {}) {
@@ -303,6 +313,7 @@ export default {
       if (!urls.length) {
         return;
       }
+      this.navigateToTester();
       this.fontLoadingProgress = 0;
       this.$store.dispatch("fontLoadStart");
       const fileNames = files.length
@@ -517,7 +528,9 @@ export default {
       this.$store.commit("selectFont", { headerFont });
     },
     setLastFont() {
-      this.selectFont(this.lastFont);
+      if (this.lastFont && this.lastFont.family) {
+        this.selectFont(this.lastFont);
+      }
     },
     setPreviousFont() {
       this.selectFont(this.fonts[Math.max(0, this.selectedFontIndex - 1)]);

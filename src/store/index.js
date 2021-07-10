@@ -32,6 +32,7 @@ const store = new Vuex.Store({
     contextualPanelVisible: false,
     expandedMenu: null,
     isMobile: false,
+    remoteFontRequested: false,
   },
 
   getters: {
@@ -93,6 +94,10 @@ const store = new Vuex.Store({
     },
     setMobile(state, { isMobile }) {
       state.isMobile = isMobile;
+    },
+
+    requestFont(state, { url }) {
+      state.remoteFontRequested = url;
     },
 
     fontLoadStart(state) {
