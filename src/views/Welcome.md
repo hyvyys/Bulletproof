@@ -15,7 +15,7 @@ Or if you don't have any font files handy, look around and test the included fon
 
 ## Text collection
 
-A set of multilingual texts is collected in a separate project [Language-Data](https://github.com/hyvyys/language-data). It&nbsp;includes a few kinds of texts:
+The multilingual texts and language metadata powering this project are maintained in their own repository and npm package [language-data](https://github.com/hyvyys/language-data). Several kinds of texts are included:
 
   * ordinary sentences,
   * pangrams,
@@ -26,12 +26,12 @@ The selection of languages and texts is arbitrary and limited, but contributions
 
 ## Kerning tester
 
-The app is equipped with a <router-link to="/kerning">kerning string generator</router-link>, along with a couple of predefined kerning patterns. <router-link to="/help/kerning">[See kerning generator help]</router-link>
+The <router-link to="/kerning">Kerning tab</router-link> has a kerning string generator. A couple of kerning patterns are predefined and more can be created on the fly. <router-link to="/help/kerning">See kerning generator help.</router-link>
 
 ## Playground & Animation
 
-Any open text sample can be edited. In the <router-link to="/editor">editor tab</router-link> some more options are available: setting bold and italic (with separately selectable fonts), as well as taking snapshots of the settings and using them as animation keyframes — can be useful for recording gifs or videos, or toggling multiple features on and off more quickly. <router-link to="/help/animation">[See animation editor help]</router-link>
+Any open text sample can be edited. In the <router-link to="/editor">editor tab</router-link> some more options are available: setting bold and italic (with separately selectable fonts), as well as taking snapshots of the settings and using them as animation keyframes — can be useful for recording gifs or videos, or toggling multiple features on and off more quickly. <router-link to="/help/animation">See animation editor help.</router-link>
 
 ## Preload a remote font
 
-If you want to share a link to a specific tab and automatically load a remote font, you can add a query parameter with the URL of your font file — like `?preload=https://example.com/Font.ttf` — to the end of the page URL. <router-link to="/help/query-string">[See preloading custom fonts help]</router-link>
+If you want to share a link to a specific tab and automatically load a remote font, you can add a query parameter with the URL of your font file — like `?preload=https://example.com/Font.ttf` — to the end of the page URL. <router-link to="/help/query-string">See preloading custom fonts help.</router-link>
