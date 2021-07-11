@@ -92,7 +92,6 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
-import viewport from "@/utils/viewport";
 
 import FontLoader from "@/components/FontLoader.vue";
 import EditorNav from "@/components/EditorNav.vue";
