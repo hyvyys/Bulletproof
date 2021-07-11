@@ -1,6 +1,6 @@
 
 <template>
-  <div class="ui-textbox ui-number" :class="classes">
+  <div class="ui-textbox ui-number" :class="classes" @dblclick.prevent>
     <div v-if="icon || $slots.icon" class="ui-textbox__icon-wrapper">
       <slot name="icon">
         <ui-icon :icon="icon"></ui-icon>
@@ -16,7 +16,7 @@
             class="ui-textbox__input"
             :autocomplete="autocomplete ? autocomplete : null"
             :disabled="disabled"
-            inputmode="numeric"
+            inputmode="decimal"
             :max="maxValue"
             :maxlength="enforceMaxlength ? maxlength : null"
             :minlength="minlength"
@@ -26,9 +26,7 @@
             :placeholder="hasFloatingLabel ? null : placeholder"
             :readonly="readonly"
             :required="required"
-            :step="stepValue"
             :tabindex="tabindex"
-            :type="type"
             :value="displayedText != null ? displayedText : value"
             @blur="onBlur2"
             @focus="onFocus"
@@ -40,33 +38,31 @@
             @keydown.down="$event => increment(-1, $event)"
           />
 
-          <div class="ui-number-buttons">
-            <UiIconButton
-              :disabled="disabled"
-              class="ui-number__button ui-select__dropdown-button"
-              @mousedown.native="startIncrement"
-              @mouseleave.native="endIncrementDecrement"
-              @mouseup.native="endIncrementDecrement"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                <path
-                  transform="translate(0 24) scale(1 -1) translate(0 -1)"
-                  d="M6.984 9.984h10.03L12 15z"
-                />
-              </svg>
-            </UiIconButton>
-            <UiIconButton
-              :disabled="disabled"
-              class="ui-number__button ui-select__dropdown-button"
-              @mousedown.native="startDecrement"
-              @mouseleave.native="endIncrementDecrement"
-              @mouseup.native="endIncrementDecrement"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                <path transform="translate(0 -1)" d="M6.984 9.984h10.03L12 15z" />
-              </svg>
-            </UiIconButton>
-          </div>
+          <UiIconButton
+            :disabled="disabled"
+            class="ui-number__button up ui-select__dropdown-button"
+            @mousedown.native="startIncrement"
+            @mouseleave.native="endIncrementDecrement"
+            @mouseup.native="endIncrementDecrement"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+              <path
+                transform="translate(0 24) scale(1 -1) translate(0 -1)"
+                d="M6.984 9.984h10.03L12 15z"
+              />
+            </svg>
+          </UiIconButton>
+          <UiIconButton
+            :disabled="disabled"
+            class="ui-number__button down ui-select__dropdown-button"
+            @mousedown.native="startDecrement"
+            @mouseleave.native="endIncrementDecrement"
+            @mouseup.native="endIncrementDecrement"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+              <path transform="translate(0 -1)" d="M6.984 9.984h10.03L12 15z" />
+            </svg>
+          </UiIconButton>
         </div>
 
         <div v-if="label || $slots.default" class="ui-textbox__label-text" :class="labelClasses">
@@ -254,51 +250,75 @@ export default {
 @import "keen-ui/src/styles/variables.scss";
 
 $button-height: 0.5 * $ui-input-height - 0.1rem;
-$button-width: $button-height + 0.25rem;
+$button-width: $button-height + 0.75rem;
 
 .ui-textbox__input-wrapper {
-  display: flex;
+  display: grid;
+  grid-template-areas: "input up" "input down";
+  grid-template-columns: 1fr auto;
+  @media (pointer: coarse) {
+    grid-template-areas: "down input up";
+    grid-template-columns: auto 1fr auto;
+  }
   position: relative;
 }
 
 .ui-textbox__input {
+  grid-area: input;
   box-sizing: border-box;
-  padding-right: $button-width + 0.25rem;
-  // text-align: right;
+  text-align: right;
+  padding-right: .3em;
 }
 
-.ui-number-buttons {
+.ui-number__button {
+  &.up {
+    grid-area: up;
+  }
+  &.down {
+    grid-area: down;
+  }
   opacity: 0.54;
   transition: opacity 0.3s;
-  position: absolute;
-  bottom: 2px;
-  right: 0;
-  display: flex;
-  flex-direction: column;
+  height: auto;
+  align-self: stretch;
+  width: $button-width;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border-radius: 2px;
 
-  .ui-number__button {
-    height: $button-height;
-    width: $button-width;
-    min-width: 0;
-    padding: 0;
-    border-radius: 2px;
+  @media (pointer: coarse) {
+    width: 34px;
+    background: #d8d8d8;
+    margin: 2px;
+  }
 
-    position: relative;
+  position: relative;
 
-    .ui-icon-button__icon {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      svg {
-        height: 0.7em;
-        transform: scale(1.5);
-      }
+  ::v-deep .ui-icon-button__icon {
+    svg {
+      height: 0.7em;
+      transform: scale(1.5);
     }
   }
+  @media (pointer: coarse) {
+    svg {
+      height: 0.7em;
+      transform: scale(1.5, 1.7);
+    }
+    // svg {
+    //   display: none;
+    // }
+    // &.up .ui-icon-button__icon::after {
+    //   content: '+';
+    // }
+    // &.down .ui-icon-button__icon::after {
+    //   content: '-';
+    // }
+  }
 }
-
 .ui-number:not(.is-disabled):hover {
-  .ui-number-buttons {
+  .ui-number-button {
     opacity: 1;
     transition: opacity 0.3s;
   }
