@@ -8,7 +8,7 @@ $monospaced-font-size: 13px;
 // $monospaced: "Inconsolata", Consolas, "Courier New", Courier, monospace;
 
 /* ------------------------------------------------------------ *\
-   color variables, groupped by background color (first value)
+   colors
 \* ------------------------------------------------------------ */
 
 $light: #eeeeee;
@@ -16,7 +16,6 @@ $light-text: #241f1e;
 $light-link: #416bc5;
 $light-link-hover: #1245b3;
 
-$accent: #416bc5;
 $accent: #7c0f1d;
 $accent-faded: #461a21;
 $dark-brown: #110e0f;
@@ -24,9 +23,18 @@ $accent-text: #ffffff;
 $accent-link: #bcdeff;
 $accent-link-hover: #ffffff;
 
+/* ------------------------------------------------------------ *\
+   sizes
+\* ------------------------------------------------------------ */
+
+$breakpoint-lg: 1000px;
+$breakpoint-xl: 1600px;
+
 $header-height: 64px;
 $footer-height: 128px;
-$sidebar-width: 220px;
+$sidebar-width: 260px;
+$sidebar-width-lg: 220px;
+$sidebar-width-xl: 260px;
 $contextual-sidebar-width: 210px;
 $sidebar-padding: 0px 10px;
 

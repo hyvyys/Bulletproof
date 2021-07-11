@@ -273,7 +273,10 @@ $header-background: linear-gradient(to right, $light, $accent);
 
   .above-sidebar {
     @media (min-width: 1000px) {
-    width: $sidebar-width;
+      width: $sidebar-width-lg;
+    }
+    @media (min-width: 1600px) {
+      width: $sidebar-width-xl;
     }
     display: flex;
   }

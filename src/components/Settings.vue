@@ -1,6 +1,6 @@
 <template>
   <div class="settings">
-    <div class="row">
+    <div class="row busy">
       <label class="row-label">Font size</label>
       <UiNumber
         ref="settingFontSize"
@@ -13,14 +13,14 @@
       />
       <UiSelect
         ref="settingFontSizeUnit"
-        class="const3ch"
+        class="const3ch fontSizeUnitSelect"
         :value="settings.fontSizeUnit"
         :options="settings.fontSizeUnitOptions"
         @input="v => updateSetting('updateSettings', { fontSizeUnit: v })"
       />
     </div>
 
-    <div class="row">
+    <div class="row busy">
       <!-- <label class="row-label">Waterfall</label> -->
       <UiTextbox
         ref="settingWaterfallSizes"
@@ -36,7 +36,7 @@
       >waterfall</UiCheckbox>
     </div>
 
-    <div class="row">
+    <div class="row busy">
       <label class="row-label">Line height</label>
       <UiNumber
         ref="settingLineHeight"
@@ -56,7 +56,7 @@
       ></UiCheckbox>
     </div>
 
-    <div class="row">
+    <div class="row busy">
       <label class="row-label">Tracking</label>
       <UiNumber
         ref="settingTracking"
@@ -76,7 +76,7 @@
       ></UiCheckbox>
     </div>
 
-    <div class="row">
+    <div class="row busy">
       <label class="row-label">Word spacing</label>
       <UiNumber
         :value="settings.wordSpacing"
@@ -94,7 +94,7 @@
       ></UiCheckbox>
     </div>
 
-    <div class="row">
+    <div class="row busy">
       <label class="row-label">Text align</label>
       <UiSelect
         ref="settingTextAlign"
@@ -104,7 +104,7 @@
       />
     </div>
 
-    <div class="row">
+    <div class="row busy">
       <label class="row-label">Text color</label>
       <UiColorPicker
         ref="settingTextColor"
@@ -113,7 +113,7 @@
       />
     </div>
 
-    <div class="row">
+    <div class="row busy">
       <label class="row-label">Back color</label>
       <UiColorPicker
         ref="settingBackgroundColor"
@@ -122,7 +122,7 @@
       />
     </div>
 
-    <div class="row">
+    <div class="row busy">
       <label class="row-label">Transform</label>
       <UiSelect
         ref="settingTextTransform"
@@ -158,9 +158,9 @@
       </div>
     </div>
 
-    <h3 v-if="localization">Localization</h3>
+    <h3 v-if="localization" class="row-select-header">Localization</h3>
     <div v-if="localization" class="setting-group">
-      <div class="row">
+      <div class="row row-select">
         <UiSelect
           :value="localizationLanguage"
           :options="localizationLanguages"
@@ -477,6 +477,8 @@ export default {
 
 .settings {
   padding: $sidebar-padding;
+  overflow-x: hidden;
+  padding-bottom: 2rem;
 
   h3 {
     margin-bottom: .3em;
@@ -491,6 +493,10 @@ export default {
   }
 }
 
+.ui-radio-group.is-vertical ::v-deep .ui-radio-group__radios {
+  padding-top: 0;
+  margin-bottom: .5rem;
+}
 
 .checkbox-small.ui-checkbox {
   margin: 0;
@@ -533,6 +539,21 @@ export default {
 }
 .row {
   align-items: baseline;
+  &.busy {
+    padding-bottom: .1rem;
+  }
+}
+.fontSizeUnitSelect {
+  flex: 0 0 3em !important;
+  @media (max-width: 1000px) {
+    flex: 0 0 2.5em !important;
+  }
 }
 
+.settings .row-select-header {
+  margin-bottom: .15em;
+}
+.row-select {
+  margin-bottom: .75rem;
+}
 </style>

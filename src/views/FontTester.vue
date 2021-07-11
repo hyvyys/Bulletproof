@@ -164,6 +164,12 @@ export default {
 
 .sidebar-settings {
   width: $sidebar-width;
+  @media (min-width: $breakpoint-lg) {
+    width: $sidebar-width-lg;
+  }
+  @media (min-width: $breakpoint-xl) {
+    width: $sidebar-width-xl;
+  }
 }
 
 .sidebar-nav {
