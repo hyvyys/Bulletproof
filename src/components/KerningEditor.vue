@@ -64,13 +64,13 @@ export default {
         let index = 0;
         if (oldVal.length > 0)
           index = this.$refs.segmentSelects.length - 1;
-        this.$refs.segmentSelects[index].focus();
+        this.$refs.segmentSelects[index] && this.$refs.segmentSelects[index].focus();
       }
     },
   },
   mounted() {
     if (this.$refs.segmentSelects && this.$refs.segmentSelects.length) {
-      this.$refs.segmentSelects[0].focus();
+      this.$refs.segmentSelects[0] && this.$refs.segmentSelects[0].focus();
     }
   },
   updated() {

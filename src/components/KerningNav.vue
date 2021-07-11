@@ -140,10 +140,8 @@ export default {
       this.segments.push({ key: this.getKey(), characters });
     },
     removeKerningSegment(i) {
-      this.requestVuebarFreeze(() => {
-        this.segments.splice(i, 1);
-        this.updateKerningPattern();
-      });
+      this.segments.splice(i, 1);
+      this.updateKerningPattern();
     },
     addKerningPattern() {
       this.$store.dispatch("addKerningPattern", {
@@ -164,31 +162,20 @@ export default {
       }
     },
     removeKerningPattern(id) {
-      this.requestVuebarFreeze(() =>
-        this.$store.dispatch("removeKerningPattern", { id })
-      );
+      this.$store.dispatch("removeKerningPattern", { id })
     },
     toggleKerningPattern(id, v) {
       this.$store.dispatch("toggleKerningPattern", { id, on: v });
     },
     clearKerningPatterns() {
-      this.requestVuebarFreeze(() => {
-        this.$store.dispatch("clearKerningPatterns");
-        document.querySelector(this.scrolledParentSelector).scrollTop = 0;
-      });
+      this.$store.dispatch("clearKerningPatterns");
+      document.querySelector(this.scrolledParentSelector).scrollTop = 0;
     },
     revertKerningPatterns() {
       this.$store.dispatch("revertKerningPatterns");
     },
     formatPatternId(id) {
       return id.replace(/×/g, "<wbr>×").replace(/-/g, "&#x2011;");
-    },
-    requestVuebarFreeze(callback) {
-      this.$vuebar.freezeScrollbar(this.$refs.vb);
-      this.$nextTick(() => {
-        callback();
-      });
-      setTimeout(() => this.$vuebar.unfreezeScrollbar(this.$refs.vb), 250);
     },
   },
 };

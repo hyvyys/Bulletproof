@@ -122,7 +122,7 @@ export default {
 
     clearKerningPatterns(state) {
       state.kerningPatterns.splice(0);
-      this.commit("setText", { sampleKey: "kerning", html: "" });
+      this.commit("setText", { sampleKey: "kerning", html: [""] });
     },
 
     initKerningPatterns(state) {
