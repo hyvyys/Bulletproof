@@ -4,7 +4,7 @@
       <div class="font-tester-content" v-show="!fontLoading">
 
         <Pinnable
-          class="site-sidebar sidebar-settings"
+          class="site-sidebar sidebar-settings left"
           title="Settings"
           :isPinned="isPinned"
           :isVisible="settingsPanelVisible"
@@ -26,7 +26,7 @@
         />
 
         <Pinnable
-          class="site-sidebar sidebar-nav"
+          class="site-sidebar sidebar-nav right"
           :title="navElementTitle"
           :isPinned="isPinned"
           :isVisible="contextualPanelVisible"
@@ -173,7 +173,9 @@ export default {
 }
 
 .sidebar-nav {
-  right: $vuebar-width;
+  &:not(.pinned) {
+    right: $vuebar-width;
+  }
   width: $contextual-sidebar-width;
 }
 </style>

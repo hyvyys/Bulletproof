@@ -225,6 +225,12 @@ export default {
   }
   &:not(.pinned) {
     box-shadow: 7px 0 6px -5px $c, -7px 0 6px -5px $c;
+    &.left {
+      box-shadow: 7px 0 6px -5px $c;
+    }
+    &.right {
+      box-shadow: -7px 0 6px -5px $c;
+    }
     position: fixed;
     background: rgba($light, 0.97);
     transition: opacity 0.25s;
