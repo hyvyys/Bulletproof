@@ -5,7 +5,12 @@ module.exports = {
   },
   extends: ["plugin:vue/essential", "eslint:recommended"],
   rules: {
-    "comma-dangle": ["error", "always-multiline"]
+    "comma-dangle": ["error", "always-multiline"],
+    "no-dupe-keys": ["off"],
+    "no-console": ["off"],
+    "no-extra-semi": ["off"],
+    "no-unused-vars": ["off"],
+    "no-irregular-whitespace": ["off"],
   },
   parserOptions: {
     parser: "babel-eslint"
