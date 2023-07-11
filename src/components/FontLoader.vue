@@ -160,7 +160,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from "vuex";
+import { mapGetters, mapState, mapActions } from "vuex";
 
 import UiModal from "keen-ui/src/UiModal.vue";
 import UiFileupload from "keen-ui/src/UiFileupload.vue";
@@ -211,6 +211,8 @@ export default {
       "selectedBoldItalicFont",
       "selectedHeaderFont",
       "selectedSampleKey",
+      "scripts",
+      "languageSupport",
     ]),
     fontOptions() {
       return this.fonts.map(f => f.serialize());
@@ -445,6 +447,11 @@ export default {
       this.selectHeaderFont(matchingBold);
       this.selectItalicFont(matchingItalic);
       this.selectBoldItalicFont(matchingBoldItalic);
+
+      this.selectScripts({ values: this.scripts }); // reset selection to test all scripts
+      const supportedScripts = this.languageSupport.includedCharactersByScript.filter(s => s.characters.length > 12).map(s => s.script);
+      const scripts = this.scripts.filter(s => supportedScripts.indexOf(s.script) > -1);
+      this.selectScripts({ values: scripts });
     },
 
     setFont(key, value) {
@@ -544,6 +551,9 @@ export default {
     setNextFont() {
       this.selectFont(this.fonts[Math.min(this.fonts.length - 1, this.selectedFontIndex + 1)]);
     },
+    ...mapActions([
+      "selectScripts",
+    ]),
 
     /* ^^^ methods ^^^ */
   },
