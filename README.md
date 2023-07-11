@@ -1,9 +1,3 @@
-# TODO
-
-filter scripts by font
-
-VF slant / italic / weight for styles
-
 # Bulletproof
 
 [Bulletproof](https://hyvyys.github.io/Bulletproof/) Font Tester is a font proofing app that loads user-selected local font files and detects their OpenType features and variation axes. Everything is processed locally in the browser, using [OpenType.js](https://github.com/opentypejs/opentype.js).
@@ -33,3 +27,7 @@ The app is equipped with a <router-link to="/kerning">kerning string generator</
 ## Playground & Animation
 
 Any open text sample can be edited. In the <router-link to="/editor">editor tab</router-link> some more options are available: setting bold and italic (with separately selectable fonts), as well as taking snapshots of the settings and using them as animation keyframes — can be useful for recording gifs or videos, or toggling multiple features on and off more quickly. [See animation editor help](https://hyvyys.github.io/Bulletproof/help/animation).
+
+# Development
+
+Last tested in Node.JS v12.22.12.
