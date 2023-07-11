@@ -10,7 +10,7 @@
         size="small"
         @change="onFilesDropped"
       />
-      <UiTooltip :openDelay="500">
+      <UiTooltip :openDelay="500" style="width: min(90vw,20em)">
         Open fonts (you can also drag and drop font files anywhere on the page)
       </UiTooltip>
     </div>
@@ -350,11 +350,12 @@ export default {
         }
 
         if (i === urls.length) {
+          let styleOrder = ['normal', 'italic', 'oblique'];
           if (fonts.length) {
             fonts.sort((a, b) =>
               a.family.localeCompare(b.family)
               || a.cssWeight - b.cssWeight
-              || b.cssStyle.localeCompare(a.cssStyle)
+              || styleOrder.indexOf(a.cssStyle) - styleOrder.indexOf(b.cssStyle)
             );
             // don't make font objects reactive for performance gains
             this.fonts = Object.freeze([ ...fonts, ...this.fonts ]);
@@ -503,14 +504,15 @@ export default {
     selectBoldFont(v) {
       const { font: boldFont } = this.getFont(v);
       styles.setProperty("--selectedBoldFontFamily", boldFont.cssFamily);
-      // styles.setProperty("--selectedBoldFontCssWeight", boldFont.cssWeight);
-      // styles.setProperty("--selectedBoldFontCssStyle", boldFont.cssStyle);
       this.$store.commit("selectFont", { boldFont });
     },
 
     selectItalicFont(v) {
       const { font: italicFont } = this.getFont(v);
       styles.setProperty("--selectedItalicFontFamily", italicFont.cssFamily);
+      const same = this.selectedFont.cssFamily == italicFont.cssFamily;
+      // styles.setProperty("--selectedItalicFontCssStyle", same ? 'italic' : this.selectedItalicFont.cssStyle);
+      styles.setProperty("--selectedItalicFontCssStyle", same ? 'oblique' : this.selectedItalicFont.cssStyle);
       // styles.setProperty("--selectedItalicFontCssWeight", italicFont.cssWeight);
       // styles.setProperty("--selectedItalicFontCssStyle", italicFont.cssStyle);
       this.$store.commit("selectFont", { italicFont });
@@ -519,6 +521,10 @@ export default {
     selectBoldItalicFont(v) {
       const { font: boldItalicFont } = this.getFont(v);
       styles.setProperty("--selectedBoldItalicFontFamily", boldItalicFont.cssFamily);
+      const same = this.selectedFont.cssFamily == boldItalicFont.cssFamily;
+      styles.setProperty("--selectedBoldItalicFontCssWeight", same ? 700 : this.selectedBoldItalicFont.cssWeight);
+      // styles.setProperty("--selectedItalicFontCssStyle", same ? 'italic' : this.selectedBoldItalicFont.cssStyle);
+      styles.setProperty("--selectedBoldItalicFontCssStyle", same ? 'oblique' : this.selectedBoldItalicFont.cssStyle);
       this.$store.commit("selectFont", { boldItalicFont });
     },
 

@@ -25,17 +25,18 @@ export default class Font {
 
   getNames() {
     const font = this.font;
-    const names = font.names;
-    this.family = (names.preferredFamily && names.preferredFamily.en) || names.fontFamily.en;
+    const names = font.names.windows;
+    this.family = (names.preferredFamily && names.preferredFamily?.en) || names.fontFamily?.en || '';
     this.originalFamily = this.family;
     if (this.version) {
       this.family += `-${this.version}`;
     }
     this.style =
-      (names.preferredSubfamily && names.preferredSubfamily.en) || names.fontSubfamily.en;
+      (names.preferredSubfamily && names.preferredSubfamily.en) || names.fontSubfamily?.en || '';
 
     this.cssFamily = this.family + '-' + this.style;
-    this.cssStyle = /(italic|oblique)/gi.test(this.style) ? "italic" : "normal";
+    // this.cssStyle = /(italic|oblique)/gi.test(this.style) ? "italic" : "normal";
+    this.cssStyle = /(italic|oblique)/gi.test(this.style) ? "oblique" : "normal";
     this.cssWeight = font.tables.os2.usWeightClass;
 
     this.displayName = `${this.originalFamily} ${this.style} ${this.version ? `(${this.version})` : ''}`;
@@ -53,7 +54,7 @@ export default class Font {
 
   getFeatures() {
     const font = this.font;
-    const names = font.names;
+    const names = font.names.windows;
     const gpos = font.tables.gpos || {};
     const gsub = font.tables.gsub || {};
 
@@ -71,14 +72,6 @@ export default class Font {
       })
       .sort((a, b) => a.name > b.name);
     loclLanguages.unshift({ tag: '', htmlTag: '', name: 'automatic' });
-
-    const stylisticSetNames = Object.getOwnPropertyNames(names)
-      .filter(p => /\d+/.test(p))
-      .map(p => names[p].en);
-    let i = 0;
-    const getStylisticSetName = function () {
-      return stylisticSetNames[i++];
-    };
 
     this.gposFeatures = [];
     (gpos.features || []).forEach(f => {
@@ -99,19 +92,17 @@ export default class Font {
         const feature = {
           tag: f.tag,
           name: getOpenTypeFeatureName(f.tag),
-          // uiName: f.feature.uiName,
         };
 
         if (f.tag == "locl") {
           feature.languages = loclLanguages;
           feature.selectedLanguage = loclLanguages[0];
         } else if (/ss\d\d/.test(f.tag)) {
-          const uiName =  f.feature.uiName;
+          const uiName = names[f.feature.featureParamsTable.uiNameId];
           feature.uiName = uiName && uiName['en'];
         } else if (/cv\d\d/.test(f.tag)) {
-          const uiName =  f.feature.featUiLabelName;
+          const uiName = names[f.feature.featureParamsTable.featUiLabelNameId];
           feature.uiName = uiName && uiName['en'];
-          console.log(feature.uiName)
         }
         this.gsubFeatures.push(feature);
       }
@@ -121,15 +112,21 @@ export default class Font {
     if (font && font.tables.fvar && font.tables.fvar.axes) {
       this.variationAxes = font && font.tables.fvar && font.tables.fvar.axes;
     }
+    this.variationAxes.forEach(a => {
+      a.step = (a.maxValue - a.minValue) > 10 ? 1 : .01;
+      a.displayName = a.tag;
+    })
   }
 
-  generateFontFace({ family, style, weight } = {}) {
+  // generateFontFace({ family, style, weight } = {}) {
+  generateFontFace() {
     this.fontFace = `
       @font-face {
         src: url('${this.url}');
-        font-family: "${family || this.cssFamily}";
+        font-family: "${this.cssFamily}";
         ${ this.variationAxes.length === 0 ? 'font-weight: bold' : ''};  // prevent fake bold, allow for automatic weight in Variable fonts
-        // font-style: ${style || this.cssStyle};  // hmmm...
+        font-weight: 0 1000;
+        font-style: oblique 0deg 20deg;
       }
     `;
     return this.fontFace;

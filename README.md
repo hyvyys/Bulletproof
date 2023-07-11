@@ -1,3 +1,9 @@
+# TODO
+
+filter scripts by font
+
+VF slant / italic / weight for styles
+
 # Bulletproof
 
 [Bulletproof](https://hyvyys.github.io/Bulletproof/) Font Tester is a font proofing app that loads user-selected local font files and detects their OpenType features and variation axes. Everything is processed locally in the browser, using [OpenType.js](https://github.com/opentypejs/opentype.js).

@@ -270,11 +270,11 @@
             :value="axis.value"
             :min="axis.minValue"
             :max="axis.maxValue"
-            :step="1"
+            :step="axis.step"
             @input="v => updateSetting('updateVariationAxis', { tag: axis.tag, value: v })"
           />
           <UiButton class="tiny" @click="updateSetting('updateVariationAxis', { tag: axis.tag, value: axis.defaultValue })">
-            ⭯
+            <img svg-inline src="@/assets/icons/reset.svg" class="reset-icon" />
           </UiButton>
         </div>
         <div class="row" style="padding: .5em 0.3em .7em">
@@ -287,7 +287,7 @@
             @input="v => updateSetting('updateVariationAxis', { tag: axis.tag, value: v })"
             :min="axis.minValue"
             :max="axis.maxValue"
-            :step="1"
+            :step="axis.step"
             :snapToStep="true"
             :showMarker="false"
           />
@@ -305,7 +305,8 @@ import { mapGetters } from "vuex";
 import UiCheckbox from "keen-ui/src/UiCheckbox.vue";
 import UiRadioGroup from "keen-ui/src/UiRadioGroup.vue";
 import UiButton from "keen-ui/src/UiButton.vue";
-import UiSlider from "keen-ui/src/UiSlider.vue";
+// import UiSlider from "keen-ui/src/UiSlider.vue";
+import UiSlider from "@/components/UiSlider.vue";
 import UiSelect from "@/components/UiSelect.vue";
 import UiNumber from "@/components/UiNumber.vue";
 import UiTextbox from "keen-ui/src//UiTextbox.vue";

@@ -72,6 +72,12 @@ const store = new Vuex.Store({
     fontVariationSettings: state => {
       return Settings.getStyleFromSettings(state.settings).fontVariationSettings;
     },
+    fontWeight: state => {
+      return Settings.getStyleFromSettings(state.settings).fontWeight;
+    },
+    fontStyle: state => {
+      return Settings.getStyleFromSettings(state.settings).fontStyle;
+    },
   },
 
   mutations: {
@@ -193,7 +199,7 @@ const store = new Vuex.Store({
           ...a,
           value: matching ? matching.value : a.defaultValue,
           enabled: matching ? matching.enabled : true,
-          displayName: a.name.en,
+          displayName: a.displayName,
         };
       });
     },

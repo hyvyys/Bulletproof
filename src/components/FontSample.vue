@@ -11,6 +11,9 @@
         text-transform: ${settings.enableTextTransform ? settings.textTransform : 'none'};
         font-feature-settings: ${ fontFeatureSettings };
         font-variation-settings: ${ fontVariationSettings };
+        font-weight: ${ fontWeight };
+        --font-weight: ${ fontWeight };
+        font-style: ${ fontStyle };
     `"
   >
 
@@ -45,6 +48,8 @@ export default {
       "formatRequested",
       "fontFeatureSettings",
       "fontVariationSettings",
+      "fontWeight",
+      "fontStyle",
       "languageSupport",
     ]),
     settings() { return this.displayedSettings },
@@ -59,8 +64,8 @@ export default {
 .font-sample {
   .font-sample-content {
     font-family: var(--selectedFontFamily), var(--fallbackFontFamily);
-    font-weight: normal; // sets to 400 even if variable font has different default instance
-    font-weight: var(--selectedFontCssWeight);
+    // font-weight: normal; // sets to 400 even if variable font has different default instance
+    // font-weight: var(--selectedFontCssWeight);
     // font-style: var(--selectedFontCssStyle);
     white-space: pre-wrap;
     &:focus {
@@ -83,32 +88,33 @@ export default {
       // font-weight: 700;
     }
 
+    @mixin boldItalic {
+        font-family: var(--selectedBoldItalicFontFamily), var(--fallbackFontFamily);
+        font-style: var(--selectedBoldItalicFontCssStyle);
+        font-weight: calc(var(--font-weight, 400) + 200);
+    }
+
     b, strong {
       font-family: var(--selectedBoldFontFamily), var(--fallbackFontFamily);
-      // font-weight: normal;
-      // font-style: normal;
-      // white-space: normal;
-      font-weight: var(--selectedBoldFontCssWeight, 700);
-      // font-style: var(--selectedBoldFontCssStyle);
-      // font-weight: 700;
+      font-weight: calc(var(--font-weight, 400) + 200);
+      // font-variation-settings: initial;
+
 
       em {
-        font-family: var(--selectedBoldItalicFontFamily), var(--fallbackFontFamily);
-        font-weight: 300;
+        @include boldItalic;
       }
     }
 
     i, em {
       font-family: var(--selectedItalicFontFamily), var(--fallbackFontFamily);
-      font-weight: var(--selectedItalicFontCssWeight);
-      // font-style: var(--selectedItalicFontCssStyle);
-      // font-weight: normal;
-      font-style: normal;
+      font-style: var(--selectedItalicFontCssStyle);
+      // font-weight: var(--selectedItalicFontCssWeight);
+      // font-variation-settings: initial;
       b, strong {
-        font-family: var(--selectedBoldItalicFontFamily), var(--fallbackFontFamily);
-        font-weight: var(--selectedBoldItalicFontCssWeight);
+        @include boldItalic;
       }
     }
+
   }
 }
 

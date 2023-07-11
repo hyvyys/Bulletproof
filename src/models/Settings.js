@@ -182,6 +182,22 @@ export default class Settings {
   }
 
   static getStyleFromSettings(settings) {
+    let variationAxes = settings.variationAxes;
+    let weightAxis = variationAxes.find(a => a.tag == 'wght');
+    let slantAxis = variationAxes.find(a => a.tag == 'slnt');
+    let italicAxis = variationAxes.find(a => a.tag == 'ital');
+    let fontStyle = 'normal';
+    // if (slantAxis && slantAxis.value != 0) {
+    if (slantAxis) {
+      fontStyle = `oblique ${-slantAxis.value}deg`;
+    } else if (italicAxis && italicAxis.value == 1) {
+      fontStyle = 'italic';
+    }
+    
+    const filteredAxes = slantAxis ? ['wght', 'slnt'] : ['wght', 'ital'];
+
+    variationAxes = variationAxes.filter(a => filteredAxes.indexOf(a.tag) == -1);
+
     return {
       fontSize: settings.fontSize,
       lineHeight: settings.lineHeight,
@@ -192,11 +208,13 @@ export default class Settings {
       fontFeatureSettings: settings.gsubFeatures.concat(settings.gposFeatures)
           .map(f => `'${f.tag}' ${f.value ? '1' : '0'} `)
           .join(', '),
-      fontVariationSettings: settings.variationAxes
+      fontVariationSettings: variationAxes
           .filter(a => a.enabled)
           .map(a => `'${a.tag}' ${a.value} `)
           .join(', ')
           || 'unset',
+      fontWeight: weightAxis?.value ?? 400,
+      fontStyle,
     };
   }
 

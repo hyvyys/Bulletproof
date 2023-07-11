@@ -4,7 +4,9 @@ module.exports = {
   devServer: {
     // writeToDisk: true, // https://webpack.js.org/configuration/dev-server/#devserverwritetodisk-
   },
-
+  
+  lintOnSave: false,
+  
   // transpileDependencies: [
   //   /\bkeen-ui\b/
   // ],
